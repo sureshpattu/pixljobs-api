@@ -1,0 +1,24 @@
+{
+    "development": {
+        "username": "root",
+        "password": "28501811",
+        "database": "pixljobs",
+        "host": "127.0.0.1",
+        "dialect": "mysql",
+        "operatorsAliases": false,
+        "seederStorage": "sequelize"
+    },
+    "production": {
+        "username": "root",
+        "password": "28501811",
+        "database": "pixljobs",
+        "host": "127.0.0.1",
+        "dialect": "mysql",
+        "operatorsAliases": false,
+        "seederStorage": "sequelize"
+    },
+    "TOKENSECRET": "med-in-$sna-ENO476",
+    "hashSalt": "$2b$10$L1rSH8ZQPnuIZkpWfGPyuO",
+    "hashSalt2": "1c465eaf4ecd835e226822cde50b2823",
+    "hashIV": "0ged?o4;ce45?3c6"
+}
