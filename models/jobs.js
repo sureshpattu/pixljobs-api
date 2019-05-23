@@ -2,7 +2,7 @@
 
 module.exports = function(sequelize, Sequelize) {
 
-    return sequelize.define('qa_jobs', {
+    return sequelize.define('jobs', {
         id        :{
             type        :Sequelize.UUID,
             primaryKey  :true,
