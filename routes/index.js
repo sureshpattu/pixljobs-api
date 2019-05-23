@@ -15,4 +15,3 @@ module.exports = (app) => {
     app.use(`${prefix}/companies`, CompaniesRouter);
     app.use(`${prefix}/benefits`, BenefitsRouter);
 };
-'use strict';
