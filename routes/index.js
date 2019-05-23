@@ -17,6 +17,9 @@ const JobCategoriesRouter   = require('./job_categories.route');
 const JobRequirementsRouter = require('./job_requirements.route');
 const CompaniesRouter = require('./companies.route');
 const BenefitsRouter = require('./benefits.route');
+const NotificationsRouter = require('./notifications.route');
+const AdminNotificationsRouter = require('./admin_notifications.route');
+const TagsRouter = require('./tags.route');
 
 const prefix = '/api';
 
@@ -43,4 +46,7 @@ module.exports = (app) => {
     app.use(`${prefix}/qa-requirements`, JobRequirementsRouter);
     app.use(`${prefix}/companies`, CompaniesRouter);
     app.use(`${prefix}/benefits`, BenefitsRouter);
+    app.use(`${prefix}/notifications`, NotificationsRouter);
+    app.use(`${prefix}/admin-notifications`, AdminNotificationsRouter);
+    app.use(`${prefix}/tags`, TagsRouter);
 };
