@@ -43,5 +43,4 @@ module.exports = (app) => {
     app.use(`${prefix}/qa-requirements`, JobRequirementsRouter);
     app.use(`${prefix}/companies`, CompaniesRouter);
     app.use(`${prefix}/benefits`, BenefitsRouter);
-
 };
