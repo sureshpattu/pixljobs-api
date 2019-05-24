@@ -2,36 +2,39 @@
 
 module.exports = function(sequelize, Sequelize) {
 
-    return sequelize.define('qa_jobs', {
-        id        :{
+    return sequelize.define('companies', {
+        id      :{
             type        :Sequelize.UUID,
             primaryKey  :true,
             defaultValue:Sequelize.UUIDV4,
             allowNull   :false
         },
-        name      :{
+        name    :{
             type:Sequelize.TEXT('long')
         },
-        desc      :{
+        industry:{
             type:Sequelize.TEXT('long')
         },
-        user_id   :{
-            type:Sequelize.UUID
-        },
-        company_id:{
-            type:Sequelize.UUID
-        },
-        salary_min:{
+        size    :{
             type:Sequelize.STRING
         },
-        salary_max:{
+        about   :{
+            type:Sequelize.TEXT('long')
+        },
+        email   :{
+            type    :Sequelize.STRING,
+            validate:{
+                isEmail:true
+            },
+            unique  :{
+                args:true,
+                msg :'Email address already in use!'
+            }
+        },
+        logo    :{
             type:Sequelize.STRING
         },
-        job_type  :{
-            type        :Sequelize.ENUM('FullTime', 'PartTime', 'Contract', 'Internship'),
-            defaultValue:'FullTime'
-        },
-        status    :{
+        status  :{
             type        :Sequelize.ENUM('closed', 'active', 'review', 'deleted'),
             defaultValue:'review'
         }

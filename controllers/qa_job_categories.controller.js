@@ -1,6 +1,6 @@
 'use strict';
 
-const Model      = db.job_categories;
+const Model      = db.qa_job_categories;
 const waterfall  = require('async-waterfall');
 const _          = require('underscore');
 const ApiHelpers = require('../helpers/api.helpers');

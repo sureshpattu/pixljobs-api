@@ -1,8 +1,8 @@
 'use strict';
 
-const Model      = db.job_categories;
-const waterfall  = require('async-waterfall');
-const _          = require('underscore');
+const Model          = db.tags;
+const waterfall      = require('async-waterfall');
+const _              = require('underscore');
 const ApiHelpers = require('../helpers/api.helpers');
 
 function fetchSingle(_id, res) {
@@ -27,7 +27,7 @@ module.exports = {
     },
 
     create:(req, res) => {
-        if(!req.body.job_id || !req.body.category_id) {
+        if(!req.body.name) {
             return ApiHelpers.error(res, true, 'Parameters missing');
         }
         Model.create(req.body).then((_data) => {
