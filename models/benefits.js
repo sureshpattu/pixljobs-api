@@ -14,8 +14,6 @@ module.exports = function(sequelize, Sequelize) {
         }
     }, {
         underscored:true,
-        version    :true,
-        deletedAt  :'destroyTime',
-        paranoid   :true
+        version    :true
     });
 };

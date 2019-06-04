@@ -16,9 +16,6 @@ module.exports = function(sequelize, Sequelize) {
             type:Sequelize.TEXT('long')
         }
     }, {
-        underscored:true,
-        version    :true,
-        deletedAt  :'destroyTime',
-        paranoid   :true
+        underscored:true
     });
 };

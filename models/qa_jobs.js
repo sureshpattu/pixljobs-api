@@ -36,9 +36,6 @@ module.exports = function(sequelize, Sequelize) {
             defaultValue:'review'
         }
     }, {
-        underscored:true,
-        version    :true,
-        deletedAt  :'destroyTime',
-        paranoid   :true
+        underscored:true
     });
 };

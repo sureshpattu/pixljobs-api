@@ -3,19 +3,16 @@
 module.exports = function(sequelize, Sequelize) {
 
     return sequelize.define('tags', {
-        id        :{
+        id  :{
             type        :Sequelize.UUID,
             primaryKey  :true,
             defaultValue:Sequelize.UUIDV4,
             allowNull   :false
         },
-        name      :{
+        name:{
             type:Sequelize.TEXT('long')
         }
     }, {
-        underscored:true,
-        version    :true,
-        deletedAt  :'destroyTime',
-        paranoid   :true
+        underscored:true
     });
 };
