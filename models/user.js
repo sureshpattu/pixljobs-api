@@ -57,7 +57,7 @@ module.exports = function(sequelize, Sequelize) {
             type  :Sequelize.STRING,
             unique:{
                 args:true,
-                msg :'Mobile number address already in use!'
+                msg :'Mobile number already in use!'
             }
         },
         mobile_code:{

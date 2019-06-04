@@ -23,9 +23,6 @@ module.exports = function(sequelize, Sequelize) {
             defaultValue:'unread'
         }
     }, {
-        underscored:true,
-        version    :true,
-        deletedAt  :'destroyTime',
-        paranoid   :true
+        underscored:true
     });
 };
