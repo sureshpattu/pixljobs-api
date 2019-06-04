@@ -31,9 +31,41 @@ Object.keys(db).forEach(modelName => {
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
-//db.conditions.hasMany(db.conditions_files);
-//
-//db.conditions.hasMany(db.condition_symptoms);
-//db.condition_symptoms.belongsTo(db.symptoms);
+//Users
+db.users.hasMany(db.jobs);
+
+//Jobs
+db.jobs.hasMany(db.job_applications);
+db.jobs.hasMany(db.job_likes);
+db.jobs.hasMany(db.job_requirements);
+db.jobs.hasMany(db.job_technologies);
+db.jobs.hasMany(db.job_categories);
+
+db.job_applications.belongsTo(db.users);
+db.job_applications.belongsTo(db.jobs);
+
+db.job_likes.belongsTo(db.users);
+db.job_likes.belongsTo(db.jobs);
+
+db.job_requirements.belongsTo(db.jobs);
+db.job_requirements.belongsTo(db.requirements);
+
+db.job_technologies.belongsTo(db.jobs);
+db.job_technologies.belongsTo(db.technologies);
+
+db.job_categories.belongsTo(db.jobs);
+db.job_categories.belongsTo(db.categories);
+
+//Companies
+db.companies.hasMany(db.company_benefits);
+
+db.companies.belongsTo(db.users);
+
+db.company_benefits.belongsTo(db.companies);
+db.company_benefits.belongsTo(db.benefits);
+
+//Notifications
+db.admin_notifications.belongsTo(db.users);
+db.admin_notifications.belongsTo(db.jobs);
 
 module.exports = db;
