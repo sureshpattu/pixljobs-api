@@ -3,29 +3,27 @@
 module.exports = function(sequelize, Sequelize) {
 
     return sequelize.define('admin_notifications', {
-        id        :{
+        id     :{
             type        :Sequelize.UUID,
             primaryKey  :true,
             defaultValue:Sequelize.UUIDV4,
             allowNull   :false
         },
-        user_id   :{
+        user_id:{
             type:Sequelize.UUID
         },
-        job_id:{
+        job_id :{
             type:Sequelize.UUID
         },
-        msg      :{
+        msg    :{
             type:Sequelize.TEXT('long')
         },
-        status    :{
+        status :{
             type        :Sequelize.ENUM('read', 'unread', 'deleted'),
             defaultValue:'unread'
         }
     }, {
         underscored:true,
-        version    :true,
-        deletedAt  :'destroyTime',
-        paranoid   :true
+        version    :true
     });
 };

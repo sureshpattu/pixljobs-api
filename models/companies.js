@@ -9,6 +9,9 @@ module.exports = function(sequelize, Sequelize) {
             defaultValue:Sequelize.UUIDV4,
             allowNull   :false
         },
+        user_id:{
+            type:Sequelize.UUID
+        },
         name    :{
             type:Sequelize.TEXT('long')
         },
@@ -39,9 +42,6 @@ module.exports = function(sequelize, Sequelize) {
             defaultValue:'review'
         }
     }, {
-        underscored:true,
-        version    :true,
-        deletedAt  :'destroyTime',
-        paranoid   :true
+        underscored:true
     });
 };
