@@ -18,7 +18,7 @@
         "seederStorage": "sequelize"
     },
     "TOKENSECRET": "med-in-$sna-ENO476",
-    "hashSalt": "$2b$10$L1rSH8ZQPnuIZkpWfGPyuO",
-    "hashSalt2": "1c465eaf4ecd835e226822cde50b2823",
-    "hashIV": "0ged?o4;ce45?3c6"
+    "hashSalt": "$1b$40$L2rSH1ZQPnuIZkpWfGPyuO",
+    "hashSalt2": "2c467eaf3ecd835e126822cde50b2223",
+    "hashIV": "1ged?o3;ce25?3c4"
 }

@@ -20,9 +20,6 @@ module.exports = function(sequelize, Sequelize) {
             defaultValue:'pending'
         }
     }, {
-        underscored:true,
-        version    :true,
-        deletedAt  :'destroyTime',
-        paranoid   :true
+        underscored:true
     });
 };
