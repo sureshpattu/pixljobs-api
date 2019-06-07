@@ -1,7 +1,7 @@
 'use strict';
 
 const AuthRouter               = require('./auth.route');
-const UserRouter               = require('./user.route');
+const UserRouter               = require('./applicant.route');
 const QaJobsRouter             = require('./qa_jobs.route');
 const QaJobCatRouter           = require('./qa_job_categories.route');
 const QaJobTechRouter          = require('./qa_job_technologies.route');
