@@ -20,6 +20,7 @@ const BenefitsRouter           = require('./benefits.route');
 const NotificationsRouter      = require('./notifications.route');
 const AdminNotificationsRouter = require('./admin_notifications.route');
 const TagsRouter               = require('./tags.route');
+const CompanyBenefits = require('./company_benefits.route');
 
 const prefix = '/api';
 
@@ -43,10 +44,12 @@ module.exports = (app) => {
     app.use(`${prefix}/technologies`, TechnologiesRouter);
     app.use(`${prefix}/job-applications`, JobApplicationsRouter);
     app.use(`${prefix}/job-categories`, JobCategoriesRouter);
+    app.use(`${prefix}/qa-requirements`, JobRequirementsRouter);
     app.use(`${prefix}/job-requirements`, JobRequirementsRouter);
     app.use(`${prefix}/companies`, CompaniesRouter);
     app.use(`${prefix}/benefits`, BenefitsRouter);
     app.use(`${prefix}/notifications`, NotificationsRouter);
     app.use(`${prefix}/admin-notifications`, AdminNotificationsRouter);
     app.use(`${prefix}/tags`, TagsRouter);
+    app.use(`${prefix}/company-benefits`,CompanyBenefits);
 };
