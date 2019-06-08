@@ -3,7 +3,7 @@
 const express = require('express');
 const router  = express.Router();
 
-const Controller = require('../controllers/user.controller');
+const Controller = require('../controllers/applicant.controller');
 
 router
     .get('/:id', (req, res) => { Controller.read(req, res); })
