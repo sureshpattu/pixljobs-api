@@ -32,7 +32,7 @@ db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
 //Users
-db.users.hasMany(db.jobs);
+db.recruiters.hasMany(db.jobs);
 
 //Jobs
 db.jobs.hasMany(db.job_applications);
@@ -41,10 +41,10 @@ db.jobs.hasMany(db.job_requirements);
 db.jobs.hasMany(db.job_technologies);
 db.jobs.hasMany(db.job_categories);
 
-db.job_applications.belongsTo(db.users);
+db.job_applications.belongsTo(db.applicants);
 db.job_applications.belongsTo(db.jobs);
 
-db.job_likes.belongsTo(db.users);
+db.job_likes.belongsTo(db.applicants);
 db.job_likes.belongsTo(db.jobs);
 
 db.job_requirements.belongsTo(db.jobs);
@@ -59,13 +59,13 @@ db.job_categories.belongsTo(db.categories);
 //Companies
 db.companies.hasMany(db.company_benefits);
 
-db.companies.belongsTo(db.users);
+db.companies.belongsTo(db.recruiters);
 
 db.company_benefits.belongsTo(db.companies);
 db.company_benefits.belongsTo(db.benefits);
 
 //Notifications
-db.admin_notifications.belongsTo(db.users);
+db.admin_notifications.belongsTo(db.applicants);
 db.admin_notifications.belongsTo(db.jobs);
 
 module.exports = db;

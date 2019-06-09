@@ -1,7 +1,6 @@
 'use strict';
 
-const Model      = db.docs;
-const Department = db.departments;
+const Model      = db.applicants;
 const ImgHelpers = require('./../helpers/image.upload.helpers');
 const ApiHelpers = require('./../helpers/api.helpers');
 const _          = require('underscore');
@@ -12,8 +11,7 @@ const config     = require('../config/config');
 
 function fetchSingle(req, res) {
     Model.findOne({
-        where  :{id:req.params.id},
-        include:[{model:Department, attributes:['name']}]
+        where  :{id:req.params.id}
     }).then((_data) => {
         ApiHelpers.success(res, _data);
     }).catch(_err => {
