@@ -1,6 +1,6 @@
 'use strict';
 
-const Model   = db.users;
+const Model   = db.applicants;
 const crypto2 = require('crypto2');
 const _       = require('underscore');
 const config  = require('../config/config'),
