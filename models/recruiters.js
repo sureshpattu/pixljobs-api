@@ -89,6 +89,9 @@ module.exports = function(sequelize, Sequelize) {
         industry    :{
             type:Sequelize.STRING
         },
+        company_benefit:{
+            type:Sequelize.STRING
+        },
         user_type   :{
             type        :Sequelize.STRING,
             defaultValue:'6'
