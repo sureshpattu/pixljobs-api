@@ -1,7 +1,8 @@
 'use strict';
 
-const AuthRouter               = require('./auth.route');
-const UserRouter               = require('./applicant.route');
+const ApplicantAuthRouter      = require('./applicant_auth.route');
+const RecruiterAuthRouter      = require('./recruiter_auth.route');
+const ApplicantRouter          = require('./applicant.route');
 const QaJobsRouter             = require('./qa_jobs.route');
 const QaJobCatRouter           = require('./qa_job_categories.route');
 const QaJobTechRouter          = require('./qa_job_technologies.route');
@@ -21,16 +22,16 @@ const NotificationsRouter      = require('./notifications.route');
 const AdminNotificationsRouter = require('./admin_notifications.route');
 const TagsRouter               = require('./tags.route');
 const CompanyBenefits          = require('./company_benefits.route');
-const TagsRouter               = require('./tags.route');
-const CompanyBenefits          = require('./company_benefits.route');
 const RecruiterRouter          = require('./recruiter.route');
 
 const prefix = '/api';
 
 module.exports = (app) => {
-    app.use(`${prefix}/auth`, AuthRouter);
-    app.use(`${prefix}/user`, UserRouter);
-    app.use(`${prefix}/recruit`, RecruiterRouter);
+    app.use(`${prefix}/applicant-auth`, ApplicantAuthRouter);
+    app.use(`${prefix}/applicant`, ApplicantRouter);
+
+    app.use(`${prefix}/recruiter-auth`, RecruiterAuthRouter);
+    app.use(`${prefix}/recruiter`, RecruiterRouter);
 
     //QA
     app.use(`${prefix}/qa-jobs`, QaJobsRouter);
