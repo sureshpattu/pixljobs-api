@@ -51,22 +51,24 @@ module.exports = {
             return ApiHelpers.error(res, true, 'Parameters missing');
         }
         Model.findOne({where:{email:req.body.email}}).then(async(_user) => {
-            let _status = await _user.validPassword(req.body.password);
             if(!_user) {
                 ApiHelpers.error(res, true, 'Invalid credentials');
-            } else if(!_status) {
-                ApiHelpers.error(res, true, 'Invalid credentials');
             } else {
-                let token = jwt.encode({email:_user.email}, config.TOKENSECRET);
-                Model.update({
-                    last_login:new Date(),
-                    token     :token,
-                    token_time:new Date()
-                }, {where:{email:req.body.email}}).then((_emp_updated) => {
-                    returnUserDetails(_user, res);
-                }).catch(_err => {
-                    ApiHelpers.error(res, _err);
-                });
+                let _status = await _user.validPassword(req.body.password);
+                if(!_status) {
+                    ApiHelpers.error(res, true, 'Invalid credentials');
+                } else {
+                    let token = jwt.encode({email:_user.email}, config.TOKENSECRET);
+                    Model.update({
+                        last_login:new Date(),
+                        token     :token,
+                        token_time:new Date()
+                    }, {where:{email:req.body.email}}).then((_emp_updated) => {
+                        returnUserDetails(_user, res);
+                    }).catch(_err => {
+                        ApiHelpers.error(res, _err);
+                    });
+                }
             }
         }).catch(_err => {
             ApiHelpers.error(res, _err);
