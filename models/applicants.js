@@ -1,6 +1,6 @@
 'use strict';
 
-const config  = require('../config/config');
+const config = require('../config/config');
 const crypto2 = require('crypto2');
 
 module.exports = function(sequelize, Sequelize) {
@@ -96,6 +96,21 @@ module.exports = function(sequelize, Sequelize) {
             type:Sequelize.STRING
         },
         company        :{
+            type:Sequelize.STRING
+        },
+        industry       :{
+            type:Sequelize.STRING
+        },
+        company_size   :{
+            type:Sequelize.STRING
+        },
+        company_url    :{
+            type:Sequelize.STRING
+        },
+        about_company  :{
+            type:Sequelize.STRING
+        },
+        company_benefit:{
             type:Sequelize.STRING
         },
         joined_at      :{
