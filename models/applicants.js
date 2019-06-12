@@ -98,21 +98,6 @@ module.exports = function(sequelize, Sequelize) {
         company        :{
             type:Sequelize.STRING
         },
-        industry       :{
-            type:Sequelize.STRING
-        },
-        company_size   :{
-            type:Sequelize.STRING
-        },
-        company_url    :{
-            type:Sequelize.STRING
-        },
-        about_company  :{
-            type:Sequelize.STRING
-        },
-        company_benefit:{
-            type:Sequelize.STRING
-        },
         joined_at      :{
             type:Sequelize.STRING
         },
