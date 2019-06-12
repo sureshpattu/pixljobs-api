@@ -54,7 +54,7 @@ module.exports = {
         });
     },
     photo:(req, res) => {
-        ImgHelpers.uploadImage(req.body.src, '/doc/photo', function(_image_path) {
+        ImgHelpers.uploadImage(req.body.src, '/applicant/photo', function(_image_path) {
             res.json({
                 error:false,
                 data :{path:_image_path ? _image_path : null},
@@ -63,7 +63,7 @@ module.exports = {
         });
     },
     viewPhoto:(req, res) => {
-        let _url = path.resolve(__dirname, '../uploads/doc/photo/');
+        let _url = path.resolve(__dirname, '../uploads/applicant/photo/');
         return res.sendFile(_url + '/' + req.params.image);
     }
 };

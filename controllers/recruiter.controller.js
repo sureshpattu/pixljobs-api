@@ -1,12 +1,18 @@
 'use strict';
 
-const Model          = db.recruiters;
-const waterfall      = require('async-waterfall');
-const _              = require('underscore');
-const ApiHelpers = require('../helpers/api.helpers');
+const Model      = db.recruiters;
+const ImgHelpers = require('./../helpers/image.upload.helpers');
+const ApiHelpers = require('./../helpers/api.helpers');
+const _          = require('underscore');
+const path       = require('path');
+const sequelize  = require('sequelize');
+const crypto2    = require('crypto2');
+const config     = require('../config/config');
 
-function fetchSingle(_id, res) {
-    Model.findOne({where:{id:_id}}).then((_data) => {
+function fetchSingle(req, res) {
+    Model.findOne({
+        where  :{id:req.params.id}
+    }).then((_data) => {
         ApiHelpers.success(res, _data);
     }).catch(_err => {
         ApiHelpers.error(res, _err);
@@ -14,42 +20,50 @@ function fetchSingle(_id, res) {
 }
 
 module.exports = {
-    index:(req, res) => {
-        Model.findAll({where:{}}).then((_data) => {
-            ApiHelpers.success(res, _data);
-        }).catch(_err => {
-            ApiHelpers.error(res, _err);
-        });
-    },
-
     read:(req, res) => {
-        fetchSingle(req.params.id, res);
+        fetchSingle(req, res);
     },
-
-    create:(req, res) => {
-        if(!req.body.name) {
-            return ApiHelpers.error(res, true, 'Parameters missing');
+    resetPassword:async(req, res) => {
+        let _body = {
+            password:req.body.password
+        };
+        if(req.body.password) {
+            _body.password = await crypto2.encrypt(req.body.password, config.hashSalt2, config.hashIV);
         }
-        Model.create(req.body).then((_data) => {
-            fetchSingle(_data.id, res);
+        Model.update(_body, {where:{id:req.params.id}, individualHooks:true}).then((_data) => {
+            fetchSingle(req, res);
         }).catch(_err => {
             ApiHelpers.error(res, _err);
         });
     },
-
     update:(req, res) => {
-        Model.update(req.body, {where:{id:req.params.id}}).then((_data) => {
-            fetchSingle(req.params.id, res);
+        let data = req.body;
+        if(data.password) {
+            delete data.password;
+        }
+        if(data.passcode) {
+            delete data.passcode;
+        }
+        if(data.first_name || data.last_name) {
+            data.name = data.first_name + ' ' + data.last_name;
+        }
+        Model.update(data, {where:{id:req.params.id}}).then((_data) => {
+            fetchSingle(req, res);
         }).catch(_err => {
             ApiHelpers.error(res, _err);
         });
     },
-
-    delete:(req, res) => {
-        Model.destroy({where:{id:req.params.id}}).then((_data) => {
-            ApiHelpers.success(res, _data);
-        }).catch(_err => {
-            ApiHelpers.error(res, _err);
+    photo:(req, res) => {
+        ImgHelpers.uploadImage(req.body.src, '/recruiter/photo', function(_image_path) {
+            res.json({
+                error:false,
+                data :{path:_image_path ? _image_path : null},
+                msg  :'success'
+            });
         });
+    },
+    viewPhoto:(req, res) => {
+        let _url = path.resolve(__dirname, '../uploads/recruiter/photo/');
+        return res.sendFile(_url + '/' + req.params.image);
     }
 };
