@@ -3,7 +3,7 @@
 const express = require('express');
 const router  = express.Router();
 
-const AuthController = require('../controllers/applicant_auth.controller');
+const AuthController = require('../controllers/recruiter_auth.controller');
 
 router
     .post('/login', (req, res) => { AuthController.authenticate(req, res); })
