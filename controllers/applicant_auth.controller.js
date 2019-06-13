@@ -26,12 +26,7 @@ module.exports = {
             email :req.body.email,
             gender:req.body.gender,
             designation: req.body.designation,
-            company:req.body.company,
-            industry:req.body.industry,
-            company_size:req.body.company_size,
-            company_url:req.body.company_url,
-            about_company:req.body.about_company,
-            company_benefit:req.body.company_benefit
+            company:req.body.company
         };
         if(req.body.mobile) {
             basic.mobile = req.body.mobile;
