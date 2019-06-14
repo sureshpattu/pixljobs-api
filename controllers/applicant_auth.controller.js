@@ -24,7 +24,9 @@ module.exports = {
         let basic = {
             name  :req.body.name,
             email :req.body.email,
-            gender:req.body.gender
+            gender:req.body.gender,
+            designation: req.body.designation,
+            company:req.body.company
         };
         if(req.body.mobile) {
             basic.mobile = req.body.mobile;

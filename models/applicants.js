@@ -1,6 +1,6 @@
 'use strict';
 
-const config  = require('../config/config');
+const config = require('../config/config');
 const crypto2 = require('crypto2');
 
 module.exports = function(sequelize, Sequelize) {
