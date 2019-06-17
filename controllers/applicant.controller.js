@@ -36,6 +36,7 @@ module.exports = {
             ApiHelpers.error(res, _err);
         });
     },
+
     update:(req, res) => {
         let data = req.body;
         if(data.password) {
