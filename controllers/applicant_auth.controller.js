@@ -30,7 +30,10 @@ module.exports = {
             institution    :req.body.institution,
             company        :req.body.company,
             current_salary :req.body.current_salary,
-            expected_salary:req.body.expected_salary
+            expected_salary:req.body.expected_salary,
+            exp_month      :req.body.exp_month,
+            exp_year       :req.body.exp_year
+
         };
         if(req.body.mobile) {
             basic.mobile = req.body.mobile;
