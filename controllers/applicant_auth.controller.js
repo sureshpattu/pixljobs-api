@@ -22,11 +22,15 @@ module.exports = {
             return ApiHelpers.error(res, true, 'Parameters missing!');
         }
         let basic = {
-            name  :req.body.name,
-            email :req.body.email,
-            gender:req.body.gender,
-            designation: req.body.designation,
-            company:req.body.company
+            name           :req.body.name,
+            email          :req.body.email,
+            gender         :req.body.gender,
+            designation    :req.body.designation,
+            qualification  :req.body.qualification,
+            institution    :req.body.institution,
+            company        :req.body.company,
+            current_salary :req.body.current_salary,
+            expected_salary:req.body.expected_salary
         };
         if(req.body.mobile) {
             basic.mobile = req.body.mobile;
