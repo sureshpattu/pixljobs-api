@@ -32,7 +32,8 @@ module.exports = {
             current_salary :req.body.current_salary,
             expected_salary:req.body.expected_salary,
             exp_month      :req.body.exp_month,
-            exp_year       :req.body.exp_year
+            exp_year       :req.body.exp_year,
+            resume         :req.body.resume
 
         };
         if(req.body.mobile) {
