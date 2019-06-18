@@ -164,13 +164,14 @@ module.exports = {
                         to     :req.body.email,
                         subject:'Verify Your Email Address',
                         body   :'Hi, ' + req.body.name + ' Click here to reset your password : http://' +
-                            req.headers.host +
-                            '/applicant/email/verify/' + token
+                            'localhost:3035' +
+                            //req.headers.host +
+                            '/forgot/password/' + token
                     };
                     Mail.sendMail(req, mailOptions);
                     return res.json({
-                        err:false,
-                        msg:'A reset password link has been sent to the email address provided.'
+                        error  :false,
+                        message:'A reset password link has been sent to the email address provided.'
                     });
                 }).catch(_err => {
                     ApiHelpers.error(res, _err);
