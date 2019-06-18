@@ -119,6 +119,10 @@ module.exports = function(sequelize, Sequelize) {
             type        :Sequelize.BOOLEAN,
             defaultValue:false
         },
+        otp_verify_count  :{
+            type        :Sequelize.INTEGER,
+            defaultValue:0
+        },
         has_login         :{
             type        :Sequelize.ENUM('YES', 'NO'),
             defaultValue:'YES'
@@ -139,6 +143,11 @@ module.exports = function(sequelize, Sequelize) {
     Docs.prototype.validPassword = async function(password) {
         const decrypted = await crypto2.decrypt(this.password, config.hashSalt2, config.hashIV);
         return password === decrypted;
+    };
+
+    Docs.prototype.validOTP = async function(mobile_otp) {
+        const decrypted = await crypto2.decrypt(this.mobile_otp, config.hashSalt2, config.hashIV);
+        return mobile_otp === decrypted;
     };
 
     Docs.prototype.toJSON = function() {

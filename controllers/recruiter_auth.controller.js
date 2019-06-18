@@ -5,7 +5,7 @@ const crypto2 = require('crypto2');
 const _       = require('underscore');
 const config  = require('../config/config'),
       jwt     = require('jwt-simple');
-const Mail    = require('../routes/util/mail');
+const Mail       = require('../helpers/mail');
 const SMSHelpers  = require('../helpers/sms');
 
 const ApiHelpers = require('../helpers/api.helpers');
@@ -140,7 +140,7 @@ module.exports = {
             ApiHelpers.error(res, _err);
         });
     },
-    forgotPassword:function(req, res) {
+    resetPassword:function(req, res) {
         if(!req.body.email) {
             return ApiHelpers.error(res, true, 'Parameters missing');
         }
@@ -174,7 +174,7 @@ module.exports = {
             ApiHelpers.error(res, _err);
         });
     },
-    checkReserPassword   :function(req, res) {
+    ResetPasswordToken   :function(req, res) {
         if(!req.body.reset_token) {
             return ApiHelpers.error(res, true, 'Parameters missing');
         }
@@ -188,7 +188,7 @@ module.exports = {
             ApiHelpers.error(res, _err);
         });
     },
-    getOTP       :function(req, res) {
+    getOTP            :function(req, res) {
         let _newOtp    = Math.floor(1000 + Math.random() * 9000);
         _newOtp        = _newOtp.toString();
         let _otpNormal = _newOtp;
@@ -198,7 +198,7 @@ module.exports = {
                 Model.update({mobile_otp:_newOtp}, {where:{id:_user.id}}).then((_us) => {
                     SMSHelpers.sendSms({
                         'message'    :'Use ' + _otpNormal +
-                            ' as your verification OTP. OTP is confidential. Pixljobs never calls you asking for OTP. DO NOT share it with anyone, Pixljobs will never call to confirm it.',
+                            ' as your verification OTP. OTP is confidential. Medinin never calls you asking for OTP. DO NOT share it with anyone, Medinin will never call to confirm it.',
                         'type'       :'Transactional',
                         'phoneNumber':'+91' + req.body.mobile
                     }, function() {
@@ -214,13 +214,11 @@ module.exports = {
             ApiHelpers.error(res, _err);
         });
     },
-    checkOTP     :function(req, res) {
+    checkOTP          :function(req, res) {
         Model.findOne({where:{mobile:req.body.mobile}}).then(async(_user) => {
             if(_user) {
                 let _status = await _user.validOTP(req.body.otp);
-                let _count  = _user.otp_verify_count ? _user.otp_verify_count : 0;
-                _count++;
-                let _body = {is_mobile_verified:'true', otp_verify_count:0};
+                let _body   = {is_mobile_verified:true};
                 if(_status) {
                     Model.update(_body, {where:{id:_user.id}}).then((_d) => {
                         let token = jwt.encode({email:_user.email}, config.TOKENSECRET);
@@ -228,7 +226,7 @@ module.exports = {
                             last_login:new Date(),
                             token     :token,
                             token_time:new Date()
-                        }, {where:{email:_user.email}}).then((_update) => {
+                        }, {where:{id:_user.id}}).then((_update) => {
                             returnUserDetails(_user, res);
                         }).catch(_err => {
                             ApiHelpers.error(res, _err)
@@ -237,25 +235,7 @@ module.exports = {
                         ApiHelpers.error(res, _err)
                     });
                 } else {
-                    if(_count < 6) {
-                        _body.is_mobile_verified       = 'false';
-                        _body.otp_verify_count = _count;
-                        Model.update(_body, {where:{id:_user.id}}).then((_data) => {
-                            ApiHelpers.error(res, true, 'Not matching', {status:false, code:404});
-                        }).catch(_err => {
-                            ApiHelpers.error(res, _err);
-                        });
-                    } else {
-                        let _new_otp           = Math.floor(1000 + Math.random() * 9000);
-                        _body.is_mobile_verified       = 'false';
-                        _body.otp_verify_count = 0;
-                        _body.otp              = _new_otp;
-                        Model.update(_body, {where:{id:_user.id}, individualHooks:true}).then((_data) => {
-                            ApiHelpers.error(res, true, 'Sent new OTP', {status:false, code:303});
-                        }).catch(_err => {
-                            ApiHelpers.error(res, _err);
-                        });
-                    }
+                    ApiHelpers.error(res, true, 'Not matching');
                 }
             } else {
                 ApiHelpers.error(res, true, 'Mobile number not found');
