@@ -5,6 +5,7 @@ const crypto2 = require('crypto2');
 const _       = require('underscore');
 const config  = require('../config/config'),
       jwt     = require('jwt-simple');
+const Mail    = require('../routes/util/mail');
 
 const ApiHelpers = require('../helpers/api.helpers');
 
@@ -43,7 +44,26 @@ module.exports = {
             basic.password = await crypto2.encrypt(req.body.password, config.hashSalt2, config.hashIV);
         }
         Model.create(basic).then((user) => {
-            returnUserDetails(user, res);
+            let token = jwt.encode({email:user.email}, config.TOKENSECRET);
+            Model.update({
+                email_token:token
+            }, {where:{email:req.body.email}}).then((_emp_updated) => {
+                let mailOptions = {
+                    from   :'connect@trebound.com',
+                    to     :req.body.email,
+                    subject:'Verify Your Email Address',
+                    body   :'Hi, ' + req.body.name + ' Click here to verify your email : http://' +
+                        req.headers.host +
+                        '/applicant/email/verify/' + token
+                };
+                Mail.sendMail(req, mailOptions);
+                return res.json({
+                    err:false,
+                    msg:'An email has been sent to the email address provided. Please verify your email by clicking the link send by us.'
+                });
+            }).catch(_err => {
+                ApiHelpers.error(res, _err);
+            });
         }).catch(_err => {
             var _errors = [];
             if(_err.errors && _err.errors.length) {
@@ -93,6 +113,24 @@ module.exports = {
                 return ApiHelpers.error(res, true, 'Invalid credentials');
             } else {
                 Model.update({last_login:new Date()}, {where:{id:req.body.id}}).then(_up_data => {
+                    returnUserDetails(_user, res);
+                }).catch(_err => {
+                    ApiHelpers.error(res, _err);
+                });
+            }
+        }).catch(_err => {
+            ApiHelpers.error(res, _err);
+        });
+    },
+    verifyEmail :function(req, res) {
+        if(!req.body.email_token) {
+            return ApiHelpers.error(res, true, 'Parameters missing');
+        }
+        Model.findOne({where:{email_token:req.body.email_token}}).then((_user) => {
+            if(!_user) {
+                return ApiHelpers.error(res, true, 'Invalid token');
+            } else {
+                Model.update({is_email_verified:true}, {where:{id:_user.id}}).then(_up_data => {
                     returnUserDetails(_user, res);
                 }).catch(_err => {
                     ApiHelpers.error(res, _err);
