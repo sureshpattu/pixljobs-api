@@ -1,12 +1,12 @@
 'use strict';
 
-const Model   = db.recruiters;
-const crypto2 = require('crypto2');
-const _       = require('underscore');
-const config  = require('../config/config'),
-      jwt     = require('jwt-simple');
+const Model      = db.recruiters;
+const crypto2    = require('crypto2');
+const _          = require('underscore');
+const config     = require('../config/config'),
+      jwt        = require('jwt-simple');
 const Mail       = require('../helpers/mail');
-const SMSHelpers  = require('../helpers/sms');
+const SMSHelpers = require('../helpers/sms');
 
 const ApiHelpers = require('../helpers/api.helpers');
 
@@ -19,7 +19,7 @@ function returnUserDetails(_user, res) {
 }
 
 module.exports = {
-    register      :async function(req, res) {
+    register          :async function(req, res) {
         if(!req.body.name || !req.body.gender || !req.body.email || !req.body.password) {
             return ApiHelpers.error(res, true, 'Parameters missing!');
         }
@@ -76,7 +76,7 @@ module.exports = {
             }
         });
     },
-    authenticate  :function(req, res) {
+    authenticate      :function(req, res) {
         if(!req.body.email || !req.body.password) {
             return ApiHelpers.error(res, true, 'Parameters missing');
         }
@@ -104,7 +104,7 @@ module.exports = {
             ApiHelpers.error(res, _err);
         });
     },
-    checkToken    :function(req, res) {
+    checkToken        :function(req, res) {
         if(!req.body.id || !req.body.token) {
             return ApiHelpers.error(res, true, 'Parameters missing');
         }
@@ -122,7 +122,7 @@ module.exports = {
             ApiHelpers.error(res, _err);
         });
     },
-    verifyEmail   :function(req, res) {
+    verifyEmail       :function(req, res) {
         if(!req.body.email_token) {
             return ApiHelpers.error(res, true, 'Parameters missing');
         }
@@ -140,7 +140,7 @@ module.exports = {
             ApiHelpers.error(res, _err);
         });
     },
-    resetPassword:function(req, res) {
+    resetPassword     :function(req, res) {
         if(!req.body.email) {
             return ApiHelpers.error(res, true, 'Parameters missing');
         }
@@ -174,7 +174,7 @@ module.exports = {
             ApiHelpers.error(res, _err);
         });
     },
-    ResetPasswordToken   :function(req, res) {
+    ResetPasswordToken:function(req, res) {
         if(!req.body.reset_token) {
             return ApiHelpers.error(res, true, 'Parameters missing');
         }
