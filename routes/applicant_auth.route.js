@@ -9,6 +9,10 @@ router
     .post('/login', (req, res) => { AuthController.authenticate(req, res); })
     .post('/register', (req, res) => { AuthController.register(req, res); })
     .post('/login/check', (req, res) => { AuthController.checkToken(req, res); })
-    .post('/email/verify', (req, res) => { AuthController.verifyEmail(req, res); });
+    .post('/verify/email/token', (req, res) => { AuthController.verifyEmail(req, res); })
+    .post('/get-otp', (req, res) => { AuthController.getOTP(req, res); })
+    .post('/check-otp', (req, res) => { AuthController.checkOTP(req, res); })
+    .post('/reset/password', (req, res) => { AuthController.resetPassword(req, res); })
+    .post('/reset/password/token', (req, res) => { AuthController.resetPasswordToken(req, res); });
 
 module.exports = router;
