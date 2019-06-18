@@ -102,6 +102,23 @@ module.exports = function(sequelize, Sequelize) {
         token_time  :{
             type:Sequelize.DATE
         },
+        reset_token       :{
+            type:Sequelize.STRING
+        },
+        email_token       :{
+            type:Sequelize.STRING
+        },
+        mobile_otp      :{
+            type:Sequelize.STRING
+        },
+        email_verified       :{
+            type:Sequelize.BOOLEAN,
+            defaultValue:false
+        },
+        mobile_verified       :{
+            type:Sequelize.BOOLEAN,
+            defaultValue:false
+        },
         has_login   :{
             type        :Sequelize.ENUM('YES', 'NO'),
             defaultValue:'YES'
