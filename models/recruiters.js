@@ -105,17 +105,17 @@ module.exports = function(sequelize, Sequelize) {
         reset_token       :{
             type:Sequelize.STRING
         },
-        email_token       :{
+            email_token       :{
             type:Sequelize.STRING
         },
         mobile_otp      :{
             type:Sequelize.STRING
         },
-        email_verified       :{
+        is_email_verified       :{
             type:Sequelize.BOOLEAN,
             defaultValue:false
         },
-        mobile_verified       :{
+        is_mobile_verified       :{
             type:Sequelize.BOOLEAN,
             defaultValue:false
         },
