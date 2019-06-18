@@ -41,6 +41,12 @@ module.exports = {
         if(req.body.mobile) {
             basic.mobile = req.body.mobile;
         }
+        if(req.body.photo) {
+            basic.photo = req.body.photo;
+        }
+        if(req.body.photo_type) {
+            basic.photo_type = req.body.photo_type;
+        }
         if(req.body.password) {
             basic.password = await crypto2.encrypt(req.body.password, config.hashSalt2, config.hashIV);
         }

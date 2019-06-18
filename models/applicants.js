@@ -71,6 +71,9 @@ module.exports = function(sequelize, Sequelize) {
         photo             :{
             type:Sequelize.STRING
         },
+        photo_type    :{
+            type:Sequelize.STRING
+        },
         qualification     :{
             type:Sequelize.STRING
         },
