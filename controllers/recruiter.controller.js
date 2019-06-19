@@ -1,15 +1,16 @@
 'use strict';
 
-const Model      = db.recruiters;
-const Company    = db.companies;
-const Industry   = db.industries;
-const ImgHelpers = require('./../helpers/image.upload.helpers');
-const ApiHelpers = require('./../helpers/api.helpers');
-const _          = require('underscore');
-const path       = require('path');
-const sequelize  = require('sequelize');
-const crypto2    = require('crypto2');
-const config     = require('../config/config');
+const Model           = db.recruiters;
+const Company         = db.companies;
+const Industry        = db.industries;
+const CompanyBenefits = db.company_benefits;
+const ImgHelpers      = require('./../helpers/image.upload.helpers');
+const ApiHelpers      = require('./../helpers/api.helpers');
+const _               = require('underscore');
+const path            = require('path');
+const sequelize       = require('sequelize');
+const crypto2         = require('crypto2');
+const config          = require('../config/config');
 
 function fetchSingle(req, res) {
     Model.findOne({
@@ -24,14 +25,17 @@ function fetchSingle(req, res) {
 module.exports = {
     read         :(req, res) => {
         Model.findOne({
-            where    :{id:req.params.id},
+            where     :{id:req.params.id},
             attributes:['id', 'name', 'email', 'mobile', 'gender', 'photo', 'designation'],
-            include  :[
+            include   :[
                 {
                     model  :Company,
                     include:[
                         {
                             model:Industry
+                        },
+                        {
+                            model:CompanyBenefits
                         }
                     ]
                 }
