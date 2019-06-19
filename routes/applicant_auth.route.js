@@ -12,7 +12,7 @@ router
     .post('/verify/email/token', (req, res) => { AuthController.verifyEmail(req, res); })
     .post('/get-otp', (req, res) => { AuthController.getOTP(req, res); })
     .post('/check-otp', (req, res) => { AuthController.checkOTP(req, res); })
-    .post('/forgot/password', (req, res) => { AuthController.resetPassword(req, res); })
-    .post('/forgot/password/token', (req, res) => { AuthController.resetPasswordToken(req, res); });
+    .post('/forgot/password', (req, res) => { AuthController.forgotPassword(req, res); })
+    .post('/forgot/password/token', (req, res) => { AuthController.forgotPasswordToken(req, res); });
 
 module.exports = router;
