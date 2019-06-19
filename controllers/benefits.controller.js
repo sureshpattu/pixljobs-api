@@ -1,9 +1,12 @@
 'use strict';
 
-const Model          = db.benefits;
-const waterfall      = require('async-waterfall');
-const _              = require('underscore');
-const ApiHelpers = require('../helpers/api.helpers');
+const Model           = db.benefits;
+const CompanyBenefits = db.company_benefits;
+const waterfall       = require('async-waterfall');
+const _               = require('underscore');
+const ApiHelpers      = require('../helpers/api.helpers');
+const sequelize       = require('sequelize');
+const Op              = sequelize.Op;
 
 function fetchSingle(_id, res) {
     Model.findOne({where:{id:_id}}).then((_data) => {
@@ -27,13 +30,54 @@ module.exports = {
     },
 
     create:(req, res) => {
-        if(!req.body.name) {
+        if(!req.body.benefits && !req.body.company_id) {
             return ApiHelpers.error(res, true, 'Parameters missing');
         }
-        Model.create(req.body).then((_data) => {
-            fetchSingle(_data.id, res);
-        }).catch(_err => {
-            ApiHelpers.error(res, _err);
+
+        let _query      = {};
+        _query[Op.or]   = [];
+        let _company_id = req.body.company_id;
+
+        waterfall(req.body.benefits.map(function(_obj) {
+            return function(lastItemResult, CB) {
+                if(!CB) {
+                    CB             = lastItemResult;
+                    lastItemResult = null;
+                }
+                let lookupValue = _obj.toLowerCase();
+                _query[Op.or].push({
+                    id:sequelize.where(sequelize.fn('LOWER', db.sequelize.col('id')), 'LIKE',
+                        '%' + lookupValue + '%')
+                });
+                _query[Op.or].push({
+                    name:sequelize.where(sequelize.fn('LOWER', db.sequelize.col('name')), 'LIKE',
+                        '%' + lookupValue + '%')
+                });
+                Model.findOne({where:_query}).then((_data) => {
+                    if(!_data) {
+                        Model.create({name:_obj}).then((_data) => {
+                            CompanyBenefits.create({company_id:_company_id, benefit_id:_data.id}).then((_data) => {
+                                CB(null, []);
+                            }).catch(_err => {
+                                ApiHelpers.error(res, _err);
+                            });
+                        }).catch(_err => {
+                            ApiHelpers.error(res, _err);
+                        });
+                    } else {
+                        CompanyBenefits.create({company_id:_company_id, benefit_id:_data.id}).then((_data) => {
+                            CB(null, []);
+                        }).catch(_err => {
+                            ApiHelpers.error(res, _err);
+                        });
+                    }
+                }).catch(_err => {
+                    CB(null, []);
+                });
+
+            };
+        }), function() {
+            ApiHelpers.success(res, null, 'success');
         });
     },
 

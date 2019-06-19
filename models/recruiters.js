@@ -77,25 +77,6 @@ module.exports = function(sequelize, Sequelize) {
         designation       :{
             type:Sequelize.STRING
         },
-        company           :{
-            type:Sequelize.STRING
-        },
-        company_size      :{
-            type:Sequelize.STRING
-        },
-        company_url       :{
-            type:Sequelize.STRING
-        },
-        industry_id       :{
-            allowNull:true,
-            type     :Sequelize.UUID
-        },
-        about_company     :{
-            type:Sequelize.STRING
-        },
-        company_benefit   :{
-            type:Sequelize.STRING
-        },
         user_type         :{
             type        :Sequelize.STRING,
             defaultValue:'6'
