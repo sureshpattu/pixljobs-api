@@ -4,6 +4,7 @@ const Model           = db.recruiters;
 const Company         = db.companies;
 const Industry        = db.industries;
 const CompanyBenefits = db.company_benefits;
+const Benefits        = db.benefits;
 const ImgHelpers      = require('./../helpers/image.upload.helpers');
 const ApiHelpers      = require('./../helpers/api.helpers');
 const _               = require('underscore');
@@ -35,7 +36,14 @@ module.exports = {
                             model:Industry
                         },
                         {
-                            model:CompanyBenefits
+                            model     :CompanyBenefits,
+                            attributes:['company_id'],
+                            include   :[
+                                {
+                                    model     :Benefits,
+                                    attributes:['id', 'name']
+                                }
+                            ]
                         }
                     ]
                 }
