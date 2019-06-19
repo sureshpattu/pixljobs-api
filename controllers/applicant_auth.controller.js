@@ -1,10 +1,12 @@
 'use strict';
 
-const Model   = db.applicants;
-const crypto2 = require('crypto2');
-const _       = require('underscore');
-const config  = require('../config/config'),
-      jwt     = require('jwt-simple');
+const Model      = db.applicants;
+const crypto2    = require('crypto2');
+const _          = require('underscore');
+const config     = require('../config/config'),
+      jwt        = require('jwt-simple');
+const Mail       = require('../helpers/mail');
+const SMSHelpers = require('../helpers/sms');
 
 const ApiHelpers = require('../helpers/api.helpers');
 
@@ -17,7 +19,7 @@ function returnUserDetails(_user, res) {
 }
 
 module.exports = {
-    register    :async function(req, res) {
+    register          :async function(req, res) {
         if(!req.body.name || !req.body.gender || !req.body.email || !req.body.password) {
             return ApiHelpers.error(res, true, 'Parameters missing!');
         }
@@ -39,11 +41,36 @@ module.exports = {
         if(req.body.mobile) {
             basic.mobile = req.body.mobile;
         }
+        if(req.body.photo) {
+            basic.photo = req.body.photo;
+        }
+        if(req.body.photo_type) {
+            basic.photo_type = req.body.photo_type;
+        }
         if(req.body.password) {
             basic.password = await crypto2.encrypt(req.body.password, config.hashSalt2, config.hashIV);
         }
         Model.create(basic).then((user) => {
-            returnUserDetails(user, res);
+            let token = jwt.encode({email:user.email}, config.TOKENSECRET);
+            Model.update({
+                email_token:token
+            }, {where:{email:req.body.email}}).then((_emp_updated) => {
+                let mailOptions = {
+                    from   :'connect@trebound.com',
+                    to     :req.body.email,
+                    subject:'Verify Your Email Address',
+                    body   :'Hi, ' + req.body.name + ' Click here to verify your email : http://' +
+                        req.headers.host +
+                        '/applicant/email/verify/' + token
+                };
+                Mail.sendMail(req, mailOptions);
+                return res.json({
+                    err:false,
+                    msg:'An email has been sent to the email address provided. Please verify your email by clicking the link send by us.'
+                });
+            }).catch(_err => {
+                ApiHelpers.error(res, _err);
+            });
         }).catch(_err => {
             var _errors = [];
             if(_err.errors && _err.errors.length) {
@@ -56,7 +83,7 @@ module.exports = {
             }
         });
     },
-    authenticate:function(req, res) {
+    authenticate      :function(req, res) {
         if(!req.body.email || !req.body.password) {
             return ApiHelpers.error(res, true, 'Parameters missing');
         }
@@ -84,7 +111,7 @@ module.exports = {
             ApiHelpers.error(res, _err);
         });
     },
-    checkToken  :function(req, res) {
+    checkToken        :function(req, res) {
         if(!req.body.id || !req.body.token) {
             return ApiHelpers.error(res, true, 'Parameters missing');
         }
@@ -97,6 +124,128 @@ module.exports = {
                 }).catch(_err => {
                     ApiHelpers.error(res, _err);
                 });
+            }
+        }).catch(_err => {
+            ApiHelpers.error(res, _err);
+        });
+    },
+    verifyEmail       :function(req, res) {
+        if(!req.body.email_token) {
+            return ApiHelpers.error(res, true, 'Parameters missing');
+        }
+        Model.findOne({where:{email_token:req.body.email_token}}).then((_user) => {
+            if(!_user) {
+                return ApiHelpers.error(res, true, 'Invalid token');
+            } else {
+                Model.update({is_email_verified:true}, {where:{id:_user.id}}).then(_up_data => {
+                    returnUserDetails(_user, res);
+                }).catch(_err => {
+                    ApiHelpers.error(res, _err);
+                });
+            }
+        }).catch(_err => {
+            ApiHelpers.error(res, _err);
+        });
+    },
+    forgotPassword     :function(req, res) {
+        if(!req.body.email) {
+            return ApiHelpers.error(res, true, 'Parameters missing');
+        }
+        Model.findOne({where:{email:req.body.email}}).then((_user) => {
+            if(!_user) {
+                return ApiHelpers.error(res, true, 'Invalid credentials');
+            } else {
+                let token = jwt.encode({email:_user.email}, config.TOKENSECRET);
+                Model.update({
+                    reset_token:token
+                }, {where:{email:req.body.email}}).then((_emp_updated) => {
+                    let mailOptions = {
+                        from   :'connect@trebound.com',
+                        to     :req.body.email,
+                        subject:'Verify Your Email Address',
+                        body   :'Hi, ' + req.body.name + ' Click here to reset your password : http://' +
+                            'localhost:3035' +
+                            //req.headers.host +
+                            '/forgot/password/' + token
+                    };
+                    Mail.sendMail(req, mailOptions);
+                    return res.json({
+                        error  :false,
+                        message:'A reset password link has been sent to the email address provided.'
+                    });
+                }).catch(_err => {
+                    ApiHelpers.error(res, _err);
+                });
+            }
+        }).catch(_err => {
+            ApiHelpers.error(res, _err);
+        });
+    },
+    forgotPasswordToken:function(req, res) {
+        if(!req.body.reset_token) {
+            return ApiHelpers.error(res, true, 'Parameters missing');
+        }
+        Model.findOne({where:{reset_token:req.body.reset_token}}).then((_user) => {
+            if(!_user) {
+                return ApiHelpers.error(res, true, 'Invalid token');
+            } else {
+                returnUserDetails(_user, res);
+            }
+        }).catch(_err => {
+            ApiHelpers.error(res, _err);
+        });
+    },
+    getOTP            :function(req, res) {
+        let _newOtp    = Math.floor(1000 + Math.random() * 9000);
+        _newOtp        = _newOtp.toString();
+        let _otpNormal = _newOtp;
+        Model.findOne({where:{mobile:req.body.mobile}}).then(async(_user) => {
+            if(_user) {
+                _newOtp = await crypto2.encrypt(_newOtp, config.hashSalt2, config.hashIV);
+                Model.update({mobile_otp:_newOtp}, {where:{id:_user.id}}).then((_us) => {
+                    SMSHelpers.sendSms({
+                        'message'    :'Use ' + _otpNormal +
+                            ' as your verification OTP. OTP is confidential. Medinin never calls you asking for OTP. DO NOT share it with anyone, Medinin will never call to confirm it.',
+                        'type'       :'Transactional',
+                        'phoneNumber':'+91' + req.body.mobile
+                    }, function() {
+                        returnUserDetails(_user, res);
+                    });
+                }).catch(_err => {
+                    ApiHelpers.error(res, _err);
+                });
+            } else {
+                ApiHelpers.error(res, 'true', 'Mobile number not found');
+            }
+        }).catch((_err) => {
+            ApiHelpers.error(res, _err);
+        });
+    },
+    checkOTP          :function(req, res) {
+        Model.findOne({where:{mobile:req.body.mobile}}).then(async(_user) => {
+            if(_user) {
+                let _status = await _user.validOTP(req.body.otp);
+                let _body   = {is_mobile_verified:true};
+                if(_status) {
+                    Model.update(_body, {where:{id:_user.id}}).then((_d) => {
+                        let token = jwt.encode({email:_user.email}, config.TOKENSECRET);
+                        Model.update({
+                            last_login:new Date(),
+                            token     :token,
+                            token_time:new Date()
+                        }, {where:{id:_user.id}}).then((_update) => {
+                            returnUserDetails(_user, res);
+                        }).catch(_err => {
+                            ApiHelpers.error(res, _err)
+                        });
+                    }).catch(_err => {
+                        ApiHelpers.error(res, _err)
+                    });
+                } else {
+                    ApiHelpers.error(res, true, 'Not matching');
+                }
+            } else {
+                ApiHelpers.error(res, true, 'Mobile number not found');
             }
         }).catch(_err => {
             ApiHelpers.error(res, _err);

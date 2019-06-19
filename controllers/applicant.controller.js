@@ -11,7 +11,7 @@ const config     = require('../config/config');
 
 function fetchSingle(req, res) {
     Model.findOne({
-        where  :{id:req.params.id}
+        where:{id:req.params.id}
     }).then((_data) => {
         ApiHelpers.success(res, _data);
     }).catch(_err => {
@@ -20,7 +20,7 @@ function fetchSingle(req, res) {
 }
 
 module.exports = {
-    read:(req, res) => {
+    read         :(req, res) => {
         fetchSingle(req, res);
     },
     resetPassword:async(req, res) => {
@@ -37,7 +37,7 @@ module.exports = {
         });
     },
 
-    update:(req, res) => {
+    update     :(req, res) => {
         let data = req.body;
         if(data.password) {
             delete data.password;
@@ -54,17 +54,47 @@ module.exports = {
             ApiHelpers.error(res, _err);
         });
     },
-    photo:(req, res) => {
-        ImgHelpers.uploadImage(req.body.src, '/applicant/photo', function(_image_path) {
-            res.json({
-                error:false,
-                data :{path:_image_path ? _image_path : null},
-                msg  :'success'
-            });
-        });
+    photo      :(req, res) => {
+        if(req.file) {
+            let profile = {
+                file     :req.file.filename,
+                file_type:req.file.mimetype
+            };
+            ApiHelpers.success(res, profile);
+        } else {
+            return ApiHelpers.error(res, true, 'Please select valid file');
+        }
     },
-    viewPhoto:(req, res) => {
-        let _url = path.resolve(__dirname, '../uploads/applicant/photo/');
-        return res.sendFile(_url + '/' + req.params.image);
+    viewPhoto  :(req, res) => {
+        return res.sendFile(`${path.resolve(__dirname, '../', 'uploads/applicant/photo/', req.params.image)}`);
+    },
+    removePhoto:(req, res) => {
+        let filePath = `${path.resolve(__dirname, '../', 'uploads/recruiter/photo/', req.params.image)}`;
+        fs.unlinkSync(filePath);
+        ApiHelpers.success(res, {status:'success', code:200});
+    },
+    delete     :(req, res) => {
+        if(!req.params.id) {
+            return ApiHelpers.error(res, true, 'Parameters missing');
+        }
+        Model.findOne({where:{id:req.params.id}}).then((_data) => {
+            if(_data && _data.file) {
+                let filePath = `${path.resolve(__dirname, '../', 'uploads/applicant/photo/', _data.file)}`;
+                fs.unlinkSync(filePath);
+                Model.destroy({where:{id:req.params.id}}).then((_data) => {
+                    ApiHelpers.success(res, {status:'success', code:200});
+                }).catch(_err => {
+                    ApiHelpers.error(res, _err);
+                });
+            } else {
+                Model.destroy({where:{id:req.params.id}}).then((_data) => {
+                    ApiHelpers.success(res, {status:'success', code:200});
+                }).catch(_err => {
+                    ApiHelpers.error(res, _err);
+                });
+            }
+        }).catch(_err => {
+            ApiHelpers.error(res, _err);
+        });
     }
 };

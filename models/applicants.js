@@ -1,40 +1,40 @@
 'use strict';
 
-const config = require('../config/config');
+const config  = require('../config/config');
 const crypto2 = require('crypto2');
 
 module.exports = function(sequelize, Sequelize) {
 
     let Docs = sequelize.define('applicants', {
-        id             :{
+        id                :{
             type        :Sequelize.UUID,
             primaryKey  :true,
             defaultValue:Sequelize.UUIDV4,
             allowNull   :false
         },
-        first_name     :{
+        first_name        :{
             type        :Sequelize.STRING,
             defaultValue:''
         },
-        last_name      :{
+        last_name         :{
             type        :Sequelize.STRING,
             defaultValue:''
         },
-        name           :{
+        name              :{
             notEmpty:true,
             type    :Sequelize.STRING
         },
-        title          :{
+        title             :{
             type:Sequelize.STRING
         },
-        uid            :{
+        uid               :{
             unique      :true,
             type        :Sequelize.STRING,
             defaultValue:function() {
                 return `${Math.floor(1000000 + Math.random() * 9000000)}`;
             }
         },
-        email          :{
+        email             :{
             type    :Sequelize.STRING,
             validate:{
                 isEmail:true
@@ -44,84 +44,108 @@ module.exports = function(sequelize, Sequelize) {
                 msg :'Email address already in use!'
             }
         },
-        password       :{
+        password          :{
             type:Sequelize.STRING
         },
-        dob            :{
+        dob               :{
             type:Sequelize.STRING
         },
-        age            :{
+        age               :{
             type:Sequelize.STRING
         },
-        mobile         :{
+        mobile            :{
             type  :Sequelize.STRING,
             unique:{
                 args:true,
                 msg :'Mobile number already in use!'
             }
         },
-        mobile_code    :{
+        mobile_code       :{
             type        :Sequelize.STRING,
             defaultValue:'91'
         },
-        gender         :{
+        gender            :{
             allowNull:false,
             type     :Sequelize.ENUM('male', 'female', 'other')
         },
-        photo          :{
+        photo             :{
             type:Sequelize.STRING
         },
-        qualification  :{
+        photo_type    :{
             type:Sequelize.STRING
         },
-        exp_year       :{
+        qualification     :{
             type:Sequelize.STRING
         },
-        exp_month      :{
+        exp_year          :{
             type:Sequelize.STRING
         },
-        current_salary :{
+        exp_month         :{
             type:Sequelize.STRING
         },
-        expected_salary:{
+        current_salary    :{
             type:Sequelize.STRING
         },
-        institution    :{
+        expected_salary   :{
             type:Sequelize.STRING
         },
-        resume         :{
+        institution       :{
             type:Sequelize.STRING
         },
-        designation    :{
+        resume            :{
             type:Sequelize.STRING
         },
-        company        :{
+        designation       :{
             type:Sequelize.STRING
         },
-        joined_at      :{
+        company           :{
             type:Sequelize.STRING
         },
-        user_type      :{
+        joined_at         :{
+            type:Sequelize.STRING
+        },
+        user_type         :{
             type        :Sequelize.STRING,
             defaultValue:'6'
         },
-        token          :{
+        token             :{
             type:Sequelize.STRING
         },
-        token_time     :{
+        token_time        :{
             type:Sequelize.DATE
         },
-        has_login      :{
+        reset_token       :{
+            type:Sequelize.STRING
+        },
+        email_token       :{
+            type:Sequelize.STRING
+        },
+        is_email_verified :{
+            type        :Sequelize.BOOLEAN,
+            defaultValue:false
+        },
+        is_mobile_verified:{
+            type        :Sequelize.BOOLEAN,
+            defaultValue:false
+        },
+        mobile_otp        :{
+            type:Sequelize.STRING
+        },
+        otp_verify_count  :{
+            type        :Sequelize.INTEGER,
+            defaultValue:0
+        },
+        has_login         :{
             type        :Sequelize.ENUM('YES', 'NO'),
             defaultValue:'YES'
         },
-        last_login     :{
+        last_login        :{
             type:Sequelize.DATE
         },
-        created_at     :{
+        created_at        :{
             type:Sequelize.DATE
         },
-        updated_at     :{
+        updated_at        :{
             type:Sequelize.DATE
         }
     }, {
@@ -131,6 +155,11 @@ module.exports = function(sequelize, Sequelize) {
     Docs.prototype.validPassword = async function(password) {
         const decrypted = await crypto2.decrypt(this.password, config.hashSalt2, config.hashIV);
         return password === decrypted;
+    };
+
+    Docs.prototype.validOTP = async function(mobile_otp) {
+        const decrypted = await crypto2.decrypt(this.mobile_otp, config.hashSalt2, config.hashIV);
+        return mobile_otp === decrypted;
     };
 
     Docs.prototype.toJSON = function() {

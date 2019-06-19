@@ -1,37 +1,95 @@
 'use strict';
 
 module.exports = function(sequelize, Sequelize) {
-
     return sequelize.define('jobs', {
-        id        :{
+        id             :{
             type        :Sequelize.UUID,
             primaryKey  :true,
             defaultValue:Sequelize.UUIDV4,
             allowNull   :false
         },
-        name      :{
+        name           :{
             type:Sequelize.TEXT('long')
         },
-        desc      :{
+        desc           :{
             type:Sequelize.TEXT('long')
         },
-        user_id   :{
+        user_id        :{
             type:Sequelize.UUID
         },
-        company_id:{
+        company_id     :{
             type:Sequelize.UUID
         },
-        salary_min:{
+        salary_min     :{
             type:Sequelize.STRING
         },
-        salary_max:{
+        salary_max     :{
             type:Sequelize.STRING
         },
-        job_type  :{
-            type        :Sequelize.ENUM('FullTime', 'PartTime', 'Contract', 'Internship'),
+        position_count :{
+            type:Sequelize.STRING
+        },
+        end_date       :{
+            type:Sequelize.STRING
+        },
+        resume_status  :{
+            type        :Sequelize.BOOLEAN,
+            defaultValue:false
+        },
+        education_level:{
+            type        :Sequelize.ENUM('Secondary', 'Higher Secondary', 'Diploma', 'Bachelors', 'Masters',
+                'Doctorate'),
+            defaultValue:'Secondary'
+        },
+        urgent_status  :{
+            type        :Sequelize.ENUM('days', 'week', 'weeks', 'month', 'none'),
+            defaultValue:'none'
+        },
+        job_type       :{
+            type        :Sequelize.ENUM('FullTime', 'PartTime', 'Contract', 'Internship', 'Volunteer', 'Temporary'),
             defaultValue:'FullTime'
         },
-        status    :{
+        location_type  :{
+            type        :Sequelize.ENUM('office', 'remote'),
+            defaultValue:'office'
+        },
+        phone_code     :{
+            type:Sequelize.STRING
+        },
+        phone_number   :{
+            type:Sequelize.STRING
+        },
+        mobile_code    :{
+            type:Sequelize.STRING
+        },
+        mobile_number  :{
+            type:Sequelize.STRING
+        },
+        street         :{
+            type:Sequelize.STRING
+        },
+        area           :{
+            type:Sequelize.STRING
+        },
+        locality       :{
+            type:Sequelize.STRING
+        },
+        city           :{
+            type:Sequelize.STRING
+        },
+        state          :{
+            type:Sequelize.STRING
+        },
+        pin            :{
+            type:Sequelize.STRING
+        },
+        country        :{
+            type:Sequelize.STRING
+        },
+        email          :{
+            type:Sequelize.STRING
+        },
+        status         :{
             type        :Sequelize.ENUM('closed', 'active', 'review', 'deleted'),
             defaultValue:'review'
         }
