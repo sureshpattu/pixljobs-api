@@ -147,7 +147,7 @@ module.exports = {
             ApiHelpers.error(res, _err);
         });
     },
-    resetPassword     :function(req, res) {
+    forgotPassword     :function(req, res) {
         if(!req.body.email) {
             return ApiHelpers.error(res, true, 'Parameters missing');
         }
@@ -181,7 +181,7 @@ module.exports = {
             ApiHelpers.error(res, _err);
         });
     },
-    resetPasswordToken:function(req, res) {
+    forgotPasswordToken:function(req, res) {
         if(!req.body.reset_token) {
             return ApiHelpers.error(res, true, 'Parameters missing');
         }

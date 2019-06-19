@@ -104,7 +104,7 @@ module.exports = {
             ApiHelpers.error(res, _err);
         });
     },
-    checkToken        :function(req, res) {
+    checkToken         :function(req, res) {
         if(!req.body.id || !req.body.token) {
             return ApiHelpers.error(res, true, 'Parameters missing');
         }
@@ -122,7 +122,7 @@ module.exports = {
             ApiHelpers.error(res, _err);
         });
     },
-    verifyEmail       :function(req, res) {
+    verifyEmail        :function(req, res) {
         if(!req.body.email_token) {
             return ApiHelpers.error(res, true, 'Parameters missing');
         }
@@ -140,7 +140,7 @@ module.exports = {
             ApiHelpers.error(res, _err);
         });
     },
-    resetPassword     :function(req, res) {
+    forgotPassword     :function(req, res) {
         if(!req.body.email) {
             return ApiHelpers.error(res, true, 'Parameters missing');
         }
@@ -174,7 +174,7 @@ module.exports = {
             ApiHelpers.error(res, _err);
         });
     },
-    ResetPasswordToken:function(req, res) {
+    forgotPasswordToken:function(req, res) {
         if(!req.body.reset_token) {
             return ApiHelpers.error(res, true, 'Parameters missing');
         }
@@ -214,7 +214,7 @@ module.exports = {
             ApiHelpers.error(res, _err);
         });
     },
-    checkOTP          :function(req, res) {
+    checkOTP           :function(req, res) {
         Model.findOne({where:{mobile:req.body.mobile}}).then(async(_user) => {
             if(_user) {
                 let _status = await _user.validOTP(req.body.otp);
