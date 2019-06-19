@@ -53,14 +53,11 @@ module.exports = {
                     to     :req.body.email,
                     subject:'Verify Your Email Address',
                     body   :'Hi, ' + req.body.name + ' Click here to activate your account : http://' +
-                        req.headers.host +
-                        '/recruiter/email/verify/' + token
+                        'localhost:3035' + '/recruiter/email/verify/' + token
                 };
                 Mail.sendMail(req, mailOptions);
-                return res.json({
-                    err:false,
-                    msg:'An email has been sent to the email address provided. Please verify your email by clicking the link send by us.'
-                });
+                ApiHelpers.success(res, user,
+                    'An email has been sent to the email address provided. Please verify your email by clicking the link send by us.');
             }).catch(_err => {
                 ApiHelpers.error(res, _err);
             });
@@ -157,8 +154,7 @@ module.exports = {
                         to     :req.body.email,
                         subject:'Verify Your Email Address',
                         body   :'Hi, ' + req.body.name + ' Click here to activate your account : http://' +
-                            req.headers.host +
-                            '/recruiter/email/verify/' + token
+                            'localhost:3035' + '/recruiter/forgot/password/' + token
                     };
                     Mail.sendMail(req, mailOptions);
                     return res.json({
