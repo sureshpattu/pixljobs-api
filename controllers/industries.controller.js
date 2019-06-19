@@ -3,6 +3,8 @@
 const Model      = db.industries;
 const _          = require('underscore');
 const ApiHelpers = require('../helpers/api.helpers');
+const waterfall  = require('async-waterfall');
+const BulkData   = require('../data/industry');
 
 function fetchSingle(_id, res) {
     Model.findOne({where:{id:_id}}).then((_data) => {
@@ -25,7 +27,7 @@ module.exports = {
         fetchSingle(req.params.id, res);
     },
 
-    create:(req, res) => {
+    create    :(req, res) => {
         if(!req.body.name) {
             return ApiHelpers.error(res, true, 'Parameters missing');
         }
@@ -33,6 +35,26 @@ module.exports = {
             fetchSingle(_data.id, res);
         }).catch(_err => {
             ApiHelpers.error(res, _err);
+        });
+    },
+    createBulk:(req, res) => {
+        waterfall(BulkData.map(function(_obj) {
+            return function(lastItemResult, CB) {
+                if(!CB) {
+                    CB             = lastItemResult;
+                    lastItemResult = null;
+                }
+                Model.create({
+                    name:_obj
+                }).then((user) => {
+                    CB(null, []);
+                }).catch(_er => {
+                    console.log(_er.message);
+                    CB(null, []);
+                });
+            };
+        }), function() {
+            return res.status(200).json({message:'All done'});
         });
     },
 
