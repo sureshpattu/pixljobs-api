@@ -41,6 +41,12 @@ module.exports = {
         if(req.body.mobile) {
             basic.mobile = req.body.mobile;
         }
+        if(req.body.photo) {
+            basic.photo = req.body.photo;
+        }
+        if(req.body.photo_type) {
+            basic.photo_type = req.body.photo_type;
+        }
         if(req.body.password) {
             basic.password = await crypto2.encrypt(req.body.password, config.hashSalt2, config.hashIV);
         }
@@ -158,13 +164,14 @@ module.exports = {
                         to     :req.body.email,
                         subject:'Verify Your Email Address',
                         body   :'Hi, ' + req.body.name + ' Click here to reset your password : http://' +
-                            req.headers.host +
-                            '/applicant/email/verify/' + token
+                            'localhost:3035' +
+                            //req.headers.host +
+                            '/forgot/password/' + token
                     };
                     Mail.sendMail(req, mailOptions);
                     return res.json({
-                        err:false,
-                        msg:'A reset password link has been sent to the email address provided.'
+                        error  :false,
+                        message:'A reset password link has been sent to the email address provided.'
                     });
                 }).catch(_err => {
                     ApiHelpers.error(res, _err);
