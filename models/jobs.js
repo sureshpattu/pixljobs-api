@@ -14,7 +14,7 @@ module.exports = function(sequelize, Sequelize) {
         desc           :{
             type:Sequelize.TEXT('long')
         },
-        user_id        :{
+        recruiter_id        :{
             type:Sequelize.UUID
         },
         company_id     :{

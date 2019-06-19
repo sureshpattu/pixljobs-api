@@ -33,6 +33,7 @@ db.Sequelize = Sequelize;
 
 //Users
 db.recruiters.hasMany(db.jobs);
+db.recruiters.hasOne(db.companies);
 
 //Jobs
 db.jobs.hasMany(db.job_applications);
@@ -60,6 +61,7 @@ db.job_categories.belongsTo(db.categories);
 db.companies.hasMany(db.company_benefits);
 
 db.companies.belongsTo(db.recruiters);
+db.companies.belongsTo(db.industries);
 
 db.company_benefits.belongsTo(db.companies);
 db.company_benefits.belongsTo(db.benefits);
