@@ -90,6 +90,12 @@ module.exports = function(sequelize, Sequelize) {
         email          :{
             type:Sequelize.STRING
         },
+        work_week          :{
+            type:Sequelize.STRING
+        },
+        holidays          :{
+            type:Sequelize.STRING
+        },
         status    :{
             type        :Sequelize.ENUM('closed', 'active', 'review', 'deleted'),
             defaultValue:'review'

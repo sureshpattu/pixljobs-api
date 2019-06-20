@@ -33,7 +33,7 @@ db.Sequelize = Sequelize;
 
 //Users
 db.recruiters.hasMany(db.jobs);
-db.recruiters.hasOne(db.companies);
+db.recruiters.hasMany(db.companies);
 
 //Jobs
 db.jobs.hasMany(db.job_applications);
