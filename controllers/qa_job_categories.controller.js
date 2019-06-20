@@ -27,7 +27,7 @@ module.exports = {
     },
 
     create:(req, res) => {
-        if(!req.body.job_id || !req.body.category_id) {
+        if(!req.body.qa_job_id || !req.body.category_id) {
             return ApiHelpers.error(res, true, 'Parameters missing');
         }
         Model.create(req.body).then((_data) => {

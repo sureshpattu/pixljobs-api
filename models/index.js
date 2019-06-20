@@ -57,6 +57,17 @@ db.job_technologies.belongsTo(db.technologies);
 db.job_categories.belongsTo(db.jobs);
 db.job_categories.belongsTo(db.categories);
 
+//QA Jobs
+db.qa_jobs.hasMany(db.qa_job_technologies);
+db.qa_jobs.hasMany(db.qa_job_categories);
+db.qa_jobs.belongsTo(db.companies);
+
+db.qa_job_technologies.belongsTo(db.qa_jobs);
+db.qa_job_technologies.belongsTo(db.technologies);
+
+db.qa_job_categories.belongsTo(db.qa_jobs);
+db.qa_job_categories.belongsTo(db.categories);
+
 //Companies
 db.companies.hasMany(db.company_benefits);
 

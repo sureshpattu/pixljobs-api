@@ -9,7 +9,7 @@ module.exports = function(sequelize, Sequelize) {
             defaultValue:Sequelize.UUIDV4,
             allowNull   :false
         },
-        job_id     :{
+        qa_job_id     :{
             allowNull:false,
             type     :Sequelize.UUID
         },
