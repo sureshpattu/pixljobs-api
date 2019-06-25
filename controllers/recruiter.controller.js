@@ -1,17 +1,21 @@
 'use strict';
 
-const Model      = db.recruiters;
-const ImgHelpers = require('./../helpers/image.upload.helpers');
-const ApiHelpers = require('./../helpers/api.helpers');
-const _          = require('underscore');
-const path       = require('path');
-const sequelize  = require('sequelize');
-const crypto2    = require('crypto2');
-const config     = require('../config/config');
+const Model           = db.recruiters;
+const Company         = db.companies;
+const Industry        = db.industries;
+const CompanyBenefits = db.company_benefits;
+const Benefits        = db.benefits;
+const ImgHelpers      = require('./../helpers/image.upload.helpers');
+const ApiHelpers      = require('./../helpers/api.helpers');
+const _               = require('underscore');
+const path            = require('path');
+const sequelize       = require('sequelize');
+const crypto2         = require('crypto2');
+const config          = require('../config/config');
 
 function fetchSingle(req, res) {
     Model.findOne({
-        where  :{id:req.params.id}
+        where:{id:req.params.id}
     }).then((_data) => {
         ApiHelpers.success(res, _data);
     }).catch(_err => {
@@ -20,8 +24,35 @@ function fetchSingle(req, res) {
 }
 
 module.exports = {
-    read:(req, res) => {
-        fetchSingle(req, res);
+    read         :(req, res) => {
+        Model.findOne({
+            where     :{id:req.params.id},
+            attributes:['id', 'name', 'email', 'mobile', 'gender', 'photo', 'designation'],
+            include   :[
+                {
+                    model  :Company,
+                    include:[
+                        {
+                            model:Industry
+                        },
+                        {
+                            model     :CompanyBenefits,
+                            attributes:['company_id'],
+                            include   :[
+                                {
+                                    model     :Benefits,
+                                    attributes:['id', 'name']
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }).then((_data) => {
+            ApiHelpers.success(res, _data);
+        }).catch(_err => {
+            ApiHelpers.error(res, _err);
+        });
     },
     resetPassword:async(req, res) => {
         let _body = {
@@ -36,7 +67,7 @@ module.exports = {
             ApiHelpers.error(res, _err);
         });
     },
-    update:(req, res) => {
+    update       :(req, res) => {
         let data = req.body;
         if(data.password) {
             delete data.password;
@@ -53,7 +84,7 @@ module.exports = {
             ApiHelpers.error(res, _err);
         });
     },
-    photo      :(req, res) => {
+    photo        :(req, res) => {
         if(req.file) {
             let profile = {
                 file     :req.file.filename,
@@ -64,15 +95,15 @@ module.exports = {
             return ApiHelpers.error(res, true, 'Please select valid file');
         }
     },
-    viewPhoto  :(req, res) => {
+    viewPhoto    :(req, res) => {
         return res.sendFile(`${path.resolve(__dirname, '../', 'uploads/recruiter/photo/', req.params.image)}`);
     },
-    removePhoto:(req, res) => {
+    removePhoto  :(req, res) => {
         let filePath = `${path.resolve(__dirname, '../', 'uploads/recruiter/photo/', req.params.image)}`;
         fs.unlinkSync(filePath);
         ApiHelpers.success(res, {status:'success', code:200});
     },
-    delete     :(req, res) => {
+    delete       :(req, res) => {
         if(!req.params.id) {
             return ApiHelpers.error(res, true, 'Parameters missing');
         }

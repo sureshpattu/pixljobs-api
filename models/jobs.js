@@ -14,7 +14,7 @@ module.exports = function(sequelize, Sequelize) {
         desc           :{
             type:Sequelize.TEXT('long')
         },
-        user_id        :{
+        recruiter_id        :{
             type:Sequelize.UUID
         },
         company_id     :{
@@ -87,6 +87,12 @@ module.exports = function(sequelize, Sequelize) {
             type:Sequelize.STRING
         },
         email          :{
+            type:Sequelize.STRING
+        },
+        work_week          :{
+            type:Sequelize.STRING
+        },
+        holidays          :{
             type:Sequelize.STRING
         },
         status         :{

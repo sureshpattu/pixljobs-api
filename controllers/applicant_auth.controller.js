@@ -19,7 +19,7 @@ function returnUserDetails(_user, res) {
 }
 
 module.exports = {
-    register          :async function(req, res) {
+    register           :async function(req, res) {
         if(!req.body.name || !req.body.gender || !req.body.email || !req.body.password) {
             return ApiHelpers.error(res, true, 'Parameters missing!');
         }
@@ -60,14 +60,11 @@ module.exports = {
                     to     :req.body.email,
                     subject:'Verify Your Email Address',
                     body   :'Hi, ' + req.body.name + ' Click here to verify your email : http://' +
-                        req.headers.host +
-                        '/applicant/email/verify/' + token
+                        'localhost:3035' + '/applicant/email/verify/' + token
                 };
                 Mail.sendMail(req, mailOptions);
-                return res.json({
-                    err:false,
-                    msg:'An email has been sent to the email address provided. Please verify your email by clicking the link send by us.'
-                });
+                ApiHelpers.success(res, user,
+                    'An email has been sent to the email address provided. Please verify your email by clicking the link send by us.');
             }).catch(_err => {
                 ApiHelpers.error(res, _err);
             });
@@ -83,7 +80,7 @@ module.exports = {
             }
         });
     },
-    authenticate      :function(req, res) {
+    authenticate       :function(req, res) {
         if(!req.body.email || !req.body.password) {
             return ApiHelpers.error(res, true, 'Parameters missing');
         }
@@ -111,7 +108,7 @@ module.exports = {
             ApiHelpers.error(res, _err);
         });
     },
-    checkToken        :function(req, res) {
+    checkToken         :function(req, res) {
         if(!req.body.id || !req.body.token) {
             return ApiHelpers.error(res, true, 'Parameters missing');
         }
@@ -129,7 +126,7 @@ module.exports = {
             ApiHelpers.error(res, _err);
         });
     },
-    verifyEmail       :function(req, res) {
+    verifyEmail        :function(req, res) {
         if(!req.body.email_token) {
             return ApiHelpers.error(res, true, 'Parameters missing');
         }
@@ -164,9 +161,7 @@ module.exports = {
                         to     :req.body.email,
                         subject:'Verify Your Email Address',
                         body   :'Hi, ' + req.body.name + ' Click here to reset your password : http://' +
-                            'localhost:3035' +
-                            //req.headers.host +
-                            '/forgot/password/' + token
+                            'localhost:3035' + '/applicant/forgot/password/' + token
                     };
                     Mail.sendMail(req, mailOptions);
                     return res.json({
@@ -195,7 +190,7 @@ module.exports = {
             ApiHelpers.error(res, _err);
         });
     },
-    getOTP            :function(req, res) {
+    getOTP             :function(req, res) {
         let _newOtp    = Math.floor(1000 + Math.random() * 9000);
         _newOtp        = _newOtp.toString();
         let _otpNormal = _newOtp;
@@ -221,7 +216,7 @@ module.exports = {
             ApiHelpers.error(res, _err);
         });
     },
-    checkOTP          :function(req, res) {
+    checkOTP           :function(req, res) {
         Model.findOne({where:{mobile:req.body.mobile}}).then(async(_user) => {
             if(_user) {
                 let _status = await _user.validOTP(req.body.otp);

@@ -8,20 +8,24 @@ module.exports = function(sequelize, Sequelize) {
             defaultValue:Sequelize.UUIDV4,
             allowNull   :false
         },
-        user_id      :{
+        recruiter_id :{
             type:Sequelize.UUID
         },
         name         :{
             type:Sequelize.TEXT('long')
         },
-        industry     :{
-            type:Sequelize.TEXT('long')
+        industry_id  :{
+            allowNull:true,
+            type     :Sequelize.UUID
         },
         size         :{
             type:Sequelize.STRING
         },
         about        :{
             type:Sequelize.TEXT('long')
+        },
+        url          :{
+            type:Sequelize.STRING
         },
         phone_code   :{
             type:Sequelize.STRING
@@ -62,19 +66,19 @@ module.exports = function(sequelize, Sequelize) {
         logo         :{
             type:Sequelize.STRING
         },
-        website         :{
+        website      :{
             type:Sequelize.STRING
         },
-        pan        :{
+        pan          :{
             type:Sequelize.STRING
         },
-        tan         :{
+        tan          :{
             type:Sequelize.STRING
         },
-        gst         :{
+        gst          :{
             type:Sequelize.STRING
         },
-        cin         :{
+        cin          :{
             type:Sequelize.STRING
         },
         photo_1      :{

@@ -3,7 +3,7 @@
 const express = require('express');
 const router  = express.Router();
 
-const Controller = require('../controllers/technologies.controller');
+const Controller = require('../controllers/industries.controller');
 
 router
     .get('/', (req, res) => { Controller.index(req, res); })

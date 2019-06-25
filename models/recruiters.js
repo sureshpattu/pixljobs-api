@@ -71,28 +71,10 @@ module.exports = function(sequelize, Sequelize) {
         photo             :{
             type:Sequelize.STRING
         },
-        photo_type    :{
+        photo_type        :{
             type:Sequelize.STRING
         },
         designation       :{
-            type:Sequelize.STRING
-        },
-        company           :{
-            type:Sequelize.STRING
-        },
-        company_size      :{
-            type:Sequelize.STRING
-        },
-        company_url       :{
-            type:Sequelize.STRING
-        },
-        about_company     :{
-            type:Sequelize.STRING
-        },
-        industry          :{
-            type:Sequelize.STRING
-        },
-        company_benefit   :{
             type:Sequelize.STRING
         },
         user_type         :{
