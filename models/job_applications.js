@@ -12,7 +12,7 @@ module.exports = function(sequelize, Sequelize) {
         job_id :{
             type:Sequelize.UUID
         },
-        user_id:{
+        applicant_id:{
             type:Sequelize.UUID
         },
         status :{

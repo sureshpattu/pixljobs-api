@@ -1,8 +1,8 @@
 'use strict';
 
-const Model          = db.job_applications;
-const waterfall      = require('async-waterfall');
-const _              = require('underscore');
+const Model      = db.job_applications;
+const waterfall  = require('async-waterfall');
+const _          = require('underscore');
 const ApiHelpers = require('../helpers/api.helpers');
 
 function fetchSingle(_id, res) {
@@ -26,8 +26,24 @@ module.exports = {
         fetchSingle(req.params.id, res);
     },
 
+    check:(req, res) => {
+        if(!req.body.applicant_id || !req.body.job_id) {
+            return ApiHelpers.error(res, true, 'Parameters missing');
+        }
+        Model.findOne({
+            where:{
+                applicant_id:req.body.applicant_id,
+                job_id      :req.body.job_id
+            }
+        }).then((_data) => {
+            ApiHelpers.success(res, _data);
+        }).catch(_err => {
+            ApiHelpers.error(res, _err);
+        });
+    },
+
     create:(req, res) => {
-        if(!req.body.user_id || !req.body.job_id) {
+        if(!req.body.applicant_id || !req.body.job_id) {
             return ApiHelpers.error(res, true, 'Parameters missing');
         }
         Model.create(req.body).then((_data) => {

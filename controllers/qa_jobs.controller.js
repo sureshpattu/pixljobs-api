@@ -6,16 +6,22 @@ const Technologies    = db.technologies;
 const Companies       = db.companies;
 const QAJobCategories = db.qa_job_categories;
 const Categories      = db.categories;
+const Industry        = db.industries;
+const CompanyBenefits = db.company_benefits;
+const Benefits        = db.benefits;
 const waterfall       = require('async-waterfall');
 const _               = require('underscore');
 const ApiHelpers      = require('../helpers/api.helpers');
 const sequelize       = require('sequelize');
 const Op              = sequelize.Op;
-const jobAttr         = [
+const companyAttr         = [
     'id',
     'name',
     'logo',
     'website',
+    'about',
+    'size',
+    'url',
     'street',
     'area',
     'locality',
@@ -31,7 +37,22 @@ function fetchSingle(_id, res) {
         include:[
             {
                 model     :Companies,
-                attributes:jobAttr
+                attributes:companyAttr,
+                include:[
+                    {
+                        model:Industry
+                    },
+                    {
+                        model     :CompanyBenefits,
+                        attributes:['company_id'],
+                        include   :[
+                            {
+                                model     :Benefits,
+                                attributes:['id', 'name']
+                            }
+                        ]
+                    }
+                ]
             },
             {
                 model     :JobTechnologies,
@@ -140,6 +161,18 @@ module.exports = {
         if(req.body.job_type) {
             _query.job_type = req.body.job_type;
         }
+        if(req.body.salary_min) {
+            _query.salary_min = req.body.salary_min;
+        }
+        if(req.body.salary_max) {
+            _query.salary_max = req.body.salary_max;
+        }
+        if(req.body.city) {
+            _query.city = req.body.city;
+        }
+        if(req.body.state) {
+            _query.city = req.body.state;
+        }
         if(req.body.query) {
             let lookupValue = req.body.query.toLowerCase();
             _query[Op.or].push({
@@ -159,7 +192,7 @@ module.exports = {
                 include:[
                     {
                         model     :Companies,
-                        attributes:jobAttr
+                        attributes:companyAttr
                     },
                     {
                         model     :JobTechnologies,
