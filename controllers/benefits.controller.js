@@ -3,6 +3,7 @@
 const Model           = db.benefits;
 const CompanyBenefits = db.company_benefits;
 const waterfall       = require('async-waterfall');
+const async           = require('async');
 const _               = require('underscore');
 const ApiHelpers      = require('../helpers/api.helpers');
 const sequelize       = require('sequelize');
@@ -34,8 +35,7 @@ module.exports = {
             return ApiHelpers.error(res, true, 'Parameters missing');
         }
 
-        let _query      = {};
-        _query[Op.or]   = [];
+
         let _company_id = req.body.company_id;
 
         waterfall(req.body.benefits.map(function(_obj) {
@@ -44,6 +44,8 @@ module.exports = {
                     CB             = lastItemResult;
                     lastItemResult = null;
                 }
+                let _query      = {};
+                _query[Op.or]   = [];
                 let lookupValue = _obj.toLowerCase();
                 _query[Op.or].push({
                     id:sequelize.where(sequelize.fn('LOWER', db.sequelize.col('id')), 'LIKE',
@@ -74,7 +76,6 @@ module.exports = {
                 }).catch(_err => {
                     CB(null, []);
                 });
-
             };
         }), function() {
             ApiHelpers.success(res, null, 'success');
