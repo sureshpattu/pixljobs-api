@@ -1,5 +1,6 @@
 'use strict';
 
+const AdminRouter              = require('./admin.route');
 const ApplicantAuthRouter      = require('./applicant_auth.route');
 const RecruiterAuthRouter      = require('./recruiter_auth.route');
 const ApplicantRouter          = require('./applicant.route');
@@ -23,13 +24,15 @@ const AdminNotificationsRouter = require('./admin_notifications.route');
 const TagsRouter               = require('./tags.route');
 const CompanyBenefits          = require('./company_benefits.route');
 const RecruiterRouter          = require('./recruiter.route');
-const CompanyUsersRouter          = require('./company_users.route');
-const RolesRouter          = require('./roles.route');
-const IndustriesRouter          = require('./industries.route');
+const CompanyUsersRouter       = require('./company_users.route');
+const RolesRouter              = require('./roles.route');
+const IndustriesRouter         = require('./industries.route');
 
 const prefix = '/api';
 
 module.exports = (app) => {
+    app.use(`${prefix}/admin`, AdminRouter);
+
     app.use(`${prefix}/applicant-auth`, ApplicantAuthRouter);
     app.use(`${prefix}/applicant`, ApplicantRouter);
 

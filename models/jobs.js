@@ -14,10 +14,13 @@ module.exports = function(sequelize, Sequelize) {
         desc           :{
             type:Sequelize.TEXT('long')
         },
-        recruiter_id        :{
+        recruiter_id   :{
             type:Sequelize.UUID
         },
         company_id     :{
+            type:Sequelize.UUID
+        },
+        qa_job_id     :{
             type:Sequelize.UUID
         },
         salary_min     :{
@@ -89,10 +92,10 @@ module.exports = function(sequelize, Sequelize) {
         email          :{
             type:Sequelize.STRING
         },
-        work_week          :{
+        work_week      :{
             type:Sequelize.STRING
         },
-        holidays          :{
+        holidays       :{
             type:Sequelize.STRING
         },
         status         :{

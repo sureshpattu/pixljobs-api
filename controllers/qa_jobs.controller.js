@@ -162,10 +162,14 @@ module.exports = {
             _query.job_type = req.body.job_type;
         }
         if(req.body.salary_min) {
-            _query.salary_min = req.body.salary_min;
+            _query.salary_min = {
+                [Op.gte]:req.body.salary_min
+            };
         }
         if(req.body.salary_max) {
-            _query.salary_max = req.body.salary_max;
+            _query.salary_max = {
+                [Op.lte]:req.body.salary_max
+            };
         }
         if(req.body.city) {
             _query.city = req.body.city;
