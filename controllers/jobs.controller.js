@@ -9,6 +9,8 @@ const Categories      = db.categories;
 const Industry        = db.industries;
 const CompanyBenefits = db.company_benefits;
 const Benefits        = db.benefits;
+const JobApplications = db.job_applications;
+const Applicants      = db.applicants;
 const waterfall       = require('async-waterfall');
 const _               = require('underscore');
 const ApiHelpers      = require('../helpers/api.helpers');
@@ -83,6 +85,190 @@ function fetchSingle(_id, res) {
     });
 }
 
+function search(req, res) {
+    let limit = parseInt(req.body.limit);
+    if(!limit) {
+        limit = 10
+    }
+    let offset = parseInt(req.body.offset);
+    if(!offset) {
+        offset = 0
+    }
+    let page = parseInt(req.body.page);
+    if(!page) {
+        page = 0
+    }
+    let _query            = {};
+    let _outQuery         = {};
+    let _categoryQuery    = {};
+    let _categoryRequired = false;
+    if(req.body.query) {
+        _query[Op.or] = [];
+    }
+    if(req.body.company_id) {
+        _query.company_id = req.body.company_id;
+    }
+    if(req.body.job_type) {
+        _query.job_type = req.body.job_type;
+    }
+    if(req.body.salary_min) {
+        _query.salary_min = {
+            [Op.gte]:req.body.salary_min
+        };
+    }
+    if(req.body.salary_max) {
+        _query.salary_max = {
+            [Op.lte]:req.body.salary_max
+        };
+    }
+    if(req.body.city) {
+        _query.city = req.body.city;
+    }
+    if(req.body.state) {
+        _query.city = req.body.state;
+    }
+    if(req.body.recruiter_id) {
+        _query.recruiter_id = req.body.recruiter_id;
+    }
+    if(req.body.query) {
+        let lookupValue = req.body.query.toLowerCase();
+        _query[Op.or].push({
+            name:sequelize.where(sequelize.fn('LOWER', db.sequelize.col('name')), 'LIKE',
+                '%' + lookupValue + '%')
+        });
+    }
+    if(req.body.category_id) {
+        _categoryQuery.category_id = req.body.category_id;
+        _categoryRequired          = true;
+    }
+    Model.findAndCountAll({where:_query}).then((data) => {
+        let pages = Math.ceil(data.count / limit);
+        offset    = limit * page;
+        Model.findAll({
+            where  :_query,
+            include:[
+                {
+                    model     :Companies,
+                    attributes:companyAttr
+                },
+                {
+                    model     :JobTechnologies,
+                    attributes:['id', 'job_id'],
+                    include   :[
+                        {
+                            model     :Technologies,
+                            attributes:['id', 'name']
+                        }
+                    ]
+                },
+                {
+                    model     :JobCategories,
+                    attributes:['id', 'job_id'],
+                    where     :_categoryQuery,
+                    include   :[
+                        {
+                            model     :Categories,
+                            attributes:['id', 'name']
+                        }
+                    ],
+                    required  :_categoryRequired
+                }
+            ],
+            limit  :limit,
+            offset :offset
+        }).then((_data) => {
+            ApiHelpers.success(res, {total:_data.length, pages:pages, page:page, result:_data});
+        }).catch(_err => {
+            ApiHelpers.error(res, _err);
+        });
+    }).catch(_err => {
+        ApiHelpers.error(res, _err);
+    });
+}
+
+function recruiterJobsSearch(req, res) {
+    let limit = parseInt(req.body.limit);
+    if(!limit) {
+        limit = 10
+    }
+    let offset = parseInt(req.body.offset);
+    if(!offset) {
+        offset = 0
+    }
+    let page = parseInt(req.body.page);
+    if(!page) {
+        page = 0
+    }
+    let _query            = {};
+    let _outQuery         = {};
+    let _categoryQuery    = {};
+    let _categoryRequired = false;
+    if(req.body.query) {
+        _query[Op.or] = [];
+    }
+    if(req.body.company_id) {
+        _query.company_id = req.body.company_id;
+    }
+    if(req.body.job_type) {
+        _query.job_type = req.body.job_type;
+    }
+    if(req.body.salary_min) {
+        _query.salary_min = {
+            [Op.gte]:req.body.salary_min
+        };
+    }
+    if(req.body.salary_max) {
+        _query.salary_max = {
+            [Op.lte]:req.body.salary_max
+        };
+    }
+    if(req.body.city) {
+        _query.city = req.body.city;
+    }
+    if(req.body.state) {
+        _query.city = req.body.state;
+    }
+    if(req.body.recruiter_id) {
+        _query.recruiter_id = req.body.recruiter_id;
+    }
+    if(req.body.query) {
+        let lookupValue = req.body.query.toLowerCase();
+        _query[Op.or].push({
+            name:sequelize.where(sequelize.fn('LOWER', db.sequelize.col('name')), 'LIKE',
+                '%' + lookupValue + '%')
+        });
+    }
+    if(req.body.category_id) {
+        _categoryQuery.category_id = req.body.category_id;
+        _categoryRequired          = true;
+    }
+    Model.findAndCountAll({where:_query}).then((data) => {
+        let pages = Math.ceil(data.count / limit);
+        offset    = limit * page;
+        Model.findAll({
+            where  :_query,
+            include:[
+                {
+                    model  :JobApplications,
+                    include:[
+                        {
+                            model:Applicants
+                        }
+                    ]
+                }
+            ],
+            limit  :limit,
+            offset :offset
+        }).then((_data) => {
+            ApiHelpers.success(res, {total:_data.length, pages:pages, page:page, result:_data});
+        }).catch(_err => {
+            ApiHelpers.error(res, _err);
+        });
+    }).catch(_err => {
+        ApiHelpers.error(res, _err);
+    });
+}
+
 module.exports = {
     index:(req, res) => {
         Model.findAll({where:{}}).then((_data) => {
@@ -123,7 +309,7 @@ module.exports = {
         });
     },
 
-    countJobType:(req, res) => {
+    countJobType   :(req, res) => {
         Model.findAll({
             group     :['job_type'],
             attributes:['job_type', [sequelize.fn('COUNT', 'job_type'), 'count']]
@@ -135,103 +321,13 @@ module.exports = {
             ApiHelpers.error(res, _err);
         });
     },
-
-    search:(req, res) => {
-        let limit = parseInt(req.body.limit);
-        if(!limit) {
-            limit = 10
+    recruiterSearch:(req, res) => {
+        if(!req.body.recruiter_id) {
+            return ApiHelpers.error(res, true, 'Parameters missing');
         }
-        let offset = parseInt(req.body.offset);
-        if(!offset) {
-            offset = 0
-        }
-        let page = parseInt(req.body.page);
-        if(!page) {
-            page = 0
-        }
-        let _query            = {};
-        let _outQuery         = {};
-        let _categoryQuery    = {};
-        let _categoryRequired = false;
-        if(req.body.query) {
-            _query[Op.or] = [];
-        }
-        if(req.body.company_id) {
-            _query.company_id = req.body.company_id;
-        }
-        if(req.body.job_type) {
-            _query.job_type = req.body.job_type;
-        }
-        if(req.body.salary_min) {
-            _query.salary_min = {
-                [Op.gte]:req.body.salary_min
-            };
-        }
-        if(req.body.salary_max) {
-            _query.salary_max = {
-                [Op.lte]:req.body.salary_max
-            };
-        }
-        if(req.body.city) {
-            _query.city = req.body.city;
-        }
-        if(req.body.state) {
-            _query.city = req.body.state;
-        }
-        if(req.body.query) {
-            let lookupValue = req.body.query.toLowerCase();
-            _query[Op.or].push({
-                name:sequelize.where(sequelize.fn('LOWER', db.sequelize.col('name')), 'LIKE',
-                    '%' + lookupValue + '%')
-            });
-        }
-        if(req.body.category_id) {
-            _categoryQuery.category_id = req.body.category_id;
-            _categoryRequired          = true;
-        }
-        // console.log(_query);
-        Model.findAndCountAll({where:_query}).then((data) => {
-            let pages = Math.ceil(data.count / limit);
-            offset    = limit * page;
-            Model.findAll({
-                where  :_query,
-                include:[
-                    {
-                        model     :Companies,
-                        attributes:companyAttr
-                    },
-                    {
-                        model     :JobTechnologies,
-                        attributes:['id', 'job_id'],
-                        include   :[
-                            {
-                                model     :Technologies,
-                                attributes:['id', 'name']
-                            }
-                        ]
-                    },
-                    {
-                        model     :JobCategories,
-                        attributes:['id', 'job_id'],
-                        where     :_categoryQuery,
-                        include   :[
-                            {
-                                model     :Categories,
-                                attributes:['id', 'name']
-                            }
-                        ],
-                        required  :_categoryRequired
-                    }
-                ],
-                limit  :limit,
-                offset :offset
-            }).then((_data) => {
-                ApiHelpers.success(res, {total:_data.length, pages:pages, page:page, result:_data});
-            }).catch(_err => {
-                ApiHelpers.error(res, _err);
-            });
-        }).catch(_err => {
-            ApiHelpers.error(res, _err);
-        });
+        recruiterJobsSearch(req, res);
+    },
+    search         :(req, res) => {
+        search(req, res);
     }
 };
