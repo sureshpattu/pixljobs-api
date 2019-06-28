@@ -89,11 +89,15 @@ module.exports = {
     },
     photo        :(req, res) => {
         if(req.file) {
-            let profile = {
-                file     :req.file.filename,
-                file_type:req.file.mimetype
+            let data = {
+                photo     :req.file.filename,
+                photo_type:req.file.mimetype
             };
-            ApiHelpers.success(res, profile);
+            Model.update(data, {where:{id:req.params.id}}).then((_data) => {
+                ApiHelpers.success(res, _data);
+            }).catch(_err => {
+                ApiHelpers.error(res, _err);
+            });
         } else {
             return ApiHelpers.error(res, true, 'Please select valid file');
         }
