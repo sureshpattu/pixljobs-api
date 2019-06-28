@@ -58,7 +58,6 @@ module.exports = (app) => {
     app.use(`${prefix}/technologies`, TechnologiesRouter);
     app.use(`${prefix}/job-applications`, JobApplicationsRouter);
     app.use(`${prefix}/job-categories`, JobCategoriesRouter);
-    app.use(`${prefix}/qa-requirements`, JobRequirementsRouter);
     app.use(`${prefix}/companies`, CompaniesRouter);
     app.use(`${prefix}/benefits`, BenefitsRouter);
     app.use(`${prefix}/notifications`, NotificationsRouter);
