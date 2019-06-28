@@ -95,6 +95,9 @@ module.exports = function(sequelize, Sequelize) {
         resume            :{
             type:Sequelize.STRING
         },
+        resume_type            :{
+            type:Sequelize.STRING
+        },
         designation       :{
             type:Sequelize.STRING
         },
