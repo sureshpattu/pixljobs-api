@@ -1,6 +1,8 @@
 'use strict';
 
 const Model      = db.job_applications;
+const Jobs       = db.jobs;
+const Companies  = db.companies;
 const waterfall  = require('async-waterfall');
 const _          = require('underscore');
 const ApiHelpers = require('../helpers/api.helpers');
@@ -102,7 +104,12 @@ module.exports = {
                 where  :_query,
                 include:[
                     {
-                        model:Companies
+                        model  :Jobs,
+                        include:[
+                            {
+                                model:Companies
+                            }
+                        ]
                     }
                 ],
                 limit  :limit,
