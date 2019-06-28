@@ -1,9 +1,12 @@
 'use strict';
 
-const Model          = db.requirements;
-const waterfall      = require('async-waterfall');
-const _              = require('underscore');
-const ApiHelpers = require('../helpers/api.helpers');
+const Model           = db.requirements;
+const JobRequirements = db.job_requirements;
+const waterfall       = require('async-waterfall');
+const _               = require('underscore');
+const ApiHelpers      = require('../helpers/api.helpers');
+const sequelize       = require('sequelize');
+const Op              = sequelize.Op;
 
 function fetchSingle(_id, res) {
     Model.findOne({where:{id:_id}}).then((_data) => {
@@ -27,13 +30,53 @@ module.exports = {
     },
 
     create:(req, res) => {
-        if(!req.body.name) {
+        if(!req.body.requirements && !req.body.qa_job_id) {
             return ApiHelpers.error(res, true, 'Parameters missing');
         }
-        Model.create(req.body).then((_data) => {
-            fetchSingle(_data.id, res);
-        }).catch(_err => {
-            ApiHelpers.error(res, _err);
+
+        let _job_id = req.body.job_id;
+
+        waterfall(req.body.requirements.map(function(_obj) {
+            return function(lastItemResult, CB) {
+                if(!CB) {
+                    CB             = lastItemResult;
+                    lastItemResult = null;
+                }
+                let _query      = {};
+                _query[Op.or]   = [];
+                let lookupValue = _obj.toLowerCase();
+                _query[Op.or].push({
+                    id:sequelize.where(sequelize.fn('LOWER', db.sequelize.col('id')), 'LIKE',
+                        '%' + lookupValue + '%')
+                });
+                _query[Op.or].push({
+                    desc:sequelize.where(sequelize.fn('LOWER', db.sequelize.col('desc')), 'LIKE',
+                        '%' + lookupValue + '%')
+                });
+                Model.findOne({where:_query}).then((_data) => {
+                    if(!_data) {
+                        Model.create({desc:_obj}).then((_data) => {
+                            JobRequirements.create({job_id:_job_id, requirement_id:_data.id}).then((_data) => {
+                                CB(null, []);
+                            }).catch(_err => {
+                                ApiHelpers.error(res, _err);
+                            });
+                        }).catch(_err => {
+                            ApiHelpers.error(res, _err);
+                        });
+                    } else {
+                        JobRequirements.create({job_id:_job_id, requirement_id:_data.id}).then((_data) => {
+                            CB(null, []);
+                        }).catch(_err => {
+                            ApiHelpers.error(res, _err);
+                        });
+                    }
+                }).catch(_err => {
+                    CB(null, []);
+                });
+            };
+        }), function() {
+            ApiHelpers.success(res, null, 'success');
         });
     },
 

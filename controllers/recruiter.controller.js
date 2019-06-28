@@ -25,6 +25,9 @@ function fetchSingle(req, res) {
 
 module.exports = {
     read         :(req, res) => {
+        fetchSingle(req, res);
+    },
+    fetchFull    :(req, res) => {
         Model.findOne({
             where     :{id:req.params.id},
             attributes:['id', 'name', 'email', 'mobile', 'gender', 'photo', 'designation'],

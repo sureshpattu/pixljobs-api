@@ -20,6 +20,7 @@ const Controller = require('../controllers/recruiter.controller');
 
 router
     .get('/:id', (req, res) => { Controller.read(req, res); })
+    .get('/fetch-full/:id', (req, res) => { Controller.fetchFull(req, res); })
     .post('/reset-password/:id', (req, res) => { Controller.resetPassword(req, res); })
     .post('/photo/upload', upload.single('photo'), (req, res) => { Controller.photo(req, res); })
     .get('/photo/:image', (req, res) => { Controller.viewPhoto(req, res); })

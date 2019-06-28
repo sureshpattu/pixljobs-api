@@ -104,6 +104,10 @@ module.exports = function(sequelize, Sequelize) {
             type        :Sequelize.BOOLEAN,
             defaultValue:false
         },
+        is_recruiter      :{
+            type        :Sequelize.BOOLEAN,
+            defaultValue:true
+        },
         otp_verify_count  :{
             type        :Sequelize.INTEGER,
             defaultValue:0

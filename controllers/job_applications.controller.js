@@ -67,5 +67,53 @@ module.exports = {
         }).catch(_err => {
             ApiHelpers.error(res, _err);
         });
+    },
+    search:(req, res) => {
+        if(!req.body.applicant_id) {
+            return ApiHelpers.error(res, true, 'Parameters missing');
+        }
+        let limit = parseInt(req.body.limit);
+        if(!limit) {
+            limit = 10
+        }
+        let offset = parseInt(req.body.offset);
+        if(!offset) {
+            offset = 0
+        }
+        let page = parseInt(req.body.page);
+        if(!page) {
+            page = 0
+        }
+        let _query = {};
+        if(req.body.query) {
+            _query[Op.or] = [];
+        }
+        if(req.body.query) {
+            let lookupValue = req.body.query.toLowerCase();
+            _query[Op.or].push({
+                name:sequelize.where(sequelize.fn('LOWER', db.sequelize.col('name')), 'LIKE',
+                    '%' + lookupValue + '%')
+            });
+        }
+        Model.findAndCountAll({where:_query}).then((data) => {
+            let pages = Math.ceil(data.count / limit);
+            offset    = limit * page;
+            Model.findAll({
+                where  :_query,
+                include:[
+                    {
+                        model:Companies
+                    }
+                ],
+                limit  :limit,
+                offset :offset
+            }).then((_data) => {
+                ApiHelpers.success(res, {total:_data.length, pages:pages, page:page, result:_data});
+            }).catch(_err => {
+                ApiHelpers.error(res, _err);
+            });
+        }).catch(_err => {
+            ApiHelpers.error(res, _err);
+        });
     }
 };
