@@ -73,7 +73,7 @@ module.exports = {
         return res.sendFile(`${path.resolve(__dirname, '../', 'uploads/applicant/photo/', req.params.image)}`);
     },
     removePhoto     :(req, res) => {
-        let filePath = `${path.resolve(__dirname, '../', 'uploads/recruiter/photo/', req.params.image)}`;
+        let filePath = `${path.resolve(__dirname, '../', 'uploads/applicant/photo/', req.params.image)}`;
         fs.unlinkSync(filePath);
         ApiHelpers.success(res, {status:'success', code:200});
     },
