@@ -30,7 +30,7 @@ module.exports = {
     fetchFull    :(req, res) => {
         Model.findOne({
             where     :{id:req.params.id},
-            attributes:['id', 'name', 'email', 'mobile', 'gender', 'photo', 'designation'],
+            attributes:['id', 'name', 'email', 'mobile', 'gender', 'photo', 'designation','is_recruiter'],
             include   :[
                 {
                     model  :Company,

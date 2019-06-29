@@ -1,13 +1,14 @@
 'use strict';
 
 const AdminRouter              = require('./admin.route');
+const Auth                     = require('./auth.route');
 const ApplicantAuthRouter      = require('./applicant_auth.route');
 const RecruiterAuthRouter      = require('./recruiter_auth.route');
 const ApplicantRouter          = require('./applicant.route');
 const QaJobsRouter             = require('./qa_jobs.route');
 const QaJobCatRouter           = require('./qa_job_categories.route');
 const QaJobTechRouter          = require('./qa_job_technologies.route');
-const QaJobReqRouter          = require('./qa_job_requirements.route');
+const QaJobReqRouter           = require('./qa_job_requirements.route');
 const JobsRouter               = require('./jobs.route');
 const JobCatRouter             = require('./job_categories.route');
 const JobTechRouter            = require('./job_technologies.route');
@@ -33,6 +34,7 @@ const prefix = '/api';
 
 module.exports = (app) => {
     app.use(`${prefix}/admin`, AdminRouter);
+    app.use(`${prefix}/auth`, Auth);
 
     app.use(`${prefix}/applicant-auth`, ApplicantAuthRouter);
     app.use(`${prefix}/applicant`, ApplicantRouter);

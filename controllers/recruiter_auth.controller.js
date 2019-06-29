@@ -39,7 +39,8 @@ module.exports = {
         Model.create(basic).then((user) => {
             let token = jwt.encode({email:user.email}, config.TOKENSECRET);
             Model.update({
-                email_token:token
+                email_token:token,
+                token      :token
             }, {where:{email:req.body.email}}).then((_emp_updated) => {
                 let mailOptions = {
                     from   :'connect@trebound.com',
