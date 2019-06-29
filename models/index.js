@@ -33,6 +33,7 @@ db.Sequelize = Sequelize;
 
 //Users
 db.recruiters.hasMany(db.jobs);
+db.recruiters.hasMany(db.qa_jobs);
 db.recruiters.hasMany(db.companies);
 
 //Jobs
@@ -41,6 +42,9 @@ db.jobs.hasMany(db.job_likes);
 db.jobs.hasMany(db.job_requirements);
 db.jobs.hasMany(db.job_technologies);
 db.jobs.hasMany(db.job_categories);
+db.jobs.belongsTo(db.recruiters);
+db.jobs.belongsTo(db.qa_jobs);
+db.jobs.belongsTo(db.companies);
 
 db.job_applications.belongsTo(db.applicants);
 db.job_applications.belongsTo(db.jobs);
@@ -60,7 +64,9 @@ db.job_categories.belongsTo(db.categories);
 //QA Jobs
 db.qa_jobs.hasMany(db.qa_job_technologies);
 db.qa_jobs.hasMany(db.qa_job_categories);
+db.qa_jobs.hasMany(db.jobs);
 db.qa_jobs.belongsTo(db.companies);
+db.qa_jobs.belongsTo(db.recruiters);
 
 db.qa_job_technologies.belongsTo(db.qa_jobs);
 db.qa_job_technologies.belongsTo(db.technologies);

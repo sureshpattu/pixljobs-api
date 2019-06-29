@@ -19,16 +19,16 @@ function returnUserDetails(_user, res) {
 }
 
 module.exports = {
-    register          :async function(req, res) {
+    register           :async function(req, res) {
         if(!req.body.name || !req.body.gender || !req.body.email || !req.body.password) {
             return ApiHelpers.error(res, true, 'Parameters missing!');
         }
         let basic = {
-            name           :req.body.name,
-            email          :req.body.email,
-            gender         :req.body.gender,
-            designation    :req.body.designation,
-            resume         :req.body.resume
+            name       :req.body.name,
+            email      :req.body.email,
+            gender     :req.body.gender,
+            designation:req.body.designation,
+            resume     :req.body.resume
         };
         if(req.body.mobile) {
             basic.mobile = req.body.mobile;
@@ -66,7 +66,7 @@ module.exports = {
             }
         });
     },
-    authenticate      :function(req, res) {
+    authenticate       :function(req, res) {
         if(!req.body.email || !req.body.password) {
             return ApiHelpers.error(res, true, 'Parameters missing');
         }
@@ -177,7 +177,7 @@ module.exports = {
             ApiHelpers.error(res, _err);
         });
     },
-    getOTP            :function(req, res) {
+    getOTP             :function(req, res) {
         let _newOtp    = Math.floor(1000 + Math.random() * 9000);
         _newOtp        = _newOtp.toString();
         let _otpNormal = _newOtp;

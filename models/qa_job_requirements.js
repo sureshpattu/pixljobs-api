@@ -2,20 +2,20 @@
 
 module.exports = function(sequelize, Sequelize) {
 
-    return sequelize.define('job_applications', {
-        id     :{
+    return sequelize.define('qa_job_requirements', {
+        id            :{
             type        :Sequelize.UUID,
             primaryKey  :true,
             defaultValue:Sequelize.UUIDV4,
             allowNull   :false
         },
-        job_id :{
+        qa_job_id        :{
             type:Sequelize.UUID
         },
-        applicant_id:{
+        requirement_id:{
             type:Sequelize.UUID
         },
-        status :{
+        status        :{
             type        :Sequelize.ENUM('pending', 'viewed', 'shortlisted', 'downloaded'),
             defaultValue:'pending'
         }

@@ -6,20 +6,70 @@ const Technologies    = db.technologies;
 const Companies       = db.companies;
 const QAJobCategories = db.qa_job_categories;
 const Categories      = db.categories;
+const Industry        = db.industries;
+const CompanyBenefits = db.company_benefits;
+const Benefits        = db.benefits;
 const waterfall       = require('async-waterfall');
 const _               = require('underscore');
 const ApiHelpers      = require('../helpers/api.helpers');
+const sequelize       = require('sequelize');
+const Op              = sequelize.Op;
+const companyAttr         = [
+    'id',
+    'name',
+    'logo',
+    'website',
+    'about',
+    'size',
+    'url',
+    'street',
+    'area',
+    'locality',
+    'city',
+    'state',
+    'pin',
+    'country'
+];
 
 function fetchSingle(_id, res) {
     Model.findOne({
         where  :{id:_id},
         include:[
             {
+                model     :Companies,
+                attributes:companyAttr,
+                include:[
+                    {
+                        model:Industry
+                    },
+                    {
+                        model     :CompanyBenefits,
+                        attributes:['company_id'],
+                        include   :[
+                            {
+                                model     :Benefits,
+                                attributes:['id', 'name']
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
                 model     :JobTechnologies,
-                attributes:['qa_job_id'],
+                attributes:['id', 'qa_job_id'],
                 include   :[
                     {
                         model     :Technologies,
+                        attributes:['id', 'name']
+                    }
+                ]
+            },
+            {
+                model     :QAJobCategories,
+                attributes:['id', 'qa_job_id'],
+                include   :[
+                    {
+                        model     :Categories,
                         attributes:['id', 'name']
                     }
                 ]
@@ -71,6 +121,20 @@ module.exports = {
             ApiHelpers.error(res, _err);
         });
     },
+
+    countJobType:(req, res) => {
+        Model.findAll({
+            group     :['job_type'],
+            attributes:['job_type', [sequelize.fn('COUNT', 'job_type'), 'count']]
+        }).then((_data) => {
+            let _obj = JSON.parse(JSON.stringify(_data));
+            _obj     = _.object(_.map(_obj, _.values));
+            ApiHelpers.success(res, _obj);
+        }).catch(_err => {
+            ApiHelpers.error(res, _err);
+        });
+    },
+
     search:(req, res) => {
         let limit = parseInt(req.body.limit);
         if(!limit) {
@@ -84,13 +148,34 @@ module.exports = {
         if(!page) {
             page = 0
         }
-        let _query    = {};
-        let _outQuery = {};
+        let _query            = {};
+        let _outQuery         = {};
+        let _categoryQuery    = {};
+        let _categoryRequired = false;
         if(req.body.query) {
             _query[Op.or] = [];
         }
         if(req.body.company_id) {
-            _outQuery.company_id = req.body.company_id;
+            _query.company_id = req.body.company_id;
+        }
+        if(req.body.job_type) {
+            _query.job_type = req.body.job_type;
+        }
+        if(req.body.salary_min) {
+            _query.salary_min = {
+                [Op.gte]:req.body.salary_min
+            };
+        }
+        if(req.body.salary_max) {
+            _query.salary_max = {
+                [Op.lte]:req.body.salary_max
+            };
+        }
+        if(req.body.city) {
+            _query.city = req.body.city;
+        }
+        if(req.body.state) {
+            _query.city = req.body.state;
         }
         if(req.body.query) {
             let lookupValue = req.body.query.toLowerCase();
@@ -99,31 +184,23 @@ module.exports = {
                     '%' + lookupValue + '%')
             });
         }
-        Model.findAndCountAll({where:_outQuery}).then((data) => {
+        if(req.body.category_id) {
+            _categoryQuery.category_id = req.body.category_id;
+            _categoryRequired          = true;
+        }
+        Model.findAndCountAll({where:_query}).then((data) => {
             let pages = Math.ceil(data.count / limit);
             offset    = limit * page;
             Model.findAll({
-                where  :_outQuery,
+                where  :_query,
                 include:[
                     {
                         model     :Companies,
-                        attributes:[
-                            'id',
-                            'name',
-                            'logo',
-                            'website',
-                            'street',
-                            'area',
-                            'locality',
-                            'city',
-                            'state',
-                            'pin',
-                            'country'
-                        ]
+                        attributes:companyAttr
                     },
                     {
                         model     :JobTechnologies,
-                        attributes:['qa_job_id'],
+                        attributes:['id', 'qa_job_id'],
                         include   :[
                             {
                                 model     :Technologies,
@@ -133,19 +210,21 @@ module.exports = {
                     },
                     {
                         model     :QAJobCategories,
-                        attributes:['qa_job_id'],
+                        attributes:['id', 'qa_job_id'],
+                        where     :_categoryQuery,
                         include   :[
                             {
                                 model     :Categories,
                                 attributes:['id', 'name']
                             }
-                        ]
+                        ],
+                        required  :_categoryRequired
                     }
                 ],
                 limit  :limit,
                 offset :offset
             }).then((_data) => {
-                ApiHelpers.success(res, {total:data.count, pages:pages, page:page, result:_data});
+                ApiHelpers.success(res, {total:_data.length, pages:pages, page:page, result:_data});
             }).catch(_err => {
                 ApiHelpers.error(res, _err);
             });

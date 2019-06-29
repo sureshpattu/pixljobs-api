@@ -1,11 +1,13 @@
 'use strict';
 
+const AdminRouter              = require('./admin.route');
 const ApplicantAuthRouter      = require('./applicant_auth.route');
 const RecruiterAuthRouter      = require('./recruiter_auth.route');
 const ApplicantRouter          = require('./applicant.route');
 const QaJobsRouter             = require('./qa_jobs.route');
 const QaJobCatRouter           = require('./qa_job_categories.route');
 const QaJobTechRouter          = require('./qa_job_technologies.route');
+const QaJobReqRouter          = require('./qa_job_requirements.route');
 const JobsRouter               = require('./jobs.route');
 const JobCatRouter             = require('./job_categories.route');
 const JobTechRouter            = require('./job_technologies.route');
@@ -23,13 +25,15 @@ const AdminNotificationsRouter = require('./admin_notifications.route');
 const TagsRouter               = require('./tags.route');
 const CompanyBenefits          = require('./company_benefits.route');
 const RecruiterRouter          = require('./recruiter.route');
-const CompanyUsersRouter          = require('./company_users.route');
-const RolesRouter          = require('./roles.route');
-const IndustriesRouter          = require('./industries.route');
+const CompanyUsersRouter       = require('./company_users.route');
+const RolesRouter              = require('./roles.route');
+const IndustriesRouter         = require('./industries.route');
 
 const prefix = '/api';
 
 module.exports = (app) => {
+    app.use(`${prefix}/admin`, AdminRouter);
+
     app.use(`${prefix}/applicant-auth`, ApplicantAuthRouter);
     app.use(`${prefix}/applicant`, ApplicantRouter);
 
@@ -40,11 +44,13 @@ module.exports = (app) => {
     app.use(`${prefix}/qa-jobs`, QaJobsRouter);
     app.use(`${prefix}/qa-job/categories`, QaJobCatRouter);
     app.use(`${prefix}/qa-job/technologies`, QaJobTechRouter);
+    app.use(`${prefix}/qa-job/requirements`, QaJobReqRouter);
 
     //Production
     app.use(`${prefix}/jobs`, JobsRouter);
     app.use(`${prefix}/job/categories`, JobCatRouter);
     app.use(`${prefix}/job/technologies`, JobTechRouter);
+    app.use(`${prefix}/job/requirements`, JobRequirementsRouter);
 
     app.use(`${prefix}/job/likes`, JobLikesRouter);
     app.use(`${prefix}/categories`, CategoriesRouter);
@@ -52,8 +58,6 @@ module.exports = (app) => {
     app.use(`${prefix}/technologies`, TechnologiesRouter);
     app.use(`${prefix}/job-applications`, JobApplicationsRouter);
     app.use(`${prefix}/job-categories`, JobCategoriesRouter);
-    app.use(`${prefix}/qa-requirements`, JobRequirementsRouter);
-    app.use(`${prefix}/job-requirements`, JobRequirementsRouter);
     app.use(`${prefix}/companies`, CompaniesRouter);
     app.use(`${prefix}/benefits`, BenefitsRouter);
     app.use(`${prefix}/notifications`, NotificationsRouter);
