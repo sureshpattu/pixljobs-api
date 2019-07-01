@@ -116,9 +116,19 @@ module.exports = {
         return res.sendFile(`${path.resolve(__dirname, '../', 'uploads/recruiter/photo/', req.params.image)}`);
     },
     removePhoto  :(req, res) => {
+        let data = {
+            photo     :null,
+            photo_type:null
+        };
+
         let filePath = `${path.resolve(__dirname, '../', 'uploads/recruiter/photo/', req.params.image)}`;
         fs.unlinkSync(filePath);
-        ApiHelpers.success(res, {status:'success', code:200});
+
+        Model.update(data, {where:{photo:req.params.image}}).then((_data) => {
+            ApiHelpers.success(res, _data);
+        }).catch(_err => {
+            ApiHelpers.error(res, _err);
+        });
     },
     delete       :(req, res) => {
         if(!req.params.id) {
