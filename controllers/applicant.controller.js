@@ -8,6 +8,7 @@ const path       = require('path');
 const sequelize  = require('sequelize');
 const crypto2    = require('crypto2');
 const config     = require('../config/config');
+const fs         = require('fs');
 
 function fetchSingle(req, res) {
     Model.findOne({
