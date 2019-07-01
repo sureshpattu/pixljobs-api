@@ -1,5 +1,6 @@
 'use strict';
 
+const Model             = db.admins;
 const QAJobs            = db.qa_jobs;
 const QAJobCategories   = db.qa_job_categories;
 const QAJobTechnologies = db.qa_job_technologies;
@@ -8,12 +9,50 @@ const Jobs            = db.jobs;
 const JobCategories   = db.job_categories;
 const JobTechnologies = db.job_technologies;
 
+const Technologies    = db.technologies;
+const Companies       = db.companies;
+const Categories      = db.categories;
+const Industry        = db.industries;
+const CompanyBenefits = db.company_benefits;
+const Benefits        = db.benefits;
+
 const waterfall  = require('async-waterfall');
 const async      = require('async');
 const _          = require('underscore');
 const ApiHelpers = require('../helpers/api.helpers');
+const sequelize       = require('sequelize');
+const Op              = sequelize.Op;
+const companyAttr         = [
+    'id',
+    'name',
+    'logo',
+    'website',
+    'about',
+    'size',
+    'url',
+    'street',
+    'area',
+    'locality',
+    'city',
+    'state',
+    'pin',
+    'country'
+];
+
+function fetchSingle(req, res) {
+    Model.findOne({
+        where:{id:req.params.id}
+    }).then((_data) => {
+        ApiHelpers.success(res, _data);
+    }).catch(_err => {
+        ApiHelpers.error(res, _err);
+    });
+}
 
 module.exports = {
+    read     :(req, res) => {
+        fetchSingle(req, res);
+    },
     verifyJob:(req, res) => {
         if(!req.params.id) {
             return ApiHelpers.error(res, true, 'Parameters missing');
@@ -102,6 +141,80 @@ module.exports = {
             } else {
                 ApiHelpers.error(res, '', 'No data found!');
             }
+        }).catch(_err => {
+            ApiHelpers.error(res, _err);
+        });
+    },
+    search   :(req, res) => {
+        let limit = parseInt(req.body.limit);
+        if(!limit) {
+            limit = 10
+        }
+        let offset = parseInt(req.body.offset);
+        if(!offset) {
+            offset = 0
+        }
+        let page = parseInt(req.body.page);
+        if(!page) {
+            page = 0
+        }
+        let _query = {status:'review'};
+        if(req.body.query) {
+            _query[Op.or] = [];
+        }
+        QAJobs.findAndCountAll({where:_query}).then((data) => {
+            let pages = Math.ceil(data.count / limit);
+            offset    = limit * page;
+            QAJobs.findAll({
+                where  :_query,
+                include:[
+                    {
+                        model     :Companies,
+                        attributes:companyAttr,
+                        include   :[
+                            {
+                                model:Industry
+                            },
+                            {
+                                model     :CompanyBenefits,
+                                attributes:['company_id'],
+                                include   :[
+                                    {
+                                        model     :Benefits,
+                                        attributes:['id', 'name']
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        model     :QAJobTechnologies,
+                        attributes:['id', 'qa_job_id'],
+                        include   :[
+                            {
+                                model     :Technologies,
+                                attributes:['id', 'name']
+                            }
+                        ]
+                    },
+                    {
+                        model     :QAJobCategories,
+                        attributes:['id', 'qa_job_id'],
+                        include   :[
+                            {
+                                model     :Categories,
+                                attributes:['id', 'name']
+                            }
+                        ]
+                    }
+                ],
+                limit  :limit,
+                offset :offset
+            }).then((_data) => {
+                ApiHelpers.success(res, {total:_data.length, pages:pages, page:page, result:_data});
+            }).catch(_err => {
+                ApiHelpers.error(res, _err);
+            });
         }).catch(_err => {
             ApiHelpers.error(res, _err);
         });
