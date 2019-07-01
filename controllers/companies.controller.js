@@ -1,9 +1,10 @@
 'use strict';
 
-const Model          = db.companies;
-const waterfall      = require('async-waterfall');
-const _              = require('underscore');
+const Model      = db.companies;
+const waterfall  = require('async-waterfall');
+const _          = require('underscore');
 const ApiHelpers = require('../helpers/api.helpers');
+const path            = require('path');
 
 function fetchSingle(_id, res) {
     Model.findOne({where:{id:_id}}).then((_data) => {
@@ -37,15 +38,36 @@ module.exports = {
         });
     },
 
-    update:(req, res) => {
+    update     :(req, res) => {
         Model.update(req.body, {where:{id:req.params.id}}).then((_data) => {
             fetchSingle(req.params.id, res);
         }).catch(_err => {
             ApiHelpers.error(res, _err);
         });
     },
-
-    delete:(req, res) => {
+    photo      :(req, res) => {
+        if(req.file) {
+            let data = {
+                logo:req.file.filename
+            };
+            Model.update(data, {where:{id:req.params.id}}).then((_data) => {
+                ApiHelpers.success(res, _data);
+            }).catch(_err => {
+                ApiHelpers.error(res, _err);
+            });
+        } else {
+            return ApiHelpers.error(res, true, 'Please select valid file');
+        }
+    },
+    viewPhoto  :(req, res) => {
+        return res.sendFile(`${path.resolve(__dirname, '../', 'uploads/company/photo/', req.params.image)}`);
+    },
+    removePhoto:(req, res) => {
+        let filePath = `${path.resolve(__dirname, '../', 'uploads/company/photo/', req.params.image)}`;
+        fs.unlinkSync(filePath);
+        ApiHelpers.success(res, {status:'success', code:200});
+    },
+    delete     :(req, res) => {
         Model.destroy({where:{id:req.params.id}}).then((_data) => {
             ApiHelpers.success(res, _data);
         }).catch(_err => {

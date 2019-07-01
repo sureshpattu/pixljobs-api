@@ -116,6 +116,9 @@ module.exports = function(sequelize, Sequelize) {
             type        :Sequelize.ENUM('YES', 'NO'),
             defaultValue:'YES'
         },
+        default_company_id:{
+            type:Sequelize.UUID
+        },
         last_login        :{
             type:Sequelize.DATE
         },
