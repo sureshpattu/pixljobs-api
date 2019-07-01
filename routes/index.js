@@ -1,6 +1,7 @@
 'use strict';
 
 const AdminRouter              = require('./admin.route');
+const AdminAuthRouter          = require('./admin_auth.route');
 const Auth                     = require('./auth.route');
 const ApplicantAuthRouter      = require('./applicant_auth.route');
 const RecruiterAuthRouter      = require('./recruiter_auth.route');
@@ -33,9 +34,10 @@ const IndustriesRouter         = require('./industries.route');
 const prefix = '/api';
 
 module.exports = (app) => {
+    app.use(`${prefix}/admin-auth`, AdminAuthRouter);
     app.use(`${prefix}/admin`, AdminRouter);
-    app.use(`${prefix}/auth`, Auth);
 
+    app.use(`${prefix}/auth`, Auth);
     app.use(`${prefix}/applicant-auth`, ApplicantAuthRouter);
     app.use(`${prefix}/applicant`, ApplicantRouter);
 
