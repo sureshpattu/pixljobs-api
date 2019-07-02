@@ -53,7 +53,7 @@ module.exports = {
     read     :(req, res) => {
         fetchSingle(req, res);
     },
-    verifyJob:(req, res) => {
+    publishJob:(req, res) => {
         if(!req.params.id) {
             return ApiHelpers.error(res, true, 'Parameters missing');
         }
@@ -158,7 +158,7 @@ module.exports = {
         if(!page) {
             page = 0
         }
-        let _query = {status:'review'};
+        let _query = {status:'pending'};
         if(req.body.query) {
             _query[Op.or] = [];
         }

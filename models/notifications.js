@@ -3,22 +3,25 @@
 module.exports = function(sequelize, Sequelize) {
 
     return sequelize.define('notifications', {
-        id        :{
+        id      :{
             type        :Sequelize.UUID,
             primaryKey  :true,
             defaultValue:Sequelize.UUIDV4,
             allowNull   :false
         },
-        user_id   :{
+        admin_id:{
             type:Sequelize.UUID
         },
-        job_id:{
+        qa_job_id  :{
             type:Sequelize.UUID
         },
-        msg      :{
+        subject     :{
             type:Sequelize.TEXT('long')
         },
-        status    :{
+        msg     :{
+            type:Sequelize.TEXT('long')
+        },
+        status  :{
             type        :Sequelize.ENUM('read', 'unread', 'deleted'),
             defaultValue:'unread'
         }
