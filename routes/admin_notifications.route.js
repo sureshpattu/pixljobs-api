@@ -8,6 +8,7 @@ const Controller = require('../controllers/admin_notifications.controller');
 router
     .get('/', (req, res) => { Controller.index(req, res); })
     .post('/', (req, res) => { Controller.create(req, res); })
+    .post('/fetch-all', (req, res) => { Controller.fetchAll(req, res); })
     .get('/:id', (req, res) => { Controller.read(req, res); })
     .delete('/:id', (req, res) => { Controller.delete(req, res); })
     .put('/:id', (req, res) => { Controller.update(req, res);});
