@@ -84,7 +84,8 @@ db.company_benefits.belongsTo(db.companies);
 db.company_benefits.belongsTo(db.benefits);
 
 //Notifications
-db.admin_notifications.belongsTo(db.applicants);
+db.admin_notifications.belongsTo(db.recruiters);
 db.admin_notifications.belongsTo(db.jobs);
+db.admin_notifications.belongsTo(db.qa_jobs);
 
 module.exports = db;
