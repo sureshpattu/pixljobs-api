@@ -20,7 +20,7 @@ module.exports = function(sequelize, Sequelize) {
         company_id     :{
             type:Sequelize.UUID
         },
-        qa_job_id     :{
+        qa_job_id      :{
             type:Sequelize.UUID
         },
         salary_min     :{
@@ -99,8 +99,17 @@ module.exports = function(sequelize, Sequelize) {
             type:Sequelize.STRING
         },
         status         :{
-            type        :Sequelize.ENUM('closed', 'active', 'review', 'deleted'),
-            defaultValue:'review'
+            type        :Sequelize.ENUM('closed', 'published', 'pending', 'rejected', 'deleted'),
+            defaultValue:'pending'
+        },
+        admin_id       :{
+            type:Sequelize.UUID
+        },
+        admin_msg      :{
+            type:Sequelize.TEXT('long')
+        },
+        admin_date     :{
+            type:Sequelize.STRING
         }
     }, {
         underscored:true,

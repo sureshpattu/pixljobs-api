@@ -96,9 +96,18 @@ module.exports = function(sequelize, Sequelize) {
         holidays       :{
             type:Sequelize.STRING
         },
-        status    :{
-            type        :Sequelize.ENUM('closed', 'active', 'review', 'deleted'),
-            defaultValue:'review'
+        status         :{
+            type        :Sequelize.ENUM('closed', 'published', 'pending', 'rejected', 'deleted'),
+            defaultValue:'pending'
+        },
+        admin_id       :{
+            type:Sequelize.UUID
+        },
+        admin_msg      :{
+            type:Sequelize.TEXT('long')
+        },
+        admin_date     :{
+            type:Sequelize.STRING
         }
     }, {
         underscored:true
