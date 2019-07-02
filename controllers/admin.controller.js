@@ -53,7 +53,7 @@ module.exports = {
     read     :(req, res) => {
         fetchSingle(req, res);
     },
-    verifyJob:(req, res) => {
+    publishJob:(req, res) => {
         if(!req.params.id) {
             return ApiHelpers.error(res, true, 'Parameters missing');
         }

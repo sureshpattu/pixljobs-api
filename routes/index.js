@@ -36,6 +36,8 @@ const prefix = '/api';
 module.exports = (app) => {
     app.use(`${prefix}/admin-auth`, AdminAuthRouter);
     app.use(`${prefix}/admin`, AdminRouter);
+    app.use(`${prefix}/admin-notifications`, AdminNotificationsRouter);
+    app.use(`${prefix}/notifications`, NotificationsRouter);
 
     app.use(`${prefix}/auth`, Auth);
     app.use(`${prefix}/applicant-auth`, ApplicantAuthRouter);
@@ -64,8 +66,6 @@ module.exports = (app) => {
     app.use(`${prefix}/job-categories`, JobCategoriesRouter);
     app.use(`${prefix}/companies`, CompaniesRouter);
     app.use(`${prefix}/benefits`, BenefitsRouter);
-    app.use(`${prefix}/notifications`, NotificationsRouter);
-    app.use(`${prefix}/admin-notifications`, AdminNotificationsRouter);
     app.use(`${prefix}/tags`, TagsRouter);
     app.use(`${prefix}/company-benefits`, CompanyBenefits);
     app.use(`${prefix}/industries`, IndustriesRouter);
