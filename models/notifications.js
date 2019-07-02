@@ -12,6 +12,9 @@ module.exports = function(sequelize, Sequelize) {
         admin_id:{
             type:Sequelize.UUID
         },
+        recruiter_id  :{
+            type:Sequelize.UUID
+        },
         qa_job_id  :{
             type:Sequelize.UUID
         },

@@ -81,7 +81,7 @@ module.exports = {
                 include:[
                     {
                         model     :QAJobs,
-                        attributes:['id', 'name', 'desc', 'email', 'company_id', 'job_type', 'city', 'state']
+                        attributes:['id', 'name', 'desc', 'email', 'company_id', 'job_type', 'city', 'state', 'status']
                     },
                     {
                         model     :Recruiter,
