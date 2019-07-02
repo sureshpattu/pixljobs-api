@@ -158,7 +158,7 @@ module.exports = {
         if(!page) {
             page = 0
         }
-        let _query = {status:'review'};
+        let _query = {status:'pending'};
         if(req.body.query) {
             _query[Op.or] = [];
         }
