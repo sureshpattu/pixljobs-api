@@ -30,6 +30,8 @@ const RecruiterRouter          = require('./recruiter.route');
 const CompanyUsersRouter       = require('./company_users.route');
 const RolesRouter              = require('./roles.route');
 const IndustriesRouter         = require('./industries.route');
+const QAJobVersionRouter       = require('./qa_job_versions.route');
+const JobVersionRouter         = require('./job_versions.route');
 
 const prefix = '/api';
 
@@ -51,12 +53,14 @@ module.exports = (app) => {
     app.use(`${prefix}/qa-job/categories`, QaJobCatRouter);
     app.use(`${prefix}/qa-job/technologies`, QaJobTechRouter);
     app.use(`${prefix}/qa-job/requirements`, QaJobReqRouter);
+    app.use(`${prefix}/qa-job/version`, QAJobVersionRouter);
 
-    //Production
+    //Published
     app.use(`${prefix}/jobs`, JobsRouter);
     app.use(`${prefix}/job/categories`, JobCatRouter);
     app.use(`${prefix}/job/technologies`, JobTechRouter);
     app.use(`${prefix}/job/requirements`, JobRequirementsRouter);
+    app.use(`${prefix}/job/version`, JobVersionRouter);
 
     app.use(`${prefix}/job/likes`, JobLikesRouter);
     app.use(`${prefix}/categories`, CategoriesRouter);
