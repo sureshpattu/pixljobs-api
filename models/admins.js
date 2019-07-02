@@ -5,7 +5,7 @@ const crypto2 = require('crypto2');
 
 module.exports = function(sequelize, Sequelize) {
 
-    let Docs = sequelize.define('recruiters', {
+    let Docs = sequelize.define('admins', {
         id                :{
             type        :Sequelize.UUID,
             primaryKey  :true,
@@ -74,9 +74,6 @@ module.exports = function(sequelize, Sequelize) {
         photo_type        :{
             type:Sequelize.STRING
         },
-        designation       :{
-            type:Sequelize.STRING
-        },
         user_type         :{
             type        :Sequelize.STRING,
             defaultValue:'6'
@@ -104,10 +101,6 @@ module.exports = function(sequelize, Sequelize) {
             type        :Sequelize.BOOLEAN,
             defaultValue:false
         },
-        is_recruiter      :{
-            type        :Sequelize.BOOLEAN,
-            defaultValue:true
-        },
         otp_verify_count  :{
             type        :Sequelize.INTEGER,
             defaultValue:0
@@ -115,9 +108,6 @@ module.exports = function(sequelize, Sequelize) {
         has_login         :{
             type        :Sequelize.ENUM('YES', 'NO'),
             defaultValue:'YES'
-        },
-        default_company_id:{
-            type:Sequelize.UUID
         },
         last_login        :{
             type:Sequelize.DATE

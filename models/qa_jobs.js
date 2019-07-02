@@ -3,28 +3,28 @@
 module.exports = function(sequelize, Sequelize) {
 
     return sequelize.define('qa_jobs', {
-        id        :{
+        id             :{
             type        :Sequelize.UUID,
             primaryKey  :true,
             defaultValue:Sequelize.UUIDV4,
             allowNull   :false
         },
-        name      :{
+        name           :{
             type:Sequelize.TEXT('long')
         },
-        desc      :{
+        desc           :{
             type:Sequelize.TEXT('long')
         },
         recruiter_id   :{
             type:Sequelize.UUID
         },
-        company_id:{
+        company_id     :{
             type:Sequelize.UUID
         },
-        salary_min:{
+        salary_min     :{
             type:Sequelize.STRING
         },
-        salary_max:{
+        salary_max     :{
             type:Sequelize.STRING
         },
         position_count :{
@@ -90,15 +90,24 @@ module.exports = function(sequelize, Sequelize) {
         email          :{
             type:Sequelize.STRING
         },
-        work_week          :{
+        work_week      :{
             type:Sequelize.STRING
         },
-        holidays          :{
+        holidays       :{
             type:Sequelize.STRING
         },
-        status    :{
-            type        :Sequelize.ENUM('closed', 'active', 'review', 'deleted'),
-            defaultValue:'review'
+        status         :{
+            type        :Sequelize.ENUM('closed', 'published', 'pending', 'rejected', 'deleted'),
+            defaultValue:'pending'
+        },
+        admin_id       :{
+            type:Sequelize.UUID
+        },
+        admin_msg      :{
+            type:Sequelize.TEXT('long')
+        },
+        admin_date     :{
+            type:Sequelize.STRING
         }
     }, {
         underscored:true

@@ -1,7 +1,7 @@
 'use strict';
 
 const Model           = db.qa_jobs;
-const JobTechnologies = db.qa_job_technologies;
+const QAJobTechnologies = db.qa_job_technologies;
 const Technologies    = db.technologies;
 const Companies       = db.companies;
 const QAJobCategories = db.qa_job_categories;
@@ -55,7 +55,7 @@ function fetchSingle(_id, res) {
                 ]
             },
             {
-                model     :JobTechnologies,
+                model     :QAJobTechnologies,
                 attributes:['id', 'qa_job_id'],
                 include   :[
                     {
@@ -199,7 +199,7 @@ module.exports = {
                         attributes:companyAttr
                     },
                     {
-                        model     :JobTechnologies,
+                        model     :QAJobTechnologies,
                         attributes:['id', 'qa_job_id'],
                         include   :[
                             {

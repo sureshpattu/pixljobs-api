@@ -8,6 +8,7 @@ const path       = require('path');
 const sequelize  = require('sequelize');
 const crypto2    = require('crypto2');
 const config     = require('../config/config');
+const fs         = require('fs');
 
 function fetchSingle(req, res) {
     Model.findOne({
@@ -73,9 +74,19 @@ module.exports = {
         return res.sendFile(`${path.resolve(__dirname, '../', 'uploads/applicant/photo/', req.params.image)}`);
     },
     removePhoto     :(req, res) => {
-        let filePath = `${path.resolve(__dirname, '../', 'uploads/recruiter/photo/', req.params.image)}`;
+        let data = {
+            photo     :null,
+            photo_type:null
+        };
+
+        let filePath = `${path.resolve(__dirname, '../', 'uploads/applicant/photo/', req.params.image)}`;
         fs.unlinkSync(filePath);
-        ApiHelpers.success(res, {status:'success', code:200});
+
+        Model.update(data, {where:{photo:req.params.image}}).then((_data) => {
+            ApiHelpers.success(res, _data);
+        }).catch(_err => {
+            ApiHelpers.error(res, _err);
+        });
     },
     resumeFile      :(req, res) => {
         if(req.file) {
@@ -93,12 +104,22 @@ module.exports = {
         }
     },
     viewResumeFile  :(req, res) => {
-        return res.sendFile(`${path.resolve(__dirname, '../', 'uploads/applicant/doc/', req.params.image)}`);
+        return res.sendFile(`${path.resolve(__dirname, '../', 'uploads/applicant/doc/', req.params.file)}`);
     },
     removeResumeFile:(req, res) => {
-        let filePath = `${path.resolve(__dirname, '../', 'uploads/recruiter/doc/', req.params.image)}`;
+        let data = {
+            resume     :null,
+            resume_type:null
+        };
+
+        let filePath = `${path.resolve(__dirname, '../', 'uploads/applicant/doc/', req.params.file)}`;
         fs.unlinkSync(filePath);
-        ApiHelpers.success(res, {status:'success', code:200});
+
+        Model.update(data, {where:{resume:req.params.file}}).then((_data) => {
+            ApiHelpers.success(res, _data);
+        }).catch(_err => {
+            ApiHelpers.error(res, _err);
+        });
     },
     delete          :(req, res) => {
         if(!req.params.id) {

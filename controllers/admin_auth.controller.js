@@ -1,6 +1,6 @@
 'use strict';
 
-const Model      = db.applicants;
+const Model      = db.admins;
 const crypto2    = require('crypto2');
 const _          = require('underscore');
 const config     = require('../config/config'),
@@ -24,28 +24,13 @@ module.exports = {
             return ApiHelpers.error(res, true, 'Parameters missing!');
         }
         let basic = {
-            name           :req.body.name,
-            email          :req.body.email,
-            gender         :req.body.gender,
-            designation    :req.body.designation,
-            qualification  :req.body.qualification,
-            institution    :req.body.institution,
-            company        :req.body.company,
-            current_salary :req.body.current_salary,
-            expected_salary:req.body.expected_salary,
-            exp_month      :req.body.exp_month,
-            exp_year       :req.body.exp_year,
-            resume         :req.body.resume
-
+            name       :req.body.name,
+            email      :req.body.email,
+            gender     :req.body.gender,
+            designation:req.body.designation
         };
         if(req.body.mobile) {
             basic.mobile = req.body.mobile;
-        }
-        if(req.body.photo) {
-            basic.photo = req.body.photo;
-        }
-        if(req.body.photo_type) {
-            basic.photo_type = req.body.photo_type;
         }
         if(req.body.password) {
             basic.password = await crypto2.encrypt(req.body.password, config.hashSalt2, config.hashIV);
@@ -60,8 +45,8 @@ module.exports = {
                     from   :'connect@trebound.com',
                     to     :req.body.email,
                     subject:'Verify Your Email Address',
-                    body   :'Hi, ' + req.body.name + ' Click here to verify your email : http://' +
-                        'localhost:3035' + '/applicant/email/verify/' + token
+                    body   :'Hi, ' + req.body.name + ' Click here to activate your account : http://' +
+                        'localhost:3035' + '/admin/email/verify/' + token
                 };
                 Mail.sendMail(req, mailOptions);
                 ApiHelpers.success(res, user,
@@ -149,9 +134,9 @@ module.exports = {
         if(!req.body.email) {
             return ApiHelpers.error(res, true, 'Parameters missing');
         }
-        Model.findOne({where:{email:req.body.email}}).then((_user) => {
+        Model.findOne({where:{email:req.body.email}}).then(async(_user) => {
             if(!_user) {
-                return ApiHelpers.error(res, true, 'Invalid credentials');
+                ApiHelpers.error(res, true, 'Invalid credentials');
             } else {
                 let token = jwt.encode({email:_user.email}, config.TOKENSECRET);
                 Model.update({
@@ -161,18 +146,19 @@ module.exports = {
                         from   :'connect@trebound.com',
                         to     :req.body.email,
                         subject:'Verify Your Email Address',
-                        body   :'Hi, ' + req.body.name + ' Click here to reset your password : http://' +
-                            'localhost:3035' + '/applicant/forgot/password/' + token
+                        body   :'Hi, ' + req.body.name + ' Click here to activate your account : http://' +
+                            'localhost:3035' + '/admin/forgot/password/' + token
                     };
                     Mail.sendMail(req, mailOptions);
                     return res.json({
-                        error  :false,
-                        message:'A reset password link has been sent to the email address provided.'
+                        err:false,
+                        msg:'An email has been sent to the email address provided. Please verify your email by clicking the link send by us.'
                     });
                 }).catch(_err => {
                     ApiHelpers.error(res, _err);
                 });
             }
+
         }).catch(_err => {
             ApiHelpers.error(res, _err);
         });
