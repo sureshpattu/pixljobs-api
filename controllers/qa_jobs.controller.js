@@ -1,20 +1,22 @@
 'use strict';
 
-const Model           = db.qa_jobs;
+const Model             = db.qa_jobs;
 const QAJobTechnologies = db.qa_job_technologies;
-const Technologies    = db.technologies;
-const Companies       = db.companies;
-const QAJobCategories = db.qa_job_categories;
-const Categories      = db.categories;
-const Industry        = db.industries;
-const CompanyBenefits = db.company_benefits;
-const Benefits        = db.benefits;
-const waterfall       = require('async-waterfall');
-const _               = require('underscore');
-const ApiHelpers      = require('../helpers/api.helpers');
-const sequelize       = require('sequelize');
-const Op              = sequelize.Op;
-const companyAttr         = [
+const Technologies      = db.technologies;
+const Companies         = db.companies;
+const QAJobCategories   = db.qa_job_categories;
+const Categories        = db.categories;
+const Industry          = db.industries;
+const CompanyBenefits   = db.company_benefits;
+const Benefits          = db.benefits;
+const QAJobRequirements = db.qa_job_requirements;
+const Requirements      = db.requirements;
+const waterfall         = require('async-waterfall');
+const _                 = require('underscore');
+const ApiHelpers        = require('../helpers/api.helpers');
+const sequelize         = require('sequelize');
+const Op                = sequelize.Op;
+const companyAttr       = [
     'id',
     'name',
     'logo',
@@ -38,7 +40,7 @@ function fetchSingle(_id, res) {
             {
                 model     :Companies,
                 attributes:companyAttr,
-                include:[
+                include   :[
                     {
                         model:Industry
                     },
@@ -71,6 +73,16 @@ function fetchSingle(_id, res) {
                     {
                         model     :Categories,
                         attributes:['id', 'name']
+                    }
+                ]
+            },
+            {
+                model     :QAJobRequirements,
+                attributes:['id', 'qa_job_id'],
+                include   :[
+                    {
+                        model     :Requirements,
+                        attributes:['id', 'desc']
                     }
                 ]
             }
