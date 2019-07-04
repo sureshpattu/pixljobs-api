@@ -50,7 +50,7 @@ module.exports = {
                         },
                         {
                             model     :CompanyBenefits,
-                            attributes:['company_id'],
+                            attributes:['company_id', 'Benefit_id'],
                             include   :[
                                 {
                                     model     :Benefits,
