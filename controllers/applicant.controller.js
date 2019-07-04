@@ -43,13 +43,12 @@ module.exports = {
     changeEmail  :(req, res) => {
         Model.findOne({
             where:{id:req.params.id}
-        }).then(async(_data) => {
-            ApiHelpers.success(res, _data);
+        }).then(async(user) => {
             let token = jwt.encode({email:user.email}, config.TOKENSECRET);
             Model.update({
                 email_token      :token,
                 is_email_verified:false
-            }, {where:{email:req.body.email}}).then((_emp_updated) => {
+            }, {where:{id:req.params.id}}).then((_emp_updated) => {
                 let mailOptions = {
                     from   :'connect@trebound.com',
                     to     :req.body.email,
