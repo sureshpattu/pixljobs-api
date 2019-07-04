@@ -190,7 +190,7 @@ function createJobOtherDetails(req, res, _qaJobObj, _newJobObj) {
     ], function(err, results) {
         QAJobs.update({status:'published'}, {where:{id:_newJobObj.qa_job_id}}).then((_data) => {
             Jobs.update({status:'published'}, {where:{id:_newJobObj.id}}).then((_data) => {
-                ApiHelpers.success(res, _new_job);
+                ApiHelpers.success(res, _newJobObj);
             }).catch(_err => {
                 ApiHelpers.error(res, _err);
             });

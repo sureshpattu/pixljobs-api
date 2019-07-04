@@ -98,7 +98,7 @@ function search(req, res) {
     if(!page) {
         page = 0
     }
-    let _query            = {};
+    let _query            = {is_active:true};
     let _outQuery         = {};
     let _categoryQuery    = {};
     let _categoryRequired = false;
