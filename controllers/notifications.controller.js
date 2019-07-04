@@ -68,7 +68,9 @@ module.exports = {
         if(!page) {
             page = 0
         }
-        let _query = {};
+        let _query = {
+            recruiter_id:req.body.recruiter_id
+        };
         if(req.body.status) {
             _query.status = req.body.status;
         }
@@ -78,7 +80,8 @@ module.exports = {
             Model.findAll({
                 where :_query,
                 order :[
-                    ['status', 'DESC']
+                    ['status', 'DESC'],
+                    ['created_at', 'DESC']
                 ],
                 limit :limit,
                 offset:offset

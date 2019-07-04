@@ -110,6 +110,10 @@ module.exports = function(sequelize, Sequelize) {
         },
         admin_date     :{
             type:Sequelize.STRING
+        },
+        is_active      :{
+            type        :Sequelize.BOOLEAN,
+            defaultValue:true
         }
     }, {
         underscored:true,
