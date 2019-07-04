@@ -152,8 +152,8 @@ module.exports = {
                     };
                     Mail.sendMail(req, mailOptions);
                     return res.json({
-                        err:false,
-                        msg:'An email has been sent to the email address provided. Please verify your email by clicking the link send by us.'
+                        error:false,
+                        message:'An email has been sent to the email address provided.'
                     });
                 }).catch(_err => {
                     ApiHelpers.error(res, _err);

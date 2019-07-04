@@ -9,6 +9,9 @@ const sequelize  = require('sequelize');
 const crypto2    = require('crypto2');
 const config     = require('../config/config');
 const fs         = require('fs');
+const jwt             = require('jwt-simple');
+const Mail            = require('../helpers/mail');
+const SMSHelpers      = require('../helpers/sms');
 
 function fetchSingle(req, res) {
     Model.findOne({
@@ -36,6 +39,32 @@ module.exports = {
         }).catch(_err => {
             ApiHelpers.error(res, _err);
         });
+    },
+    changeEmail  :(req, res) => {
+        Model.findOne({
+            where:{id:req.params.id}
+        }).then(async(_data) => {
+            ApiHelpers.success(res, _data);
+            let token = jwt.encode({email:user.email}, config.TOKENSECRET);
+            Model.update({
+                email_token      :token,
+                is_email_verified:false
+            }, {where:{email:req.body.email}}).then((_emp_updated) => {
+                let mailOptions = {
+                    from   :'connect@trebound.com',
+                    to     :req.body.email,
+                    subject:'Verify Your Email Address',
+                    body   :'Hi, ' + req.body.name + ' Click here to activate your account : http://' +
+                        'localhost:3035' + '/applicant/email/verify/' + token
+                };
+                Mail.sendMail(req, mailOptions);
+                ApiHelpers.success(res, user,
+                    'An email has been sent to the email address provided. Please verify your email by clicking the link send by us.');
+            }).catch(_err => {
+                ApiHelpers.error(res, _err);
+            });
+        })
+
     },
 
     update          :(req, res) => {
