@@ -13,6 +13,24 @@ function fetchSingle(_id, res) {
     });
 }
 
+function createQAJobTechnologies(req, res, _qa_job_id) {
+    waterfall(req.body.technologies.map(function(technology_id) {
+        return function(lastItemResult, CB) {
+            if(!CB) {
+                CB             = lastItemResult;
+                lastItemResult = null;
+            }
+            Model.create({qa_job_id:_qa_job_id, technology_id:technology_id}).then((_data) => {
+                CB(null, []);
+            }).catch(_err => {
+                CB(null, []);
+            });
+        };
+    }), function() {
+        ApiHelpers.success(res, null, 'success');
+    });
+}
+
 module.exports = {
     index:(req, res) => {
         Model.findAll({where:{}}).then((_data) => {
@@ -27,11 +45,20 @@ module.exports = {
     },
 
     create:(req, res) => {
-        if(!req.body.qa_job_id || !req.body.technology_id) {
+        if(!req.body.qa_job_id || !req.body.technologies) {
             return ApiHelpers.error(res, true, 'Parameters missing');
         }
-        Model.create(req.body).then((_data) => {
-            fetchSingle(_data.id, res);
+        var _qa_job_id = req.body.qa_job_id;
+        Model.findOne({where:{qa_job_id:_qa_job_id}}).then((_data_found) => {
+            if(!_data_found) {
+                createQAJobTechnologies(req, res, _qa_job_id);
+            } else {
+                Model.destroy({where:{qa_job_id:_qa_job_id}}).then((_dataDel) => {
+                    createQAJobTechnologies(req, res, _qa_job_id);
+                }).catch(_err => {
+                    ApiHelpers.error(res, _err);
+                });
+            }
         }).catch(_err => {
             ApiHelpers.error(res, _err);
         });

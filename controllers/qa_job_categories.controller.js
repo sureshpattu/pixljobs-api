@@ -30,11 +30,28 @@ module.exports = {
         if(!req.body.qa_job_id || !req.body.category_id) {
             return ApiHelpers.error(res, true, 'Parameters missing');
         }
-        Model.create(req.body).then((_data) => {
-            fetchSingle(_data.id, res);
+        Model.findOne({where:{qa_job_id:req.body.qa_job_id}}).then((_data_found) => {
+            if(!_data_found) {
+                Model.create(req.body).then((_data) => {
+                    fetchSingle(_data.id, res);
+                }).catch(_err => {
+                    ApiHelpers.error(res, _err);
+                });
+            } else {
+                Model.destroy({where:{qa_job_id:req.body.qa_job_id}}).then((_dataDel) => {
+                    Model.create(req.body).then((_data) => {
+                        fetchSingle(_data.id, res);
+                    }).catch(_err => {
+                        ApiHelpers.error(res, _err);
+                    });
+                }).catch(_err => {
+                    ApiHelpers.error(res, _err);
+                });
+            }
         }).catch(_err => {
             ApiHelpers.error(res, _err);
         });
+
     },
 
     update:(req, res) => {
