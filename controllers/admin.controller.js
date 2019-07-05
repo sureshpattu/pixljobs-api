@@ -93,20 +93,13 @@ function createJobOtherDetails(req, res, _qaJobObj, _newJobObj) {
                                 CB             = lastItemResult;
                                 lastItemResult = null;
                             }
-                            var _tempObj = {
+                            JobRequirements.create({
                                 qa_job_id     :_qaJobObj.qa_job_id,
                                 job_id        :_newJobObj.id,
                                 requirement_id:_obj.requirement_id
-                            };
-                            async.parallel([
-                                function(callback) {
-                                    JobRequirements.create(_tempObj).then((_cat) => {
-                                        callback(null, []);
-                                    }).catch(_err => {
-                                        callback(null, []);
-                                    });
-                                }
-                            ], function(err, results) {
+                            }).then((_cat) => {
+                                CB(null, []);
+                            }).catch(_err => {
                                 CB(null, []);
                             });
                         };
@@ -129,20 +122,13 @@ function createJobOtherDetails(req, res, _qaJobObj, _newJobObj) {
                                 CB             = lastItemResult;
                                 lastItemResult = null;
                             }
-                            var _tempObj = {
-                                qa_job_id     :_qaJobObj.qa_job_id,
+                            JobTechnologies.create({
+                                qa_job_id    :_qaJobObj.qa_job_id,
                                 job_id       :_newJobObj.id,
                                 technology_id:_obj.technology_id
-                            };
-                            async.parallel([
-                                function(callback) {
-                                    JobTechnologies.create(_tempObj).then((_cat) => {
-                                        callback(null, []);
-                                    }).catch(_err => {
-                                        callback(null, []);
-                                    });
-                                }
-                            ], function(err, results) {
+                            }).then((_cat) => {
+                                CB(null, []);
+                            }).catch(_err => {
                                 CB(null, []);
                             });
                         };
@@ -165,20 +151,13 @@ function createJobOtherDetails(req, res, _qaJobObj, _newJobObj) {
                                 CB             = lastItemResult;
                                 lastItemResult = null;
                             }
-                            var _tempObj = {
-                                qa_job_id     :_qaJobObj.qa_job_id,
+                            JobCategories.create({
+                                qa_job_id  :_qaJobObj.qa_job_id,
                                 job_id     :_newJobObj.id,
                                 category_id:_obj.category_id
-                            };
-                            async.parallel([
-                                function(callback) {
-                                    JobCategories.create(_tempObj).then((_cat) => {
-                                        callback(null, []);
-                                    }).catch(_err => {
-                                        callback(null, []);
-                                    });
-                                }
-                            ], function(err, results) {
+                            }).then((_cat) => {
+                                CB(null, []);
+                            }).catch(_err => {
                                 CB(null, []);
                             });
                         };
@@ -217,6 +196,7 @@ module.exports = {
 
                 _qaJobObj.qa_job_id = _qaJobObj.id;
                 _qaJobObj.is_active = true;
+                _qaJobObj.status    = 'published';
                 delete _qaJobObj.id;
                 delete _qaJobObj.created_at;
                 delete _qaJobObj.updated_at;
