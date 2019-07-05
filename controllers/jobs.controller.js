@@ -54,7 +54,7 @@ function fetchSingle(_id, res) {
                         include   :[
                             {
                                 model     :Benefits,
-                                attributes:['id', 'name']
+                                attributes:['id', 'desc']
                             }
                         ]
                     }
