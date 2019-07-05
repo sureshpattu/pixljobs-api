@@ -187,7 +187,7 @@ function search(req, res) {
                     required  :_categoryRequired
                 }
             ],
-            order  :['created_at', 'DESC'],
+            order  :[['created_at', 'DESC']],
             limit  :limit,
             offset :offset
         }).then((_data) => {
