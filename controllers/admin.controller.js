@@ -54,21 +54,21 @@ function fetchSingle(req, res) {
 function updateJobOtherDetails(req, res, _qaJobObj, _newJobObj) {
     async.parallel([
         function(callback) {
-            JobRequirements.destroy({where:{qa_job_id:_qaJobObj.id}}).then((_data) => {
+            JobRequirements.destroy({where:{qa_job_id:_qaJobObj.qa_job_id}}).then((_data) => {
                 callback(null, []);
             }).catch(_err => {
                 callback(null, []);
             });
         },
         function(callback) {
-            JobTechnologies.destroy({where:{qa_job_id:_qaJobObj.id}}).then((_data) => {
+            JobTechnologies.destroy({where:{qa_job_id:_qaJobObj.qa_job_id}}).then((_data) => {
                 callback(null, []);
             }).catch(_err => {
                 callback(null, []);
             });
         },
         function(callback) {
-            JobCategories.destroy({where:{qa_job_id:_qaJobObj.id}}).then((_data) => {
+            JobCategories.destroy({where:{qa_job_id:_qaJobObj.qa_job_id}}).then((_data) => {
                 callback(null, []);
             }).catch(_err => {
                 callback(null, []);
@@ -94,6 +94,7 @@ function createJobOtherDetails(req, res, _qaJobObj, _newJobObj) {
                                 lastItemResult = null;
                             }
                             var _tempObj = {
+                                qa_job_id     :_qaJobObj.qa_job_id,
                                 job_id        :_newJobObj.id,
                                 requirement_id:_obj.requirement_id
                             };
@@ -129,6 +130,7 @@ function createJobOtherDetails(req, res, _qaJobObj, _newJobObj) {
                                 lastItemResult = null;
                             }
                             var _tempObj = {
+                                qa_job_id     :_qaJobObj.qa_job_id,
                                 job_id       :_newJobObj.id,
                                 technology_id:_obj.technology_id
                             };
@@ -164,6 +166,7 @@ function createJobOtherDetails(req, res, _qaJobObj, _newJobObj) {
                                 lastItemResult = null;
                             }
                             var _tempObj = {
+                                qa_job_id     :_qaJobObj.qa_job_id,
                                 job_id     :_newJobObj.id,
                                 category_id:_obj.category_id
                             };
