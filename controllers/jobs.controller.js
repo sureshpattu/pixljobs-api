@@ -191,7 +191,7 @@ function search(req, res) {
             limit  :limit,
             offset :offset
         }).then((_data) => {
-            ApiHelpers.success(res, {total:_data.length, pages:pages, page:page, result:_data});
+            ApiHelpers.success(res, {total:data.count, pages:pages, page:page, result:_data});
         }).catch(_err => {
             ApiHelpers.error(res, _err);
         });

@@ -17,6 +17,7 @@ const Categories      = db.categories;
 const Industry        = db.industries;
 const CompanyBenefits = db.company_benefits;
 const Benefits        = db.benefits;
+const Requirements = db.requirements;
 
 const waterfall   = require('async-waterfall');
 const async       = require('async');
@@ -293,6 +294,16 @@ module.exports = {
                             {
                                 model     :Categories,
                                 attributes:['id', 'name']
+                            }
+                        ]
+                    },
+                    {
+                        model     :QAJobRequirements,
+                        attributes:['id', 'qa_job_id'],
+                        include   :[
+                            {
+                                model     :Requirements,
+                                attributes:['id', 'desc']
                             }
                         ]
                     }
