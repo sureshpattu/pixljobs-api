@@ -3,10 +3,12 @@
 const Model           = db.jobs;
 const JobTechnologies = db.job_technologies;
 const Technologies    = db.technologies;
-const Companies       = db.companies;
 const JobCategories   = db.job_categories;
 const Categories      = db.categories;
+const JobRequirements = db.job_requirements;
+const Requirements    = db.requirements;
 const Industry        = db.industries;
+const Companies       = db.companies;
 const CompanyBenefits = db.company_benefits;
 const Benefits        = db.benefits;
 const JobApplications = db.job_applications;
@@ -25,6 +27,7 @@ const companyAttr = [
     'about',
     'size',
     'url',
+    'email',
     'street',
     'area',
     'locality',
@@ -73,6 +76,16 @@ function fetchSingle(_id, res) {
                 include   :[
                     {
                         model     :Categories,
+                        attributes:['id', 'name']
+                    }
+                ]
+            },
+            {
+                model     :JobRequirements,
+                attributes:['id', 'job_id'],
+                include   :[
+                    {
+                        model     :Requirements,
                         attributes:['id', 'name']
                     }
                 ]
@@ -174,6 +187,7 @@ function search(req, res) {
                     required  :_categoryRequired
                 }
             ],
+            order  :['created_at', 'DESC'],
             limit  :limit,
             offset :offset
         }).then((_data) => {
