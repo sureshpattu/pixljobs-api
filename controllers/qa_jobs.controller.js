@@ -119,6 +119,10 @@ module.exports = {
     },
 
     update:(req, res) => {
+        if(!req.params.id) {
+            return ApiHelpers.error(res, true, 'Parameters missing');
+        }
+        req.body.status = 'pending';
         Model.update(req.body, {where:{id:req.params.id}}).then((_data) => {
             fetchSingle(req.params.id, res);
         }).catch(_err => {

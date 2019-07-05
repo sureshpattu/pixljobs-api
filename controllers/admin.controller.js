@@ -218,7 +218,7 @@ module.exports = {
                 delete _qaJobObj.created_at;
                 delete _qaJobObj.updated_at;
 
-                Jobs.findOne({where:{qa_job_id:_qaJobObj.id}}).then((_JobData) => {
+                Jobs.findOne({where:{qa_job_id:_qaJobObj.qa_job_id}}).then((_JobData) => {
                     if(!_JobData) {
                         Jobs.create(_qaJobObj).then((_new_job) => {
                             let _newJobObj = JSON.parse(JSON.stringify(_new_job));
@@ -228,9 +228,10 @@ module.exports = {
                         });
                     } else {
                         let _newJobObj = JSON.parse(JSON.stringify(_JobData));
-                        Jobs.update(_qaJobObj, {where:{qa_job_id:_qaJobObj.id}}).then((_jobUpdateRes) => {
-                            updateJobOtherDetails(req, res, _qaJobObj, _newJobObj);
-                        }).catch(_err => {
+                        Jobs.update(_qaJobObj, {where:{id:_newJobObj.id, qa_job_id:_qaJobObj.qa_job_id}})
+                            .then((_jobUpdateRes) => {
+                                updateJobOtherDetails(req, res, _qaJobObj, _newJobObj);
+                            }).catch(_err => {
                             ApiHelpers.error(res, _err);
                         });
                     }

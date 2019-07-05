@@ -51,7 +51,6 @@ module.exports = {
         }).catch(_err => {
             ApiHelpers.error(res, _err);
         });
-
     },
 
     update:(req, res) => {
