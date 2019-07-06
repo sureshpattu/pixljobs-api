@@ -11,13 +11,14 @@ const JobCategories   = db.job_categories;
 const JobTechnologies = db.job_technologies;
 const JobRequirements = db.job_requirements;
 
-const Technologies    = db.technologies;
-const Companies       = db.companies;
-const Categories      = db.categories;
-const Industry        = db.industries;
-const CompanyBenefits = db.company_benefits;
-const Benefits        = db.benefits;
-const Requirements = db.requirements;
+const Technologies       = db.technologies;
+const Companies          = db.companies;
+const Categories         = db.categories;
+const Industry           = db.industries;
+const CompanyBenefits    = db.company_benefits;
+const Benefits           = db.benefits;
+const Requirements       = db.requirements;
+const AdminNotifications = db.admin_notifications;
 
 const waterfall   = require('async-waterfall');
 const async       = require('async');
@@ -46,7 +47,15 @@ function fetchSingle(req, res) {
     Model.findOne({
         where:{id:req.params.id}
     }).then((_data) => {
-        ApiHelpers.success(res, _data);
+        _data = JSON.parse(JSON.stringify(_data));
+        AdminNotifications.findAndCountAll({
+            where:{status:'unread'}
+        }).then((_notifications) => {
+            _data.total_notifications = _notifications.count;
+            ApiHelpers.success(res, _data);
+        }).catch(_err => {
+            ApiHelpers.error(res, _err);
+        });
     }).catch(_err => {
         ApiHelpers.error(res, _err);
     });
@@ -85,8 +94,7 @@ function createJobOtherDetails(req, res, _qaJobObj, _newJobObj) {
         function(mainCallBack) {
             QAJobRequirements.findAll({where:{qa_job_id:req.params.id}}).then((_qaReqdata) => {
                 if(_qaReqdata) {
-                    let qaReq = JSON.parse(
-                        JSON.stringify(_qaReqdata));
+                    let qaReq = JSON.parse(JSON.stringify(_qaReqdata));
 
                     waterfall(qaReq.map(function(_obj) {
                         return function(lastItemResult, CB) {
