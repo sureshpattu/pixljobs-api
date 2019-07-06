@@ -92,4 +92,6 @@ db.admin_notifications.belongsTo(db.recruiters);
 db.admin_notifications.belongsTo(db.jobs);
 db.admin_notifications.belongsTo(db.qa_jobs);
 
+db.notifications.belongsTo(db.recruiters);
+
 module.exports = db;
