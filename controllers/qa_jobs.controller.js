@@ -155,6 +155,9 @@ module.exports = {
     },
 
     search:(req, res) => {
+        if(!req.body.recruiter_id) {
+            return ApiHelpers.error(res, true, 'Parameters missing');
+        }
         let limit = parseInt(req.body.limit);
         if(!limit) {
             limit = 10
@@ -206,6 +209,9 @@ module.exports = {
         if(req.body.category_id) {
             _categoryQuery.category_id = req.body.category_id;
             _categoryRequired          = true;
+        }
+        if(req.body.recruiter_id) {
+            _query.recruiter_id = req.body.recruiter_id;
         }
         Model.findAndCountAll({where:_query}).then((data) => {
             let pages = Math.ceil(data.count / limit);
