@@ -53,8 +53,12 @@ module.exports = {
                         'localhost:3035' + '/recruiter/email/verify/' + token
                 };
                 Mail.sendMail(req, mailOptions);
-                ApiHelpers.success(res, user,
-                    'An email has been sent to the email address provided. Please verify your email by clicking the link send by us.');
+                Model.findOne({where:{id:user.id}}).then((_data) => {
+                    ApiHelpers.success(res, _data,
+                        'An email has been sent to the email address provided. Please verify your email by clicking the link send by us.');
+                }).catch(_err => {
+                    ApiHelpers.error(res, _err);
+                });
             }).catch(_err => {
                 ApiHelpers.error(res, _err);
             });
@@ -155,7 +159,7 @@ module.exports = {
                     };
                     Mail.sendMail(req, mailOptions);
                     return res.json({
-                        error:false,
+                        error  :false,
                         message:'An email has been sent to the email address provided.'
                     });
                 }).catch(_err => {
