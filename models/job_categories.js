@@ -9,6 +9,9 @@ module.exports = function(sequelize, Sequelize) {
             defaultValue:Sequelize.UUIDV4,
             allowNull   :false
         },
+        qa_job_id  :{
+            type:Sequelize.UUID
+        },
         job_id     :{
             allowNull:false,
             type     :Sequelize.UUID
@@ -19,6 +22,6 @@ module.exports = function(sequelize, Sequelize) {
         }
     }, {
         underscored:true,
-        version    :true,
+        version    :true
     });
 };

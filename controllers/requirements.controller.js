@@ -63,7 +63,10 @@ function createRequirements(req, res, _qa_job_id) {
 
 module.exports = {
     index:(req, res) => {
-        Model.findAll({where:{}}).then((_data) => {
+        Model.findAll({
+            where     :{},
+            attributes:['id', 'desc']
+        }).then((_data) => {
             ApiHelpers.success(res, _data);
         }).catch(_err => {
             ApiHelpers.error(res, _err);

@@ -4,7 +4,7 @@ const Model      = db.companies;
 const waterfall  = require('async-waterfall');
 const _          = require('underscore');
 const ApiHelpers = require('../helpers/api.helpers');
-const path            = require('path');
+const path       = require('path');
 
 function fetchSingle(_id, res) {
     Model.findOne({where:{id:_id}}).then((_data) => {
@@ -63,9 +63,19 @@ module.exports = {
         return res.sendFile(`${path.resolve(__dirname, '../', 'uploads/company/photo/', req.params.image)}`);
     },
     removePhoto:(req, res) => {
+
+        let data = {
+            logo:null
+        };
+
         let filePath = `${path.resolve(__dirname, '../', 'uploads/company/photo/', req.params.image)}`;
         fs.unlinkSync(filePath);
-        ApiHelpers.success(res, {status:'success', code:200});
+
+        Model.update(data, {where:{logo:req.params.image}}).then((_data) => {
+            ApiHelpers.success(res, _data);
+        }).catch(_err => {
+            ApiHelpers.error(res, _err);
+        });
     },
     delete     :(req, res) => {
         Model.destroy({where:{id:req.params.id}}).then((_data) => {

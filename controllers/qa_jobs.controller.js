@@ -46,7 +46,7 @@ function fetchSingle(_id, res) {
                     },
                     {
                         model     :CompanyBenefits,
-                        attributes:['company_id'],
+                        attributes:['company_id', 'benefit_id'],
                         include   :[
                             {
                                 model     :Benefits,
@@ -58,7 +58,7 @@ function fetchSingle(_id, res) {
             },
             {
                 model     :QAJobTechnologies,
-                attributes:['id', 'qa_job_id'],
+                attributes:['id', 'technology_id'],
                 include   :[
                     {
                         model     :Technologies,
@@ -68,7 +68,7 @@ function fetchSingle(_id, res) {
             },
             {
                 model     :QAJobCategories,
-                attributes:['id', 'qa_job_id'],
+                attributes:['id', 'category_id'],
                 include   :[
                     {
                         model     :Categories,
@@ -78,7 +78,7 @@ function fetchSingle(_id, res) {
             },
             {
                 model     :QAJobRequirements,
-                attributes:['id', 'qa_job_id'],
+                attributes:['id', 'requirement_id'],
                 include   :[
                     {
                         model     :Requirements,
@@ -119,6 +119,13 @@ module.exports = {
     },
 
     update:(req, res) => {
+        if(!req.params.id) {
+            return ApiHelpers.error(res, true, 'Parameters missing');
+        }
+        if(!req.body.status) {
+            req.body.status = 'pending';
+        }
+
         Model.update(req.body, {where:{id:req.params.id}}).then((_data) => {
             fetchSingle(req.params.id, res);
         }).catch(_err => {
@@ -148,6 +155,9 @@ module.exports = {
     },
 
     search:(req, res) => {
+        if(!req.body.recruiter_id) {
+            return ApiHelpers.error(res, true, 'Parameters missing');
+        }
         let limit = parseInt(req.body.limit);
         if(!limit) {
             limit = 10
@@ -200,6 +210,9 @@ module.exports = {
             _categoryQuery.category_id = req.body.category_id;
             _categoryRequired          = true;
         }
+        if(req.body.recruiter_id) {
+            _query.recruiter_id = req.body.recruiter_id;
+        }
         Model.findAndCountAll({where:_query}).then((data) => {
             let pages = Math.ceil(data.count / limit);
             offset    = limit * page;
@@ -212,7 +225,7 @@ module.exports = {
                     },
                     {
                         model     :QAJobTechnologies,
-                        attributes:['id', 'qa_job_id'],
+                        attributes:['id', 'qa_job_id', 'technology_id'],
                         include   :[
                             {
                                 model     :Technologies,
@@ -222,7 +235,7 @@ module.exports = {
                     },
                     {
                         model     :QAJobCategories,
-                        attributes:['id', 'qa_job_id'],
+                        attributes:['id', 'qa_job_id', 'category_id'],
                         where     :_categoryQuery,
                         include   :[
                             {

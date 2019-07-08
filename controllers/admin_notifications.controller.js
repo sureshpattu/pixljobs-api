@@ -89,7 +89,8 @@ module.exports = {
                     }
                 ],
                 order  :[
-                    ['status', 'DESC']
+                    ['status', 'DESC'],
+                    ['created_at', 'DESC']
                 ],
                 limit  :limit,
                 offset :offset

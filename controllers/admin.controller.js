@@ -11,12 +11,14 @@ const JobCategories   = db.job_categories;
 const JobTechnologies = db.job_technologies;
 const JobRequirements = db.job_requirements;
 
-const Technologies    = db.technologies;
-const Companies       = db.companies;
-const Categories      = db.categories;
-const Industry        = db.industries;
-const CompanyBenefits = db.company_benefits;
-const Benefits        = db.benefits;
+const Technologies       = db.technologies;
+const Companies          = db.companies;
+const Categories         = db.categories;
+const Industry           = db.industries;
+const CompanyBenefits    = db.company_benefits;
+const Benefits           = db.benefits;
+const Requirements       = db.requirements;
+const AdminNotifications = db.admin_notifications;
 
 const waterfall   = require('async-waterfall');
 const async       = require('async');
@@ -45,17 +47,155 @@ function fetchSingle(req, res) {
     Model.findOne({
         where:{id:req.params.id}
     }).then((_data) => {
-        ApiHelpers.success(res, _data);
+        _data = JSON.parse(JSON.stringify(_data));
+        AdminNotifications.findAndCountAll({
+            where:{status:'unread'}
+        }).then((_notifications) => {
+            _data.total_notifications = _notifications.count;
+            ApiHelpers.success(res, _data);
+        }).catch(_err => {
+            ApiHelpers.error(res, _err);
+        });
     }).catch(_err => {
         ApiHelpers.error(res, _err);
     });
 }
 
+function updateJobOtherDetails(req, res, _qaJobObj, _newJobObj) {
+    async.parallel([
+        function(callback) {
+            JobRequirements.destroy({where:{qa_job_id:_qaJobObj.qa_job_id}}).then((_data) => {
+                callback(null, []);
+            }).catch(_err => {
+                callback(null, []);
+            });
+        },
+        function(callback) {
+            JobTechnologies.destroy({where:{qa_job_id:_qaJobObj.qa_job_id}}).then((_data) => {
+                callback(null, []);
+            }).catch(_err => {
+                callback(null, []);
+            });
+        },
+        function(callback) {
+            JobCategories.destroy({where:{qa_job_id:_qaJobObj.qa_job_id}}).then((_data) => {
+                callback(null, []);
+            }).catch(_err => {
+                callback(null, []);
+            });
+        }
+    ], function(err, results) {
+        createJobOtherDetails(req, res, _qaJobObj, _newJobObj);
+    });
+}
+
+function createJobOtherDetails(req, res, _qaJobObj, _newJobObj) {
+    async.parallel([
+        function(mainCallBack) {
+            QAJobRequirements.findAll({where:{qa_job_id:req.params.id}}).then((_qaReqdata) => {
+                if(_qaReqdata) {
+                    let qaReq = JSON.parse(JSON.stringify(_qaReqdata));
+
+                    waterfall(qaReq.map(function(_obj) {
+                        return function(lastItemResult, CB) {
+                            if(!CB) {
+                                CB             = lastItemResult;
+                                lastItemResult = null;
+                            }
+                            JobRequirements.create({
+                                qa_job_id     :_qaJobObj.qa_job_id,
+                                job_id        :_newJobObj.id,
+                                requirement_id:_obj.requirement_id
+                            }).then((_cat) => {
+                                CB(null, []);
+                            }).catch(_err => {
+                                CB(null, []);
+                            });
+                        };
+                    }), function() {
+                        mainCallBack(null, [])
+                    });
+                }
+            }).catch(_err => {
+                mainCallBack(null, [])
+            });
+        },
+        function(mainCallBack) {
+            QAJobTechnologies.findAll({where:{qa_job_id:req.params.id}}).then((_qaTechdata) => {
+                if(_qaTechdata) {
+                    let qaTech = JSON.parse(JSON.stringify(_qaTechdata));
+
+                    waterfall(qaTech.map(function(_obj) {
+                        return function(lastItemResult, CB) {
+                            if(!CB) {
+                                CB             = lastItemResult;
+                                lastItemResult = null;
+                            }
+                            JobTechnologies.create({
+                                qa_job_id    :_qaJobObj.qa_job_id,
+                                job_id       :_newJobObj.id,
+                                technology_id:_obj.technology_id
+                            }).then((_cat) => {
+                                CB(null, []);
+                            }).catch(_err => {
+                                CB(null, []);
+                            });
+                        };
+                    }), function() {
+                        mainCallBack(null, [])
+                    });
+                }
+            }).catch(_err => {
+                mainCallBack(null, [])
+            });
+        },
+        function(mainCallBack) {
+            QAJobCategories.findAll({where:{qa_job_id:req.params.id}}).then((_qaCatdata) => {
+                if(_qaCatdata) {
+                    let qaCat = JSON.parse(JSON.stringify(_qaCatdata));
+
+                    waterfall(qaCat.map(function(_obj) {
+                        return function(lastItemResult, CB) {
+                            if(!CB) {
+                                CB             = lastItemResult;
+                                lastItemResult = null;
+                            }
+                            JobCategories.create({
+                                qa_job_id  :_qaJobObj.qa_job_id,
+                                job_id     :_newJobObj.id,
+                                category_id:_obj.category_id
+                            }).then((_cat) => {
+                                CB(null, []);
+                            }).catch(_err => {
+                                CB(null, []);
+                            });
+                        };
+                    }), function() {
+                        mainCallBack(null, [])
+                    });
+                }
+            }).catch(_err => {
+                mainCallBack(null, [])
+            });
+        }
+    ], function(err, results) {
+        QAJobs.update({status:'published'}, {where:{id:_newJobObj.qa_job_id}}).then((_data) => {
+            Jobs.update({status:'published'}, {where:{id:_newJobObj.id}}).then((_data) => {
+                ApiHelpers.success(res, _newJobObj);
+            }).catch(_err => {
+                ApiHelpers.error(res, _err);
+            });
+        }).catch(_err => {
+            ApiHelpers.error(res, _err);
+        });
+    });
+}
+
 module.exports = {
-    read      :(req, res) => {
+    read        :(req, res) => {
         fetchSingle(req, res);
     },
-    publishJob:(req, res) => {
+    publishJob  :(req, res) => {
         if(!req.params.id) {
             return ApiHelpers.error(res, true, 'Parameters missing');
         }
@@ -64,131 +204,29 @@ module.exports = {
                 let _qaJobObj = JSON.parse(JSON.stringify(_data));
 
                 _qaJobObj.qa_job_id = _qaJobObj.id;
+                _qaJobObj.is_active = true;
+                _qaJobObj.status    = 'published';
                 delete _qaJobObj.id;
                 delete _qaJobObj.created_at;
                 delete _qaJobObj.updated_at;
 
-                Jobs.create(_qaJobObj).then((_new_job) => {
-                    let _newJobObj = JSON.parse(JSON.stringify(_new_job));
-                    async.parallel([
-                        function(mainCallBack) {
-                            QAJobRequirements.findAll({where:{qa_job_id:req.params.id}}).then((_qaReqdata) => {
-                                if(_qaReqdata) {
-                                    let qaReq = JSON.parse(
-                                        JSON.stringify(_qaReqdata));
-
-                                    waterfall(qaReq.map(function(_obj) {
-                                        return function(lastItemResult, CB) {
-                                            if(!CB) {
-                                                CB             = lastItemResult;
-                                                lastItemResult = null;
-                                            }
-                                            var _tempObj = {
-                                                job_id        :_newJobObj.id,
-                                                requirement_id:_obj.requirement_id
-                                            };
-                                            async.parallel([
-                                                function(callback) {
-                                                    JobRequirements.create(_tempObj).then((_cat) => {
-                                                        callback(null, []);
-                                                    }).catch(_err => {
-                                                        callback(null, []);
-                                                    });
-                                                }
-                                            ], function(err, results) {
-                                                CB(null, []);
-                                            });
-                                        };
-                                    }), function() {
-                                        mainCallBack(null, [])
-                                    });
-                                }
-                            }).catch(_err => {
-                                mainCallBack(null, [])
-                            });
-                        },
-                        function(mainCallBack) {
-                            QAJobTechnologies.findAll({where:{qa_job_id:req.params.id}}).then((_qaTechdata) => {
-                                if(_qaTechdata) {
-                                    let qaTech = JSON.parse(JSON.stringify(_qaTechdata));
-
-                                    waterfall(qaTech.map(function(_obj) {
-                                        return function(lastItemResult, CB) {
-                                            if(!CB) {
-                                                CB             = lastItemResult;
-                                                lastItemResult = null;
-                                            }
-                                            var _tempObj = {
-                                                job_id       :_newJobObj.id,
-                                                technology_id:_obj.technology_id
-                                            };
-                                            async.parallel([
-                                                function(callback) {
-                                                    JobTechnologies.create(_tempObj).then((_cat) => {
-                                                        callback(null, []);
-                                                    }).catch(_err => {
-                                                        callback(null, []);
-                                                    });
-                                                }
-                                            ], function(err, results) {
-                                                CB(null, []);
-                                            });
-                                        };
-                                    }), function() {
-                                        mainCallBack(null, [])
-                                    });
-                                }
-                            }).catch(_err => {
-                                mainCallBack(null, [])
-                            });
-                        },
-                        function(mainCallBack) {
-                            QAJobCategories.findAll({where:{qa_job_id:req.params.id}}).then((_qaCatdata) => {
-                                if(_qaCatdata) {
-                                    let qaCat = JSON.parse(JSON.stringify(_qaCatdata));
-
-                                    waterfall(qaCat.map(function(_obj) {
-                                        return function(lastItemResult, CB) {
-                                            if(!CB) {
-                                                CB             = lastItemResult;
-                                                lastItemResult = null;
-                                            }
-                                            var _tempObj = {
-                                                job_id     :_newJobObj.id,
-                                                category_id:_obj.category_id
-                                            };
-                                            async.parallel([
-                                                function(callback) {
-                                                    JobCategories.create(_tempObj).then((_cat) => {
-                                                        callback(null, []);
-                                                    }).catch(_err => {
-                                                        callback(null, []);
-                                                    });
-                                                }
-                                            ], function(err, results) {
-                                                CB(null, []);
-                                            });
-                                        };
-                                    }), function() {
-                                        mainCallBack(null, [])
-                                    });
-                                }
-                            }).catch(_err => {
-                                mainCallBack(null, [])
-                            });
-                        }
-                    ], function(err, results) {
-                        QAJobs.update({status:'published'}, {where:{id:_newJobObj.qa_job_id}}).then((_data) => {
-                            Jobs.update({status:'published'}, {where:{id:_newJobObj.id}}).then((_data) => {
-                                ApiHelpers.success(res, _new_job);
-                            }).catch(_err => {
-                                ApiHelpers.error(res, _err);
-                            });
+                Jobs.findOne({where:{qa_job_id:_qaJobObj.qa_job_id}}).then((_JobData) => {
+                    if(!_JobData) {
+                        Jobs.create(_qaJobObj).then((_new_job) => {
+                            let _newJobObj = JSON.parse(JSON.stringify(_new_job));
+                            createJobOtherDetails(req, res, _qaJobObj, _newJobObj);
                         }).catch(_err => {
                             ApiHelpers.error(res, _err);
                         });
-                    });
-
+                    } else {
+                        let _newJobObj = JSON.parse(JSON.stringify(_JobData));
+                        Jobs.update(_qaJobObj, {where:{id:_newJobObj.id, qa_job_id:_qaJobObj.qa_job_id}})
+                            .then((_jobUpdateRes) => {
+                                updateJobOtherDetails(req, res, _qaJobObj, _newJobObj);
+                            }).catch(_err => {
+                            ApiHelpers.error(res, _err);
+                        });
+                    }
                 }).catch(_err => {
                     ApiHelpers.error(res, _err);
                 });
@@ -199,7 +237,7 @@ module.exports = {
             ApiHelpers.error(res, _err);
         });
     },
-    search    :(req, res) => {
+    search      :(req, res) => {
         if(!req.body.status) {
             return ApiHelpers.error(res, true, 'Parameters missing');
         }
@@ -266,6 +304,16 @@ module.exports = {
                                 attributes:['id', 'name']
                             }
                         ]
+                    },
+                    {
+                        model     :QAJobRequirements,
+                        attributes:['id', 'qa_job_id'],
+                        include   :[
+                            {
+                                model     :Requirements,
+                                attributes:['id', 'desc']
+                            }
+                        ]
                     }
                 ],
                 limit  :limit,
@@ -275,6 +323,31 @@ module.exports = {
             }).catch(_err => {
                 ApiHelpers.error(res, _err);
             });
+        }).catch(_err => {
+            ApiHelpers.error(res, _err);
+        });
+    },
+    unPublishJob:(req, res) => {
+        if(!req.params.id) {
+            return ApiHelpers.error(res, true, 'Parameters missing');
+        }
+        var _obj = {
+            is_active:false
+        };
+        QAJobs.update(_obj, {where:{id:req.params.id}}).then((_qaJobRes) => {
+            if(_qaJobRes) {
+                Jobs.update(_obj, {where:{qa_job_id:req.params.id}}).then((_jobRes) => {
+                    if(_qaJobRes) {
+                        ApiHelpers.success(res, _qaJobRes);
+                    } else {
+                        ApiHelpers.error(res, '', 'No data found!');
+                    }
+                }).catch(_err => {
+                    ApiHelpers.error(res, _err);
+                });
+            } else {
+                ApiHelpers.error(res, '', 'No data found!');
+            }
         }).catch(_err => {
             ApiHelpers.error(res, _err);
         });

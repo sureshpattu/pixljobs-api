@@ -3,10 +3,12 @@
 const Model           = db.jobs;
 const JobTechnologies = db.job_technologies;
 const Technologies    = db.technologies;
-const Companies       = db.companies;
 const JobCategories   = db.job_categories;
 const Categories      = db.categories;
+const JobRequirements = db.job_requirements;
+const Requirements    = db.requirements;
 const Industry        = db.industries;
+const Companies       = db.companies;
 const CompanyBenefits = db.company_benefits;
 const Benefits        = db.benefits;
 const JobApplications = db.job_applications;
@@ -25,6 +27,7 @@ const companyAttr = [
     'about',
     'size',
     'url',
+    'email',
     'street',
     'area',
     'locality',
@@ -76,6 +79,16 @@ function fetchSingle(_id, res) {
                         attributes:['id', 'name']
                     }
                 ]
+            },
+            {
+                model     :JobRequirements,
+                attributes:['id', 'job_id'],
+                include   :[
+                    {
+                        model     :Requirements,
+                        attributes:['id', 'desc']
+                    }
+                ]
             }
         ]
     }).then((_data) => {
@@ -98,7 +111,7 @@ function search(req, res) {
     if(!page) {
         page = 0
     }
-    let _query            = {};
+    let _query            = {is_active:true};
     let _outQuery         = {};
     let _categoryQuery    = {};
     let _categoryRequired = false;
@@ -174,10 +187,11 @@ function search(req, res) {
                     required  :_categoryRequired
                 }
             ],
+            order  :[['created_at', 'DESC']],
             limit  :limit,
             offset :offset
         }).then((_data) => {
-            ApiHelpers.success(res, {total:_data.length, pages:pages, page:page, result:_data});
+            ApiHelpers.success(res, {total:data.count, pages:pages, page:page, result:_data});
         }).catch(_err => {
             ApiHelpers.error(res, _err);
         });
@@ -256,6 +270,10 @@ function recruiterJobsSearch(req, res) {
                         }
                     ]
                 }
+            ],
+            order  :[
+                ['updated_at', 'DESC'],
+                ['created_at', 'DESC']
             ],
             limit  :limit,
             offset :offset
