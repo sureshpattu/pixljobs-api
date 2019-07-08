@@ -1,7 +1,7 @@
 module.exports = {
     apps:[
         {
-            name          :'MedCondAPI',
+            name          :'API',
             script        :'./bin/www',
             watch         :false,
             env           :{
