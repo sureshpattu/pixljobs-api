@@ -10,7 +10,7 @@
     },
     "production": {
         "username": "root",
-        "password": "28501811",
+        "password": "job@2018_PTPL476",
         "database": "pixljobs",
         "host": "127.0.0.1",
         "dialect": "mysql",
