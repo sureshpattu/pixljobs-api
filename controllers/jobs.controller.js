@@ -268,6 +268,9 @@ function recruiterJobsSearch(req, res) {
                         {
                             model:Applicants
                         }
+                    ],
+                    order  :[
+                        ['updated_at', 'ASC']
                     ]
                 }
             ],

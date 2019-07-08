@@ -41,6 +41,9 @@ module.exports = {
         if(req.body.mobile) {
             basic.mobile = req.body.mobile;
         }
+        if(req.body.mobile_code) {
+            basic.mobile_code = req.body.mobile_code;
+        }
         if(req.body.photo) {
             basic.photo = req.body.photo;
         }
@@ -64,8 +67,12 @@ module.exports = {
                         'localhost:3035' + '/applicant/email/verify/' + token
                 };
                 Mail.sendMail(req, mailOptions);
-                ApiHelpers.success(res, user,
-                    'An email has been sent to the email address provided. Please verify your email by clicking the link send by us.');
+                Model.findOne({where:{id:user.id}}).then((_data) => {
+                    ApiHelpers.success(res, _data,
+                        'An email has been sent to the email address provided. Please verify your email by clicking the link send by us.');
+                }).catch(_err => {
+                    ApiHelpers.error(res, _err);
+                });
             }).catch(_err => {
                 ApiHelpers.error(res, _err);
             });
@@ -127,7 +134,7 @@ module.exports = {
             ApiHelpers.error(res, _err);
         });
     },
-    verifyEmail        :function(req, res) {
+    verifyEmailToken   :function(req, res) {
         if(!req.body.email_token) {
             return ApiHelpers.error(res, true, 'Parameters missing');
         }
@@ -137,6 +144,36 @@ module.exports = {
             } else {
                 Model.update({is_email_verified:true}, {where:{id:_user.id}}).then(_up_data => {
                     returnUserDetails(_user, res);
+                }).catch(_err => {
+                    ApiHelpers.error(res, _err);
+                });
+            }
+        }).catch(_err => {
+            ApiHelpers.error(res, _err);
+        });
+    },
+    verifyEmail        :function(req, res) {
+        if(!req.body.email) {
+            return ApiHelpers.error(res, true, 'Parameters missing');
+        }
+        Model.findOne({where:{email:req.body.email}}).then((_user) => {
+            if(!_user) {
+                return ApiHelpers.error(res, true, 'Invalid token');
+            } else {
+                let token = jwt.encode({email:_user.email}, config.TOKENSECRET);
+                Model.update({
+                    email_token:token
+                }, {where:{email:req.body.email}}).then((_emp_updated) => {
+                    let mailOptions = {
+                        from   :'connect@trebound.com',
+                        to     :req.body.email,
+                        subject:'Verify Your Email Address',
+                        body   :'Hi, ' + req.body.name + ' Click here to verify your email : http://' +
+                            'localhost:3035' + '/applicant/email/verify/' + token
+                    };
+                    Mail.sendMail(req, mailOptions);
+                    ApiHelpers.success(res, _user,
+                        'An email has been sent to the email address provided. Please verify your email by clicking the link send by us.');
                 }).catch(_err => {
                     ApiHelpers.error(res, _err);
                 });
