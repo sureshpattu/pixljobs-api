@@ -195,6 +195,57 @@ module.exports = {
     read        :(req, res) => {
         fetchSingle(req, res);
     },
+    jobsCount   :(req, res) => {
+        async.parallel([
+            function(callback) {
+                QAJobs.findAndCountAll({
+                    where     :{status:'published'},
+                    attributes:['id']
+                }).then((_data) => {
+                    callback(null, _data.count);
+                }).catch(_err => {
+                    callback(null, null);
+                });
+            },
+            function(callback) {
+                QAJobs.findAndCountAll({
+                    where     :{status:'unpublished'},
+                    attributes:['id']
+                }).then((_data) => {
+                    callback(null, _data.count);
+                }).catch(_err => {
+                    callback(null, null);
+                });
+            },
+            function(callback) {
+                QAJobs.findAndCountAll({
+                    where     :{status:'pending'},
+                    attributes:['id']
+                }).then((_data) => {
+                    callback(null, _data.count);
+                }).catch(_err => {
+                    callback(null, null);
+                });
+            },
+            function(callback) {
+                QAJobs.findAndCountAll({
+                    where     :{status:'rejected'},
+                    attributes:['id']
+                }).then((_data) => {
+                    callback(null, _data.count);
+                }).catch(_err => {
+                    callback(null, null);
+                });
+            }
+        ], function(err, results) {
+            ApiHelpers.success(res, {
+                published  :results[0] ? results[0] : 0,
+                unpublished:results[1] ? results[1] : 0,
+                pending    :results[2] ? results[2] : 0,
+                rejected   :results[3] ? results[3] : 0
+            });
+        });
+    },
     publishJob  :(req, res) => {
         if(!req.params.id) {
             return ApiHelpers.error(res, true, 'Parameters missing');

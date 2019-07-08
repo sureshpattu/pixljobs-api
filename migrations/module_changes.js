@@ -22,6 +22,26 @@ module.exports = {
             }
         );
 
+        //QAJobs table
+        migration.addColumn(
+            'qa_jobs',
+            'status',
+            {
+                type        :Sequelize.ENUM('inProgress', 'closed', 'published', 'pending', 'rejected', 'deleted'),
+                defaultValue:'pending'
+            }
+        );
+
+        //Jobs table
+        migration.addColumn(
+            'jobs',
+            'status',
+            {
+                type        :Sequelize.ENUM('inProgress', 'closed', 'published', 'pending', 'rejected', 'deleted'),
+                defaultValue:'pending'
+            }
+        );
+
         done();
     },
     down:function(migration, DataTypes, done) {
