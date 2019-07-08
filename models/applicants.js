@@ -71,7 +71,7 @@ module.exports = function(sequelize, Sequelize) {
         photo             :{
             type:Sequelize.STRING
         },
-        photo_type    :{
+        photo_type        :{
             type:Sequelize.STRING
         },
         qualification     :{
@@ -92,10 +92,20 @@ module.exports = function(sequelize, Sequelize) {
         institution       :{
             type:Sequelize.STRING
         },
+        institution_city  :{
+            type:Sequelize.STRING
+        },
+        current_city      :{
+            type:Sequelize.TEXT
+        },
+        relocation        :{
+            type        :Sequelize.BOOLEAN,
+            defaultValue:false
+        },
         resume            :{
             type:Sequelize.STRING
         },
-        resume_type            :{
+        resume_type       :{
             type:Sequelize.STRING
         },
         designation       :{
