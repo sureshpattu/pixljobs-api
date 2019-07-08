@@ -41,6 +41,9 @@ module.exports = {
         if(req.body.mobile) {
             basic.mobile = req.body.mobile;
         }
+        if(req.body.mobile_code) {
+            basic.mobile_code = req.body.mobile_code;
+        }
         if(req.body.photo) {
             basic.photo = req.body.photo;
         }

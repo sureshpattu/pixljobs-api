@@ -33,6 +33,9 @@ module.exports = {
         if(req.body.mobile) {
             basic.mobile = req.body.mobile;
         }
+        if(req.body.mobile_code) {
+            basic.mobile_code = req.body.mobile_code;
+        }
         if(req.body.password) {
             basic.password = await crypto2.encrypt(req.body.password, config.hashSalt2, config.hashIV);
         }
