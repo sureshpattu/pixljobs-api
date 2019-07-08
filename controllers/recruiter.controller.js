@@ -87,8 +87,9 @@ module.exports = {
         Model.findOne({
             where:{id:req.params.id}
         }).then(async(user) => {
-            let token = jwt.encode({email:user.email}, config.TOKENSECRET);
+            let token = jwt.encode({email:req.body.email}, config.TOKENSECRET);
             Model.update({
+                email            :req.body.email,
                 email_token      :token,
                 is_email_verified:false
             }, {where:{id:req.params.id}}).then((_emp_updated) => {

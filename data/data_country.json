@@ -1,0 +1,402 @@
+[
+    {
+        "name": "AD",
+        "code": "+376"
+    },
+    {
+        "name": "AE",
+        "code": "+971"
+    },
+    {
+        "name": "AG",
+        "code": "+1268"
+    },
+    {
+        "name": "AM",
+        "code": "+374"
+    },
+    {
+        "name": "AR",
+        "code": "+54"
+    },
+    {
+        "name": "AT",
+        "code": "+43"
+    },
+    {
+        "name": "AU",
+        "code": "+61"
+    },
+    {
+        "name": "BE",
+        "code": "+32"
+    },
+    {
+        "name": "BF",
+        "code": "+226"
+    },
+    {
+        "name": "BG",
+        "code": "+359"
+    },
+    {
+        "name": "BO",
+        "code": "+591"
+    },
+    {
+        "name": "BR",
+        "code": "+55"
+    },
+    {
+        "name": "CA",
+        "code": "+1"
+    },
+    {
+        "name": "CD",
+        "code": "+243"
+    },
+    {
+        "name": "CG",
+        "code": "+242"
+    },
+    {
+        "name": "CH",
+        "code": "+41"
+    },
+    {
+        "name": "CL",
+        "code": "+56"
+    },
+    {
+        "name": "CM",
+        "code": "+237"
+    },
+    {
+        "name": "CN",
+        "code": "+86"
+    },
+    {
+        "name": "CO",
+        "code": "+57"
+    },
+    {
+        "name": "CZ",
+        "code": "+420"
+    },
+    {
+        "name": "DE",
+        "code": "+49"
+    },
+    {
+        "name": "DJ",
+        "code": "+253"
+    },
+    {
+        "name": "DK",
+        "code": "+45"
+    },
+    {
+        "name": "DZ",
+        "code": "+213"
+    },
+    {
+        "name": "EE",
+        "code": "+372"
+    },
+    {
+        "name": "EG",
+        "code": "+20"
+    },
+    {
+        "name": "ES",
+        "code": "+34"
+    },
+    {
+        "name": "FI",
+        "code": "+358"
+    },
+    {
+        "name": "FR",
+        "code": "+33"
+    },
+    {
+        "name": "GA",
+        "code": "+995"
+    },
+    {
+        "name": "GB",
+        "code": "+44"
+    },
+    {
+        "name": "GM",
+        "code": "+220"
+    },
+    {
+        "name": "GT",
+        "code": "+502"
+    },
+    {
+        "name": "HN",
+        "code": "+504"
+    },
+    {
+        "name": "HT",
+        "code": "+509"
+    },
+    {
+        "name": "HU",
+        "code": "+36"
+    },
+    {
+        "name": "ID",
+        "code": "+62"
+    },
+    {
+        "name": "IE",
+        "code": "+353"
+    },
+    {
+        "name": "IL",
+        "code": "+972"
+    },
+    {
+        "name": "IN",
+        "code": "+91"
+    },
+    {
+        "name": "IQ",
+        "code": "+964"
+    },
+    {
+        "name": "IR",
+        "code": "+98"
+    },
+    {
+        "name": "IT",
+        "code": "+39"
+    },
+    {
+        "name": "JM",
+        "code": "+1"
+    },
+    {
+        "name": "JO",
+        "code": "+962"
+    },
+    {
+        "name": "JP",
+        "code": "+81"
+    },
+    {
+        "name": "KG",
+        "code": "+996"
+    },
+    {
+        "name": "KN",
+        "code": "+1"
+    },
+    {
+        "name": "KP",
+        "code": "+850"
+    },
+    {
+        "name": "KR",
+        "code": "+82"
+    },
+    {
+        "name": "KW",
+        "code": "+965"
+    },
+    {
+        "name": "KZ",
+        "code": "+7"
+    },
+    {
+        "name": "LA",
+        "code": "+856"
+    },
+    {
+        "name": "LB",
+        "code": "+961"
+    },
+    {
+        "name": "LC",
+        "code": "+1"
+    },
+    {
+        "name": "LS",
+        "code": "+266"
+    },
+    {
+        "name": "LU",
+        "code": "+352"
+    },
+    {
+        "name": "LV",
+        "code": "+371"
+    },
+    {
+        "name": "MG",
+        "code": "+261"
+    },
+    {
+        "name": "MK",
+        "code": "+389"
+    },
+    {
+        "name": "ML",
+        "code": "+223"
+    },
+    {
+        "name": "MM",
+        "code": "+95"
+    },
+    {
+        "name": "MT",
+        "code": "+356"
+    },
+    {
+        "name": "MX",
+        "code": "+52"
+    },
+    {
+        "name": "NA",
+        "code": "+264"
+    },
+    {
+        "name": "NG",
+        "code": "+234"
+    },
+    {
+        "name": "NE",
+        "code": "+227"
+    },
+    {
+        "name": "NI",
+        "code": "+505"
+    },
+    {
+        "name": "NL",
+        "code": "+31"
+    },
+    {
+        "name": "NO",
+        "code": "+47"
+    },
+    {
+        "name": "OM",
+        "code": "+968"
+    },
+    {
+        "name": "PA",
+        "code": "+507"
+    },
+    {
+        "name": "PE",
+        "code": "+51"
+    },
+    {
+        "name": "PG",
+        "code": "+675"
+    },
+    {
+        "name": "PK",
+        "code": "+92"
+    },
+    {
+        "name": "PL",
+        "code": "+48"
+    },
+    {
+        "name": "PT",
+        "code": "+351"
+    },
+    {
+        "name": "PY",
+        "code": "+595"
+    },
+    {
+        "name": "QA",
+        "code": "+974"
+    },
+    {
+        "name": "RO",
+        "code": "+40"
+    },
+    {
+        "name": "RU",
+        "code": "+7"
+    },
+    {
+        "name": "RW",
+        "code": "+250"
+    },
+    {
+        "name": "SA",
+        "code": "+27"
+    },
+    {
+        "name": "SE",
+        "code": "+46"
+    },
+    {
+        "name": "SG",
+        "code": "+65"
+    },
+    {
+        "name": "SL",
+        "code": "+232"
+    },
+    {
+        "name": "SN",
+        "code": "+221"
+    },
+    {
+        "name": "SO",
+        "code": "+252"
+    },
+    {
+        "name": "SV",
+        "code": "+503"
+    },
+    {
+        "name": "TD",
+        "code": "+235"
+    },
+    {
+        "name": "TJ",
+        "code": "+992"
+    },
+    {
+        "name": "TL",
+        "code": "+670"
+    },
+    {
+        "name": "TR",
+        "code": "+90"
+    },
+    {
+        "name": "TZ",
+        "code": "+242"
+    },
+    {
+        "name": "UA",
+        "code": "+255"
+    },
+    {
+        "name": "US",
+        "code": "+1"
+    },
+    {
+        "name": "VE",
+        "code": "+58"
+    },
+    {
+        "name": "VN",
+        "code": "+84"
+    },
+    {
+        "name": "YE",
+        "code": "+967"
+    }
+]

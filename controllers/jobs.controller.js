@@ -271,6 +271,10 @@ function recruiterJobsSearch(req, res) {
                     ]
                 }
             ],
+            order  :[
+                ['updated_at', 'DESC'],
+                ['created_at', 'DESC']
+            ],
             limit  :limit,
             offset :offset
         }).then((_data) => {
