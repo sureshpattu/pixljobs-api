@@ -1,9 +1,12 @@
 'use strict';
 
-const Model      = db.qa_job_technologies;
-const waterfall  = require('async-waterfall');
-const _          = require('underscore');
-const ApiHelpers = require('../helpers/api.helpers');
+const Model        = db.qa_job_technologies;
+const Technologies = db.technologies;
+const waterfall    = require('async-waterfall');
+const _            = require('underscore');
+const ApiHelpers   = require('../helpers/api.helpers');
+const sequelize       = require('sequelize');
+const Op              = sequelize.Op;
 
 function fetchSingle(_id, res) {
     Model.findOne({where:{id:_id}}).then((_data) => {
@@ -14,14 +17,57 @@ function fetchSingle(_id, res) {
 }
 
 function createQAJobTechnologies(req, res, _qa_job_id) {
-    waterfall(req.body.technologies.map(function(technology_id) {
+    //waterfall(req.body.technologies.map(function(technology_id) {
+    //    return function(lastItemResult, CB) {
+    //        if(!CB) {
+    //            CB             = lastItemResult;
+    //            lastItemResult = null;
+    //        }
+    //        Model.create({qa_job_id:_qa_job_id, technology_id:technology_id}).then((_data) => {
+    //            CB(null, []);
+    //        }).catch(_err => {
+    //            CB(null, []);
+    //        });
+    //    };
+    //}), function() {
+    //    ApiHelpers.success(res, null, 'success');
+    //});
+
+    waterfall(req.body.technologies.map(function(_obj) {
         return function(lastItemResult, CB) {
             if(!CB) {
                 CB             = lastItemResult;
                 lastItemResult = null;
             }
-            Model.create({qa_job_id:_qa_job_id, technology_id:technology_id}).then((_data) => {
-                CB(null, []);
+            let _query      = {};
+            _query[Op.or]   = [];
+            let lookupValue = _obj.toLowerCase();
+            _query[Op.or].push({
+                id:sequelize.where(sequelize.fn('LOWER', db.sequelize.col('id')), 'LIKE',
+                    '%' + lookupValue + '%')
+            });
+            _query[Op.or].push({
+                name:sequelize.where(sequelize.fn('LOWER', db.sequelize.col('name')), 'LIKE',
+                    '%' + lookupValue + '%')
+            });
+            Technologies.findOne({where:_query}).then((_data) => {
+                if(!_data) {
+                    Technologies.create({name:_obj}).then((_data) => {
+                        Model.create({qa_job_id:_qa_job_id, technology_id:_data.id}).then((_data) => {
+                            CB(null, []);
+                        }).catch(_err => {
+                            CB(null, []);
+                        });
+                    }).catch(_err => {
+                        CB(null, []);
+                    });
+                } else {
+                    Model.create({qa_job_id:_qa_job_id, technology_id:_data.id}).then((_data) => {
+                        CB(null, []);
+                    }).catch(_err => {
+                        CB(null, []);
+                    });
+                }
             }).catch(_err => {
                 CB(null, []);
             });
