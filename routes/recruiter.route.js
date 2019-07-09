@@ -26,6 +26,7 @@ router
     .post('/photo/upload/:id', upload.single('photo'), (req, res) => { Controller.photo(req, res); })
     .get('/photo/:image', (req, res) => { Controller.viewPhoto(req, res); })
     .delete('/photo/:image', (req, res) => { Controller.removePhoto(req, res); })
+    .post('/job/action/:qa_job_id/:job_id', (req, res) => { Controller.updateJobAction(req, res);})
     .put('/:id', (req, res) => { Controller.update(req, res) });
 
 module.exports = router;

@@ -32,6 +32,14 @@ module.exports  = {
                 defaultValue:'pending'
             }
         );
+        migration.addColumn(
+            'qa_jobs',
+            'action',
+            {
+                type        :Sequelize.ENUM('closed', 'open'),
+                defaultValue:'open'
+            }
+        );
 
         //Jobs table
         migration.addColumn(
@@ -40,6 +48,14 @@ module.exports  = {
             {
                 type        :Sequelize.ENUM('inProgress', 'closed', 'published', 'pending', 'rejected', 'deleted'),
                 defaultValue:'pending'
+            }
+        );
+        migration.addColumn(
+            'jobs',
+            'action',
+            {
+                type        :Sequelize.ENUM('closed', 'open'),
+                defaultValue:'open'
             }
         );
 

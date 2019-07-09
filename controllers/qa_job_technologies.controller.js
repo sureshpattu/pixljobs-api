@@ -17,21 +17,6 @@ function fetchSingle(_id, res) {
 }
 
 function createQAJobTechnologies(req, res, _qa_job_id) {
-    //waterfall(req.body.technologies.map(function(technology_id) {
-    //    return function(lastItemResult, CB) {
-    //        if(!CB) {
-    //            CB             = lastItemResult;
-    //            lastItemResult = null;
-    //        }
-    //        Model.create({qa_job_id:_qa_job_id, technology_id:technology_id}).then((_data) => {
-    //            CB(null, []);
-    //        }).catch(_err => {
-    //            CB(null, []);
-    //        });
-    //    };
-    //}), function() {
-    //    ApiHelpers.success(res, null, 'success');
-    //});
 
     waterfall(req.body.technologies.map(function(_obj) {
         return function(lastItemResult, CB) {

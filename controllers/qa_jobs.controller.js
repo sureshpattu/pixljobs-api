@@ -133,6 +133,7 @@ module.exports = {
         });
     },
 
+
     delete:(req, res) => {
         Model.destroy({where:{id:req.params.id}}).then((_data) => {
             ApiHelpers.success(res, _data);

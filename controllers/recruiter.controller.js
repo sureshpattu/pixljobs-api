@@ -5,6 +5,8 @@ const Company         = db.companies;
 const Industry        = db.industries;
 const CompanyBenefits = db.company_benefits;
 const Benefits        = db.benefits;
+const Jobs            = db.jobs;
+const QAJobs          = db.qa_jobs;
 const ImgHelpers      = require('./../helpers/image.upload.helpers');
 const ApiHelpers      = require('./../helpers/api.helpers');
 const _               = require('underscore');
@@ -28,10 +30,10 @@ function fetchSingle(req, res) {
 }
 
 module.exports = {
-    read         :(req, res) => {
+    read           :(req, res) => {
         fetchSingle(req, res);
     },
-    fetchFull    :(req, res) => {
+    fetchFull      :(req, res) => {
         Model.findOne({
             where     :{id:req.params.id},
             attributes:[
@@ -70,7 +72,7 @@ module.exports = {
             ApiHelpers.error(res, _err);
         });
     },
-    resetPassword:async(req, res) => {
+    resetPassword  :async(req, res) => {
         let _body = {
             password:req.body.password
         };
@@ -83,7 +85,7 @@ module.exports = {
             ApiHelpers.error(res, _err);
         });
     },
-    changeEmail  :(req, res) => {
+    changeEmail    :(req, res) => {
         Model.findOne({
             where:{id:req.params.id}
         }).then(async(user) => {
@@ -109,7 +111,7 @@ module.exports = {
         })
 
     },
-    update       :(req, res) => {
+    update         :(req, res) => {
         let data = req.body;
         if(data.password) {
             delete data.password;
@@ -126,7 +128,7 @@ module.exports = {
             ApiHelpers.error(res, _err);
         });
     },
-    photo        :(req, res) => {
+    photo          :(req, res) => {
         if(req.file) {
             let data = {
                 photo     :req.file.filename,
@@ -141,10 +143,10 @@ module.exports = {
             return ApiHelpers.error(res, true, 'Please select valid file');
         }
     },
-    viewPhoto    :(req, res) => {
+    viewPhoto      :(req, res) => {
         return res.sendFile(`${path.resolve(__dirname, '../', 'uploads/recruiter/photo/', req.params.image)}`);
     },
-    removePhoto  :(req, res) => {
+    removePhoto    :(req, res) => {
         let data = {
             photo     :null,
             photo_type:null
@@ -159,7 +161,7 @@ module.exports = {
             ApiHelpers.error(res, _err);
         });
     },
-    delete       :(req, res) => {
+    delete         :(req, res) => {
         if(!req.params.id) {
             return ApiHelpers.error(res, true, 'Parameters missing');
         }
@@ -178,6 +180,25 @@ module.exports = {
                 }).catch(_err => {
                     ApiHelpers.error(res, _err);
                 });
+            }
+        }).catch(_err => {
+            ApiHelpers.error(res, _err);
+        });
+    },
+    updateJobAction:(req, res) => {
+        if(!req.params.qa_job_id && !req.params.job_id && !req.body.action) {
+            return ApiHelpers.error(res, true, 'Parameters missing');
+        }
+
+        QAJobs.update(req.body, {where:{id:req.params.qa_job_id}}).then((_data) => {
+            if(_data) {
+                Jobs.update(req.body, {where:{id:req.params.job_id}}).then((_data) => {
+                    ApiHelpers.success(res, _data);
+                }).catch(_err => {
+                    ApiHelpers.error(res, _err);
+                });
+            } else {
+                ApiHelpers.error(res, '', 'something went wrong!');
             }
         }).catch(_err => {
             ApiHelpers.error(res, _err);
