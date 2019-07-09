@@ -143,6 +143,12 @@ function search(req, res) {
     if(req.body.recruiter_id) {
         _query.recruiter_id = req.body.recruiter_id;
     }
+    if(req.body.location_type) {
+        _query.location_type = req.body.location_type;
+    }
+    if(req.body.city) {
+        _query.city = req.body.city;
+    }
     if(req.body.query) {
         let lookupValue = req.body.query.toLowerCase();
         _query[Op.or].push({
@@ -237,7 +243,12 @@ function recruiterJobsSearch(req, res) {
         };
     }
     if(req.body.city) {
-        _query.city = req.body.city;
+        //_query.city = req.body.city;
+        let lookupValue = req.body.city.toLowerCase();
+        _query[Op.or].push({
+            city:sequelize.where(sequelize.fn('LOWER', db.sequelize.col('city')), 'LIKE',
+                '%' + lookupValue + '%')
+        });
     }
     if(req.body.state) {
         _query.city = req.body.state;
