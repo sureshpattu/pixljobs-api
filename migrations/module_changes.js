@@ -36,7 +36,7 @@ module.exports  = {
             'qa_jobs',
             'action',
             {
-                type        :Sequelize.ENUM('closed', 'open'),
+                type        :Sequelize.ENUM('open', 'closed'),
                 defaultValue:'open'
             }
         );
@@ -54,7 +54,7 @@ module.exports  = {
             'jobs',
             'action',
             {
-                type        :Sequelize.ENUM('closed', 'open'),
+                type        :Sequelize.ENUM('open', 'closed'),
                 defaultValue:'open'
             }
         );

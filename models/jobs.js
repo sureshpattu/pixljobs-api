@@ -57,7 +57,7 @@ module.exports = function(sequelize, Sequelize) {
             defaultValue:'office'
         },
         action         :{
-            type        :Sequelize.ENUM('closed', 'open'),
+            type        :Sequelize.ENUM('open','closed'),
             defaultValue:'open'
         },
         phone_code     :{
