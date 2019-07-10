@@ -105,7 +105,7 @@ module.exports = function(sequelize, Sequelize) {
             type:Sequelize.STRING
         },
         status         :{
-            type        :Sequelize.ENUM('closed', 'published', 'pending', 'rejected', 'deleted'),
+            type        :Sequelize.ENUM('inProgress','closed', 'published', 'pending', 'rejected', 'deleted'),
             defaultValue:'pending'
         },
         admin_id       :{
