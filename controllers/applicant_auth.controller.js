@@ -146,7 +146,7 @@ module.exports = {
             if(!_user) {
                 return ApiHelpers.error(res, true, 'Invalid token');
             } else {
-                Model.update({is_email_verified:true}, {where:{id:_user.id}}).then(_up_data => {
+                Model.update({is_email_verified:true, email_token:null}, {where:{id:_user.id}}).then(_up_data => {
                     returnUserDetails(_user, res);
                 }).catch(_err => {
                     ApiHelpers.error(res, _err);

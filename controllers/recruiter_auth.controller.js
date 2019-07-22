@@ -119,7 +119,7 @@ module.exports = {
             ApiHelpers.error(res, _err);
         });
     },
-    verifyEmail        :function(req, res) {
+    verifyEmailToken   :function(req, res) {
         if(!req.body.email_token) {
             return ApiHelpers.error(res, true, 'Parameters missing');
         }
@@ -127,8 +127,33 @@ module.exports = {
             if(!_user) {
                 return ApiHelpers.error(res, true, 'Invalid token');
             } else {
-                Model.update({is_email_verified:true}, {where:{id:_user.id}}).then(_up_data => {
+                Model.update({is_email_verified:true, email_token:null}, {where:{id:_user.id}}).then(_up_data => {
                     returnUserDetails(_user, res);
+                }).catch(_err => {
+                    ApiHelpers.error(res, _err);
+                });
+            }
+        }).catch(_err => {
+            ApiHelpers.error(res, _err);
+        });
+    },
+    verifyEmail        :function(req, res) {
+        if(!req.body.email) {
+            return ApiHelpers.error(res, true, 'Parameters missing');
+        }
+        Model.findOne({where:{email:req.body.email}}).then((_user) => {
+            if(!_user) {
+                return ApiHelpers.error(res, true, 'Invalid token');
+            } else {
+                let token = jwt.encode({email:_user.email}, config.TOKENSECRET);
+                Model.update({
+                    email_token:token
+                }, {where:{email:req.body.email}}).then((_emp_updated) => {
+
+                    let verify_url = config.domain_name + '/recruiter/email/verify/' + token;
+                    Mail.sendEmailVerifyMail(req, req.body.email, verify_url);
+                    ApiHelpers.success(res, _user,
+                        'An email has been sent to the email address provided. Please verify your email by clicking the link send by us.');
                 }).catch(_err => {
                     ApiHelpers.error(res, _err);
                 });
