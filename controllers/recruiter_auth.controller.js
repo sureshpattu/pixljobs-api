@@ -45,14 +45,13 @@ module.exports = {
                 email_token:token,
                 token      :token
             }, {where:{email:req.body.email}}).then((_emp_updated) => {
-                let mailOptions = {
-                    from   :'connect@trebound.com',
-                    to     :req.body.email,
-                    subject:'Verify Your Email Address',
-                    body   :'Hi, ' + req.body.name + ' Click here to activate your account : http://' +
-                        'localhost:3035' + '/recruiter/email/verify/' + token
-                };
-                Mail.sendMail(req, mailOptions);
+
+                let welcome_url = config.domain_name + '/login';
+                Mail.sendWelcomeMail(req, req.body.email, welcome_url);
+
+                let verify_url = config.domain_name + '/recruiter/email/verify/' + token;
+                Mail.sendEmailVerifyMail(req, req.body.email, verify_url);
+
                 Model.findOne({where:{id:user.id}}).then((_data) => {
                     ApiHelpers.success(res, _data,
                         'An email has been sent to the email address provided. Please verify your email by clicking the link send by us.');
@@ -150,14 +149,9 @@ module.exports = {
                 Model.update({
                     reset_token:token
                 }, {where:{email:req.body.email}}).then((_emp_updated) => {
-                    let mailOptions = {
-                        from   :'connect@trebound.com',
-                        to     :req.body.email,
-                        subject:'Verify Your Email Address',
-                        body   :'Hi, ' + req.body.name + ' Click here to activate your account : http://' +
-                            'localhost:3035' + '/recruiter/forgot/password/' + token
-                    };
-                    Mail.sendMail(req, mailOptions);
+
+                    let verify_url = config.domain_name + '/recruiter/forgot/password/' + token;
+                    Mail.sendForgotPasswordMail(req, req.body.email, verify_url);
                     return res.json({
                         error  :false,
                         message:'An email has been sent to the email address provided.'

@@ -20,5 +20,7 @@
     "TOKENSECRET": "med-in-$sna-ENO476",
     "hashSalt": "$1b$40$L2rSH1ZQPnuIZkpWfGPyuO",
     "hashSalt2": "2c467eaf3ecd835e126822cde50b2223",
-    "hashIV": "1ged?o3;ce25?3c4"
+    "hashIV": "1ged?o3;ce25?3c4",
+    "domain_name": "http://www.pixljobs.com",
+    "domain_email": "connect@trebound.com"
 }

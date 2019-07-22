@@ -4,7 +4,10 @@ const Model      = db.applicants;
 const crypto2    = require('crypto2');
 const _          = require('underscore');
 const config     = require('../config/config'),
-      jwt        = require('jwt-simple');
+      jwt        = require('jwt-simple'),
+      fs         = require('fs'),
+      path       = require('path'),
+      Handlebars = require('handlebars');
 const Mail       = require('../helpers/mail');
 const SMSHelpers = require('../helpers/sms');
 
@@ -61,14 +64,13 @@ module.exports = {
                 email_token:token,
                 token      :token
             }, {where:{email:req.body.email}}).then((_emp_updated) => {
-                let mailOptions = {
-                    from   :'connect@trebound.com',
-                    to     :req.body.email,
-                    subject:'Verify Your Email Address',
-                    body   :'Hi, ' + req.body.name + ' Click here to verify your email : http://' +
-                        'localhost:3035' + '/applicant/email/verify/' + token
-                };
-                Mail.sendMail(req, mailOptions);
+
+                let welcome_url = config.domain_name + '/login';
+                Mail.sendWelcomeMail(req, req.body.email, welcome_url);
+
+                let verify_url = config.domain_name + '/applicant/email/verify/' + token;
+                Mail.sendEmailVerifyMail(req, req.body.email, verify_url);
+
                 Model.findOne({where:{id:user.id}}).then((_data) => {
                     ApiHelpers.success(res, _data,
                         'An email has been sent to the email address provided. Please verify your email by clicking the link send by us.');
@@ -166,14 +168,9 @@ module.exports = {
                 Model.update({
                     email_token:token
                 }, {where:{email:req.body.email}}).then((_emp_updated) => {
-                    let mailOptions = {
-                        from   :'connect@trebound.com',
-                        to     :req.body.email,
-                        subject:'Verify Your Email Address',
-                        body   :'Hi, ' + req.body.name + ' Click here to verify your email : http://' +
-                            'localhost:3035' + '/applicant/email/verify/' + token
-                    };
-                    Mail.sendMail(req, mailOptions);
+
+                    let verify_url = config.domain_name + '/applicant/email/verify/' + token;
+                    Mail.sendEmailVerifyMail(req, req.body.email, verify_url);
                     ApiHelpers.success(res, _user,
                         'An email has been sent to the email address provided. Please verify your email by clicking the link send by us.');
                 }).catch(_err => {
@@ -196,14 +193,9 @@ module.exports = {
                 Model.update({
                     reset_token:token
                 }, {where:{email:req.body.email}}).then((_emp_updated) => {
-                    let mailOptions = {
-                        from   :'connect@trebound.com',
-                        to     :req.body.email,
-                        subject:'Verify Your Email Address',
-                        body   :'Hi, ' + req.body.name + ' Click here to reset your password : http://' +
-                            'localhost:3035' + '/applicant/forgot/password/' + token
-                    };
-                    Mail.sendMail(req, mailOptions);
+
+                    let verify_url = config.domain_name + '/applicant/forgot/password/' + token;
+                    Mail.sendForgotPasswordMail(req, req.body.email, verify_url);
                     return res.json({
                         error  :false,
                         message:'A reset password link has been sent to the email address provided.'
