@@ -73,6 +73,9 @@ module.exports = function(sequelize, Sequelize) {
         street         :{
             type:Sequelize.STRING
         },
+        area_in           :{
+            type:Sequelize.STRING
+        },
         area           :{
             type:Sequelize.STRING
         },
