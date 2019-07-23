@@ -1,18 +1,11 @@
 let nodemailer   = require('nodemailer');
 const fs         = require('fs'),
       config     = require('../config/config'),
+      MailConfig = require('../config/mail_config'),
       path       = require('path'),
       Handlebars = require('handlebars');
 
-let transporter = nodemailer.createTransport({
-    host            :'email-smtp.us-east-1.amazonaws.com',
-    secureConnection:true,
-    port            :465,
-    auth            :{
-        user:'AKIAIX5VT425Q5J7V24Q',
-        pass:'AgBzt/Y2Yb21hgvYcH5A6iMSc+mLdsxjIh4ALeZZooNi'
-    }
-});
+let transporter = nodemailer.createTransport(MailConfig);
 
 module.exports = {
 
