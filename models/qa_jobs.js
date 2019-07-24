@@ -27,6 +27,10 @@ module.exports = function(sequelize, Sequelize) {
         salary_max     :{
             type:Sequelize.STRING
         },
+        is_salary      :{
+            type        :Sequelize.BOOLEAN,
+            defaultValue:true
+        },
         position_count :{
             type:Sequelize.STRING
         },
@@ -55,7 +59,7 @@ module.exports = function(sequelize, Sequelize) {
             defaultValue:'office'
         },
         action         :{
-            type        :Sequelize.ENUM('open','closed'),
+            type        :Sequelize.ENUM('open', 'closed'),
             defaultValue:'open'
         },
         phone_code     :{
@@ -73,7 +77,7 @@ module.exports = function(sequelize, Sequelize) {
         street         :{
             type:Sequelize.STRING
         },
-        area_in           :{
+        area_in        :{
             type:Sequelize.STRING
         },
         area           :{

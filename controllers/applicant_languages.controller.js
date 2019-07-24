@@ -1,12 +1,12 @@
 'use strict';
 
-const Model        = db.qa_job_technologies;
-const Technologies = db.technologies;
-const waterfall    = require('async-waterfall');
-const _            = require('underscore');
-const ApiHelpers   = require('../helpers/api.helpers');
-const sequelize    = require('sequelize');
-const Op           = sequelize.Op;
+const Model      = db.applicant_languages;
+const Languages  = db.languages;
+const waterfall  = require('async-waterfall');
+const _          = require('underscore');
+const ApiHelpers = require('../helpers/api.helpers');
+const sequelize  = require('sequelize');
+const Op         = sequelize.Op;
 
 function fetchSingle(_id, res) {
     Model.findOne({where:{id:_id}}).then((_data) => {
@@ -16,9 +16,9 @@ function fetchSingle(_id, res) {
     });
 }
 
-function createQAJobTechnologies(req, res, _qa_job_id) {
+function createAppLanguages(req, res, _applicant_id) {
 
-    waterfall(req.body.technologies.map(function(_obj) {
+    waterfall(req.body.languages.map(function(_obj) {
         return function(lastItemResult, CB) {
             if(!CB) {
                 CB             = lastItemResult;
@@ -31,22 +31,23 @@ function createQAJobTechnologies(req, res, _qa_job_id) {
                 id:sequelize.where(sequelize.fn('LOWER', db.sequelize.col('id')), 'LIKE',
                     '%' + lookupId + '%')
             });
-
-            Technologies.findOne({where:_query}).then((_data) => {
+            Languages.findOne({where:_query}).then((_data) => {
                 if(!_data) {
-                    Technologies.create({name:_obj.name}).then((_data) => {
-                        Model.create({qa_job_id:_qa_job_id, technology_id:_data.id, level:_obj.level}).then((_data) => {
-                            CB(null, []);
-                        }).catch(_err => {
+                    Languages.create({name:_obj.name}).then((_data) => {
+                        Model.create({applicant_id:_applicant_id, language_id:_data.id, level:_obj.level})
+                             .then((_data) => {
+                                 CB(null, []);
+                             }).catch(_err => {
                             CB(null, []);
                         });
                     }).catch(_err => {
                         CB(null, []);
                     });
                 } else {
-                    Model.create({qa_job_id:_qa_job_id, technology_id:_data.id, level:_obj.level}).then((_data) => {
-                        CB(null, []);
-                    }).catch(_err => {
+                    Model.create({applicant_id:_applicant_id, language_id:_data.id, level:_obj.level})
+                         .then((_data) => {
+                             CB(null, []);
+                         }).catch(_err => {
                         CB(null, []);
                     });
                 }
@@ -73,16 +74,16 @@ module.exports = {
     },
 
     create:(req, res) => {
-        if(!req.body.qa_job_id || !req.body.technologies) {
+        if(!req.body.applicant_id || !req.body.languages) {
             return ApiHelpers.error(res, true, 'Parameters missing');
         }
-        var _qa_job_id = req.body.qa_job_id;
-        Model.findOne({where:{qa_job_id:_qa_job_id}}).then((_data_found) => {
+        var _applicant_id = req.body.applicant_id;
+        Model.findOne({where:{applicant_id:_applicant_id}}).then((_data_found) => {
             if(!_data_found) {
-                createQAJobTechnologies(req, res, _qa_job_id);
+                createAppLanguages(req, res, _applicant_id);
             } else {
-                Model.destroy({where:{qa_job_id:_qa_job_id}}).then((_dataDel) => {
-                    createQAJobTechnologies(req, res, _qa_job_id);
+                Model.destroy({where:{applicant_id:_applicant_id}}).then((_dataDel) => {
+                    createAppLanguages(req, res, _applicant_id);
                 }).catch(_err => {
                     ApiHelpers.error(res, _err);
                 });

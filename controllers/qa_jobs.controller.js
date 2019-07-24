@@ -58,11 +58,11 @@ function fetchSingle(_id, res) {
             },
             {
                 model     :QAJobTechnologies,
-                attributes:['id', 'technology_id'],
+                attributes:['id', 'technology_id','level'],
                 include   :[
                     {
                         model     :Technologies,
-                        attributes:['id', 'name']
+                        attributes:['id', 'name',]
                     }
                 ]
             },
@@ -132,7 +132,6 @@ module.exports = {
             ApiHelpers.error(res, _err);
         });
     },
-
 
     delete:(req, res) => {
         Model.destroy({where:{id:req.params.id}}).then((_data) => {
