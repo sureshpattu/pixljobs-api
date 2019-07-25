@@ -24,14 +24,7 @@ function createAppLanguages(req, res, _applicant_id) {
                 CB             = lastItemResult;
                 lastItemResult = null;
             }
-            let _query    = {};
-            _query[Op.or] = [];
-            let lookupId  = _obj.id;
-            _query[Op.or].push({
-                id:sequelize.where(sequelize.fn('LOWER', db.sequelize.col('id')), 'LIKE',
-                    '%' + lookupId + '%')
-            });
-            Languages.findOne({where:_query}).then((_data) => {
+            Languages.findOne({where:{id:_obj.id}}).then((_data) => {
                 if(!_data) {
                     Languages.create({name:_obj.name}).then((_data) => {
                         Model.create({applicant_id:_applicant_id, language_id:_data.id, level:_obj.level})

@@ -62,11 +62,12 @@ function fetchSingle(_id, res) {
             },
             {
                 model     :JobTechnologies,
-                attributes:['id', 'job_id'],
+                attributes:['id', 'job_id', 'level'],
                 include   :[
                     {
                         model     :Technologies,
-                        attributes:['id', 'name']
+                        attributes:['id', 'name'],
+                        order     :[['name']]
                     }
                 ]
             },
@@ -193,11 +194,12 @@ function search(req, res) {
                 },
                 {
                     model     :JobTechnologies,
-                    attributes:['id', 'job_id'],
+                    attributes:['id', 'job_id','level'],
                     include   :[
                         {
                             model     :Technologies,
-                            attributes:['id', 'name']
+                            attributes:['id', 'name'],
+                            order     :[['name']]
                         }
                     ]
                 },

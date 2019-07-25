@@ -225,11 +225,12 @@ module.exports = {
                     },
                     {
                         model     :QAJobTechnologies,
-                        attributes:['id', 'qa_job_id', 'technology_id'],
+                        attributes:['id', 'qa_job_id', 'technology_id','level'],
                         include   :[
                             {
                                 model     :Technologies,
-                                attributes:['id', 'name']
+                                attributes:['id', 'name'],
+                                order     :[['name']]
                             }
                         ]
                     },
