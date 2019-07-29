@@ -20,6 +20,12 @@ module.exports = function(sequelize, Sequelize) {
         level       :{
             type        :Sequelize.ENUM('Basic', 'Proficient', 'Expert'),
             defaultValue:'Basic'
+        },
+        exp_month    :{
+            type:Sequelize.STRING
+        },
+        exp_year     :{
+            type:Sequelize.STRING
         }
     }, {
         underscored:true

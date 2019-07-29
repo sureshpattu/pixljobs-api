@@ -5,6 +5,8 @@ const Technologies          = db.technologies;
 const ApplicantTechnologies = db.applicant_technologies;
 const Languages             = db.languages;
 const ApplicantLanguages    = db.applicant_languages;
+const Cities                = db.cities;
+const ApplicantCities       = db.applicant_cities;
 const ImgHelpers            = require('./../helpers/image.upload.helpers');
 const ApiHelpers            = require('./../helpers/api.helpers');
 const _                     = require('underscore');
@@ -38,6 +40,16 @@ function fetchSingle(req, res) {
                     {
                         model     :Languages,
                         attributes:['id', 'name']
+                    }
+                ]
+            },
+            {
+                model     :ApplicantCities,
+                attributes:['id'],
+                include   :[
+                    {
+                        model     :Cities,
+                        attributes:['id', 'city']
                     }
                 ]
             }
