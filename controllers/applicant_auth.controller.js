@@ -40,8 +40,9 @@ module.exports = {
             exp_year        :req.body.exp_year,
             institution_city:req.body.institution_city,
             current_city    :req.body.current_city,
-            relocation      :req.body.relocation
-
+            home_city       :req.body.home_city,
+            relocation      :req.body.relocation,
+            dob             :req.body.dob
         };
         if(req.body.mobile) {
             basic.mobile = req.body.mobile;
@@ -54,6 +55,9 @@ module.exports = {
         }
         if(req.body.photo_type) {
             basic.photo_type = req.body.photo_type;
+        }
+        if(req.body.age) {
+            basic.age = req.body.age;
         }
         if(req.body.password) {
             basic.password = await crypto2.encrypt(req.body.password, config.hashSalt2, config.hashIV);

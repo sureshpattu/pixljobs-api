@@ -39,9 +39,11 @@ db.recruiters.hasMany(db.companies);
 //applicants
 db.applicants.hasMany(db.applicant_technologies);
 db.applicants.hasMany(db.applicant_languages);
+db.applicants.hasMany(db.applicant_cities);
 
 db.applicant_technologies.belongsTo(db.technologies);
 db.applicant_languages.belongsTo(db.languages);
+db.applicant_cities.belongsTo(db.cities);
 
 //Jobs
 db.jobs.hasMany(db.job_applications);

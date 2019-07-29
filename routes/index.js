@@ -8,6 +8,7 @@ const RecruiterAuthRouter       = require('./recruiter_auth.route');
 const ApplicantRouter           = require('./applicant.route');
 const ApplicantTechnologyRouter = require('./applicant_technologies.route');
 const ApplicantLanguagesRouter  = require('./applicant_languages.route');
+const ApplicantCitiesRouter     = require('./applicant_cities.route');
 const QaJobsRouter              = require('./qa_jobs.route');
 const QaJobCatRouter            = require('./qa_job_categories.route');
 const QaJobTechRouter           = require('./qa_job_technologies.route');
@@ -36,6 +37,7 @@ const QAJobVersionRouter        = require('./qa_job_versions.route');
 const JobVersionRouter          = require('./job_versions.route');
 const CountryCodeRouter         = require('./country_code.route');
 const LanguagesRouter           = require('./languages.route');
+const CitiesRouter              = require('./cities.route');
 
 const prefix = '/api';
 
@@ -50,6 +52,7 @@ module.exports = (app) => {
     app.use(`${prefix}/applicant`, ApplicantRouter);
     app.use(`${prefix}/applicant/technologies`, ApplicantTechnologyRouter);
     app.use(`${prefix}/applicant/languages`, ApplicantLanguagesRouter);
+    app.use(`${prefix}/applicant/cities`, ApplicantCitiesRouter);
 
     app.use(`${prefix}/recruiter-auth`, RecruiterAuthRouter);
     app.use(`${prefix}/recruiter`, RecruiterRouter);
@@ -84,4 +87,5 @@ module.exports = (app) => {
     app.use(`${prefix}/roles`, RolesRouter);
     app.use(`${prefix}/country-code`, CountryCodeRouter);
     app.use(`${prefix}/languages`, LanguagesRouter);
+    app.use(`${prefix}/cities`, CitiesRouter);
 };

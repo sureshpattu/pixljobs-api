@@ -95,6 +95,9 @@ module.exports = function(sequelize, Sequelize) {
         institution_city  :{
             type:Sequelize.STRING
         },
+        home_city      :{
+            type:Sequelize.TEXT
+        },
         current_city      :{
             type:Sequelize.TEXT
         },

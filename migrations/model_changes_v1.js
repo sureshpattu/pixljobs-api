@@ -57,6 +57,47 @@ module.exports  = {
             }
         );
 
+        //applicants table
+        migration.addColumn(
+            'applicants',
+            'home_city',
+            {
+                type:Sequelize.TEXT
+            }
+        );
+
+        //applicant_languages table
+        migration.addColumn(
+            'applicant_languages',
+            'exp_month',
+            {
+                type:Sequelize.STRING
+            }
+        );
+        migration.addColumn(
+            'applicant_languages',
+            'exp_year',
+            {
+                type:Sequelize.STRING
+            }
+        );
+
+        //applicant_technologies table
+        migration.addColumn(
+            'applicant_technologies',
+            'exp_month',
+            {
+                type:Sequelize.STRING
+            }
+        );
+        migration.addColumn(
+            'applicant_technologies',
+            'exp_year',
+            {
+                type:Sequelize.STRING
+            }
+        );
+
         done();
     },
     down:function(migration, DataTypes, done) {

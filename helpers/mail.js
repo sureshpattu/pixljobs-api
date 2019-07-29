@@ -111,6 +111,58 @@ module.exports = {
                 transporter.close(); // shut down the connection pool, no more messages
             });
         }
+    },
+    sendNewApplicationMail:function(req, email, job_name, url) {
+        let source   = fs.readFileSync(path.join(__dirname, '../routes/templates/new_application.hbs'), 'utf8');
+        let template = Handlebars.compile(source);
+        template     = template({url:url, job_name:job_name});
+
+        let mailOptions = {
+            from   :config.domain_email,
+            to     :email,
+            subject:'Job Application',
+            html   :template
+        };
+        if(mailOptions.hasOwnProperty('from') && mailOptions.hasOwnProperty('to') &&
+            mailOptions.hasOwnProperty('subject') &&
+            mailOptions.hasOwnProperty('html')) {
+
+            transporter.sendMail(mailOptions, function(error, response) {
+                if(error) {
+                    console.log(error);
+                } else {
+                    console.log('Message sent: ' + response);
+                }
+
+                transporter.close(); // shut down the connection pool, no more messages
+            });
+        }
+    },
+    sendJobStatusMail     :function(req, email, subject, msg, url) {
+        let source   = fs.readFileSync(path.join(__dirname, '../routes/templates/job_status.hbs'), 'utf8');
+        let template = Handlebars.compile(source);
+        template     = template({url:url, msg:msg});
+
+        let mailOptions = {
+            from   :config.domain_email,
+            to     :email,
+            subject:'Your Job ' + subject,
+            html   :template
+        };
+        if(mailOptions.hasOwnProperty('from') && mailOptions.hasOwnProperty('to') &&
+            mailOptions.hasOwnProperty('subject') &&
+            mailOptions.hasOwnProperty('html')) {
+
+            transporter.sendMail(mailOptions, function(error, response) {
+                if(error) {
+                    console.log(error);
+                } else {
+                    console.log('Message sent: ' + response);
+                }
+
+                transporter.close(); // shut down the connection pool, no more messages
+            });
+        }
     }
 
 };

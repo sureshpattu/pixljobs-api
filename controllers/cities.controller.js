@@ -1,11 +1,11 @@
 'use strict';
 
-const Model      = db.job_applications;
-const Jobs       = db.jobs;
-const Companies  = db.companies;
-const Recruiters = db.recruiters;
+const Model      = db.cities;
+const waterfall  = require('async-waterfall');
+const _          = require('underscore');
 const ApiHelpers = require('../helpers/api.helpers');
-const Mail       = require('../helpers/mail');
+const sequelize  = require('sequelize');
+const Op         = sequelize.Op;
 
 function fetchSingle(_id, res) {
     Model.findOne({where:{id:_id}}).then((_data) => {
@@ -28,50 +28,17 @@ module.exports = {
         fetchSingle(req.params.id, res);
     },
 
-    check:(req, res) => {
-        if(!req.body.applicant_id || !req.body.job_id) {
-            return ApiHelpers.error(res, true, 'Parameters missing');
-        }
-        Model.findOne({
-            where:{
-                applicant_id:req.body.applicant_id,
-                job_id      :req.body.job_id
-            }
-        }).then((_data) => {
-            ApiHelpers.success(res, _data);
-        }).catch(_err => {
-            ApiHelpers.error(res, _err);
-        });
-    },
-
-    create:(req, res) => {
-        if(!req.body.applicant_id || !req.body.job_id) {
+    create    :(req, res) => {
+        if(!req.body.city) {
             return ApiHelpers.error(res, true, 'Parameters missing');
         }
         Model.create(req.body).then((_data) => {
-
-            Jobs.findOne({where:{id:req.body.job_id}}).then((_job) => {
-                Recruiters.findOne({where:{id:_job.recruiter_id}}).then((_recruiter) => {
-
-                    let verify_url = 'www.pixljobs.com' + '/recruiter/applications';
-                    Mail.sendNewApplicationMail(req, _recruiter.email,_job.name, verify_url);
-
-                    ApiHelpers.success(res, _data);
-                }).catch(_err => {
-                    ApiHelpers.error(res, _err);
-                });
-            }).catch(_err => {
-                ApiHelpers.error(res, _err);
-            });
-
-            //Recruiters
-
+            fetchSingle(_data.id, res);
         }).catch(_err => {
             ApiHelpers.error(res, _err);
         });
     },
-
-    update:(req, res) => {
+    update    :(req, res) => {
         Model.update(req.body, {where:{id:req.params.id}}).then((_data) => {
             fetchSingle(req.params.id, res);
         }).catch(_err => {
@@ -86,10 +53,8 @@ module.exports = {
             ApiHelpers.error(res, _err);
         });
     },
+
     search:(req, res) => {
-        if(!req.body.applicant_id) {
-            return ApiHelpers.error(res, true, 'Parameters missing');
-        }
         let limit = parseInt(req.body.limit);
         if(!limit) {
             limit = 10
@@ -102,34 +67,27 @@ module.exports = {
         if(!page) {
             page = 0
         }
+
         let _query = {};
         if(req.body.query) {
             _query[Op.or] = [];
         }
+
         if(req.body.query) {
             let lookupValue = req.body.query.toLowerCase();
             _query[Op.or].push({
-                name:sequelize.where(sequelize.fn('LOWER', db.sequelize.col('name')), 'LIKE',
+                city:sequelize.where(sequelize.fn('LOWER', db.sequelize.col('city')), 'LIKE',
                     '%' + lookupValue + '%')
             });
         }
+
         Model.findAndCountAll({where:_query}).then((data) => {
             let pages = Math.ceil(data.count / limit);
             offset    = limit * page;
             Model.findAll({
-                where  :_query,
-                include:[
-                    {
-                        model  :Jobs,
-                        include:[
-                            {
-                                model:Companies
-                            }
-                        ]
-                    }
-                ],
-                limit  :limit,
-                offset :offset
+                where :_query,
+                limit :limit,
+                offset:offset
             }).then((_data) => {
                 ApiHelpers.success(res, {total:_data.length, pages:pages, page:page, result:_data});
             }).catch(_err => {
