@@ -134,7 +134,8 @@ function createJobOtherDetails(req, res, _qaJobObj, _newJobObj) {
                             JobTechnologies.create({
                                 qa_job_id    :_qaJobObj.qa_job_id,
                                 job_id       :_newJobObj.id,
-                                technology_id:_obj.technology_id
+                                technology_id:_obj.technology_id,
+                                level        :_obj.level
                             }).then((_cat) => {
                                 CB(null, []);
                             }).catch(_err => {
@@ -338,7 +339,7 @@ module.exports = {
                     },
                     {
                         model     :QAJobTechnologies,
-                        attributes:['id', 'qa_job_id'],
+                        attributes:['id', 'qa_job_id', 'level'],
                         include   :[
                             {
                                 model     :Technologies,

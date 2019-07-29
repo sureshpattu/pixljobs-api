@@ -1,12 +1,12 @@
 'use strict';
 
-const Model      = db.technologies;
+const Model      = db.languages;
 const waterfall  = require('async-waterfall');
 const _          = require('underscore');
 const ApiHelpers = require('../helpers/api.helpers');
-const BulkData   = require('../data/technologies');
-const sequelize         = require('sequelize');
-const Op                = sequelize.Op;
+const BulkData   = require('../data/languages');
+const sequelize  = require('sequelize');
+const Op         = sequelize.Op;
 
 function fetchSingle(_id, res) {
     Model.findOne({where:{id:_id}}).then((_data) => {

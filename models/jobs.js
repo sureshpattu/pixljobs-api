@@ -29,6 +29,10 @@ module.exports = function(sequelize, Sequelize) {
         salary_max     :{
             type:Sequelize.STRING
         },
+        is_salary      :{
+            type        :Sequelize.BOOLEAN,
+            defaultValue:true
+        },
         position_count :{
             type:Sequelize.STRING
         },
@@ -57,7 +61,7 @@ module.exports = function(sequelize, Sequelize) {
             defaultValue:'office'
         },
         action         :{
-            type        :Sequelize.ENUM('open','closed'),
+            type        :Sequelize.ENUM('open', 'closed'),
             defaultValue:'open'
         },
         phone_code     :{
@@ -73,6 +77,9 @@ module.exports = function(sequelize, Sequelize) {
             type:Sequelize.STRING
         },
         street         :{
+            type:Sequelize.STRING
+        },
+        area_in        :{
             type:Sequelize.STRING
         },
         area           :{
@@ -109,7 +116,7 @@ module.exports = function(sequelize, Sequelize) {
             type:Sequelize.STRING
         },
         status         :{
-            type        :Sequelize.ENUM('inProgress','closed', 'published', 'pending', 'rejected', 'deleted'),
+            type        :Sequelize.ENUM('inProgress', 'closed', 'published', 'pending', 'rejected', 'deleted'),
             defaultValue:'pending'
         },
         admin_id       :{

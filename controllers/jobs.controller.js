@@ -62,11 +62,12 @@ function fetchSingle(_id, res) {
             },
             {
                 model     :JobTechnologies,
-                attributes:['id', 'job_id'],
+                attributes:['id', 'job_id', 'level'],
                 include   :[
                     {
                         model     :Technologies,
-                        attributes:['id', 'name']
+                        attributes:['id', 'name'],
+                        order     :[['name']]
                     }
                 ]
             },
@@ -137,11 +138,29 @@ function search(req, res) {
             [Op.lte]:req.body.salary_max
         };
     }
+    if(req.body.street) {
+        _query.street = req.body.street;
+    }
+    if(req.body.area_in) {
+        _query.area_in = req.body.area_in;
+    }
+    if(req.body.area) {
+        _query.area = req.body.area;
+    }
+    if(req.body.locality) {
+        _query.locality = req.body.locality;
+    }
     if(req.body.city) {
         _query.city = req.body.city;
     }
     if(req.body.state) {
-        _query.city = req.body.state;
+        _query.state = req.body.state;
+    }
+    if(req.body.country) {
+        _query.country = req.body.country;
+    }
+    if(req.body.pin) {
+        _query.pin = req.body.pin;
     }
     if(req.body.recruiter_id) {
         _query.recruiter_id = req.body.recruiter_id;
@@ -175,11 +194,12 @@ function search(req, res) {
                 },
                 {
                     model     :JobTechnologies,
-                    attributes:['id', 'job_id'],
+                    attributes:['id', 'job_id','level'],
                     include   :[
                         {
                             model     :Technologies,
-                            attributes:['id', 'name']
+                            attributes:['id', 'name'],
+                            order     :[['name']]
                         }
                     ]
                 },

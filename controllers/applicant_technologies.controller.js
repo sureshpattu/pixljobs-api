@@ -1,6 +1,6 @@
 'use strict';
 
-const Model        = db.qa_job_technologies;
+const Model        = db.applicant_technologies;
 const Technologies = db.technologies;
 const waterfall    = require('async-waterfall');
 const _            = require('underscore');
@@ -16,7 +16,7 @@ function fetchSingle(_id, res) {
     });
 }
 
-function createQAJobTechnologies(req, res, _qa_job_id) {
+function createQAJobTechnologies(req, res, _applicant_id) {
 
     waterfall(req.body.technologies.map(function(_obj) {
         return function(lastItemResult, CB) {
@@ -27,18 +27,20 @@ function createQAJobTechnologies(req, res, _qa_job_id) {
             Technologies.findOne({where:{id:_obj.id}}).then((_data) => {
                 if(!_data) {
                     Technologies.create({name:_obj.name}).then((_data) => {
-                        Model.create({qa_job_id:_qa_job_id, technology_id:_data.id, level:_obj.level}).then((_data) => {
-                            CB(null, []);
-                        }).catch(_err => {
+                        Model.create({applicant_id:_applicant_id, technology_id:_data.id, level:_obj.level})
+                             .then((_data) => {
+                                 CB(null, []);
+                             }).catch(_err => {
                             CB(null, []);
                         });
                     }).catch(_err => {
                         CB(null, []);
                     });
                 } else {
-                    Model.create({qa_job_id:_qa_job_id, technology_id:_data.id, level:_obj.level}).then((_data) => {
-                        CB(null, []);
-                    }).catch(_err => {
+                    Model.create({applicant_id:_applicant_id, technology_id:_data.id, level:_obj.level})
+                         .then((_data) => {
+                             CB(null, []);
+                         }).catch(_err => {
                         CB(null, []);
                     });
                 }
@@ -65,16 +67,16 @@ module.exports = {
     },
 
     create:(req, res) => {
-        if(!req.body.qa_job_id || !req.body.technologies) {
+        if(!req.body.applicant_id || !req.body.technologies) {
             return ApiHelpers.error(res, true, 'Parameters missing');
         }
-        var _qa_job_id = req.body.qa_job_id;
-        Model.findOne({where:{qa_job_id:_qa_job_id}}).then((_data_found) => {
+        var _applicant_id = req.body.applicant_id;
+        Model.findOne({where:{applicant_id:_applicant_id}}).then((_data_found) => {
             if(!_data_found) {
-                createQAJobTechnologies(req, res, _qa_job_id);
+                createQAJobTechnologies(req, res, _applicant_id);
             } else {
-                Model.destroy({where:{qa_job_id:_qa_job_id}}).then((_dataDel) => {
-                    createQAJobTechnologies(req, res, _qa_job_id);
+                Model.destroy({where:{applicant_id:_applicant_id}}).then((_dataDel) => {
+                    createQAJobTechnologies(req, res, _applicant_id);
                 }).catch(_err => {
                     ApiHelpers.error(res, _err);
                 });

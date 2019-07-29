@@ -19,6 +19,10 @@ module.exports = function(sequelize, Sequelize) {
         technology_id:{
             allowNull:false,
             type     :Sequelize.UUID
+        },
+        level        :{
+            type        :Sequelize.ENUM('Basic', 'Proficient', 'Expert'),
+            defaultValue:'Basic'
         }
     }, {
         underscored:true
