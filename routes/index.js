@@ -32,7 +32,8 @@ const RolesRouter              = require('./roles.route');
 const IndustriesRouter         = require('./industries.route');
 const QAJobVersionRouter       = require('./qa_job_versions.route');
 const JobVersionRouter         = require('./job_versions.route');
-const CountryCodeRouter         = require('./country_code.route');
+const CountryCodeRouter        = require('./country_code.route');
+const SubscriberRouter         = require('./subscribers.route');
 
 const prefix = '/api';
 
@@ -78,4 +79,5 @@ module.exports = (app) => {
     app.use(`${prefix}/company-users`, CompanyUsersRouter);
     app.use(`${prefix}/roles`, RolesRouter);
     app.use(`${prefix}/country-code`, CountryCodeRouter);
+    app.use(`${prefix}/subscriber`, SubscriberRouter);
 };
