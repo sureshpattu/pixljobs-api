@@ -194,7 +194,7 @@ function search(req, res) {
                 },
                 {
                     model     :JobTechnologies,
-                    attributes:['id', 'job_id','level'],
+                    attributes:['id', 'job_id', 'level'],
                     include   :[
                         {
                             model     :Technologies,
@@ -303,7 +303,7 @@ function recruiterJobsSearch(req, res) {
                             model:Applicants
                         }
                     ],
-                    order  :[
+                    order     :[
                         ['updated_at', 'ASC']
                     ]
                 }
