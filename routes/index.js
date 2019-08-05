@@ -37,6 +37,7 @@ const QAJobVersionRouter        = require('./qa_job_versions.route');
 const JobVersionRouter          = require('./job_versions.route');
 const CountryCodeRouter         = require('./country_code.route');
 const LanguagesRouter           = require('./languages.route');
+const SubscriberRouter          = require('./subscribers.route');
 const CitiesRouter              = require('./cities.route');
 
 const prefix = '/api';
@@ -88,4 +89,5 @@ module.exports = (app) => {
     app.use(`${prefix}/country-code`, CountryCodeRouter);
     app.use(`${prefix}/languages`, LanguagesRouter);
     app.use(`${prefix}/cities`, CitiesRouter);
+    app.use(`${prefix}/subscriber`, SubscriberRouter);
 };
