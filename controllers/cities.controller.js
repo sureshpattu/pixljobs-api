@@ -1,12 +1,11 @@
 'use strict';
 
-const Model      = db.technologies;
+const Model      = db.cities;
 const waterfall  = require('async-waterfall');
 const _          = require('underscore');
 const ApiHelpers = require('../helpers/api.helpers');
-const BulkData   = require('../data/technologies');
-const sequelize         = require('sequelize');
-const Op                = sequelize.Op;
+const sequelize  = require('sequelize');
+const Op         = sequelize.Op;
 
 function fetchSingle(_id, res) {
     Model.findOne({where:{id:_id}}).then((_data) => {
@@ -30,33 +29,13 @@ module.exports = {
     },
 
     create    :(req, res) => {
-        if(!req.body.name) {
+        if(!req.body.city) {
             return ApiHelpers.error(res, true, 'Parameters missing');
         }
         Model.create(req.body).then((_data) => {
             fetchSingle(_data.id, res);
         }).catch(_err => {
             ApiHelpers.error(res, _err);
-        });
-    },
-    createBulk:(req, res) => {
-        waterfall(BulkData.map(function(_obj) {
-            return function(lastItemResult, CB) {
-                if(!CB) {
-                    CB             = lastItemResult;
-                    lastItemResult = null;
-                }
-                Model.create({
-                    name:_obj
-                }).then((user) => {
-                    CB(null, []);
-                }).catch(_er => {
-                    console.log(_er.message);
-                    CB(null, []);
-                });
-            };
-        }), function() {
-            return res.status(200).json({message:'All done'});
         });
     },
     update    :(req, res) => {
@@ -97,7 +76,7 @@ module.exports = {
         if(req.body.query) {
             let lookupValue = req.body.query.toLowerCase();
             _query[Op.or].push({
-                name:sequelize.where(sequelize.fn('LOWER', db.sequelize.col('name')), 'LIKE',
+                city:sequelize.where(sequelize.fn('LOWER', db.sequelize.col('city')), 'LIKE',
                     '%' + lookupValue + '%')
             });
         }

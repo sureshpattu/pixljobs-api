@@ -3,9 +3,11 @@
 const Model      = db.job_applications;
 const Jobs       = db.jobs;
 const Companies  = db.companies;
-const waterfall  = require('async-waterfall');
-const _          = require('underscore');
+const Recruiters = db.recruiters;
 const ApiHelpers = require('../helpers/api.helpers');
+const Mail       = require('../helpers/mail');
+const sequelize  = require('sequelize');
+const Op         = sequelize.Op;
 
 function fetchSingle(_id, res) {
     Model.findOne({where:{id:_id}}).then((_data) => {
@@ -49,7 +51,23 @@ module.exports = {
             return ApiHelpers.error(res, true, 'Parameters missing');
         }
         Model.create(req.body).then((_data) => {
-            fetchSingle(_data.id, res);
+
+            Jobs.findOne({where:{id:req.body.job_id}}).then((_job) => {
+                Recruiters.findOne({where:{id:_job.recruiter_id}}).then((_recruiter) => {
+
+                    let verify_url = 'www.pixljobs.com' + '/recruiter/applications';
+                    Mail.sendNewApplicationMail(req, _recruiter.email, _job.name, verify_url);
+
+                    ApiHelpers.success(res, _data);
+                }).catch(_err => {
+                    ApiHelpers.error(res, _err);
+                });
+            }).catch(_err => {
+                ApiHelpers.error(res, _err);
+            });
+
+            //Recruiters
+
         }).catch(_err => {
             ApiHelpers.error(res, _err);
         });
@@ -61,6 +79,33 @@ module.exports = {
         }).catch(_err => {
             ApiHelpers.error(res, _err);
         });
+    },
+
+    status:(req, res) => {
+        if(!req.params.id) {
+            return ApiHelpers.error(res, true, 'Parameters missing');
+        }
+
+        Model.findOne({where:{id:req.params.id}}).then((_jobApp) => {
+            if(_jobApp) {
+                if((req.body.status === 'viewed') &&
+                    _jobApp.status === 'shortlisted' || _jobApp.status === 'downloaded') {
+                    ApiHelpers.success(res, _jobApp);
+                } else {
+                    Model.update(req.body, {where:{id:req.params.id}}).then((_data) => {
+                        ApiHelpers.success(res, _jobApp);
+                    }).catch(_err => {
+                        ApiHelpers.error(res, _err);
+                    });
+                }
+            } else {
+                ApiHelpers.error(res, true, 'Vendor not found!');
+            }
+
+        }).catch(_err => {
+            ApiHelpers.error(res, _err);
+        });
+
     },
 
     delete:(req, res) => {

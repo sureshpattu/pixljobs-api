@@ -2,24 +2,30 @@
 
 module.exports = function(sequelize, Sequelize) {
 
-    return sequelize.define('qa_job_technologies', {
-        id           :{
+    return sequelize.define('applicant_languages', {
+        id          :{
             type        :Sequelize.UUID,
             primaryKey  :true,
             defaultValue:Sequelize.UUIDV4,
             allowNull   :false
         },
-        qa_job_id    :{
+        applicant_id:{
             allowNull:false,
             type     :Sequelize.UUID
         },
-        technology_id:{
+        language_id :{
             allowNull:false,
             type     :Sequelize.UUID
         },
-        level        :{
+        level       :{
             type        :Sequelize.ENUM('Basic', 'Proficient', 'Expert'),
             defaultValue:'Basic'
+        },
+        exp_month    :{
+            type:Sequelize.STRING
+        },
+        exp_year     :{
+            type:Sequelize.STRING
         }
     }, {
         underscored:true

@@ -1,21 +1,59 @@
 'use strict';
 
-const Model      = db.applicants;
-const ImgHelpers = require('./../helpers/image.upload.helpers');
-const ApiHelpers = require('./../helpers/api.helpers');
-const _          = require('underscore');
-const path       = require('path');
-const sequelize  = require('sequelize');
-const crypto2    = require('crypto2');
-const config     = require('../config/config');
-const fs         = require('fs');
-const jwt        = require('jwt-simple');
-const Mail       = require('../helpers/mail');
-const SMSHelpers = require('../helpers/sms');
+const Model                 = db.applicants;
+const Technologies          = db.technologies;
+const ApplicantTechnologies = db.applicant_technologies;
+const Languages             = db.languages;
+const ApplicantLanguages    = db.applicant_languages;
+const Cities                = db.cities;
+const ApplicantCities       = db.applicant_cities;
+const ImgHelpers            = require('./../helpers/image.upload.helpers');
+const ApiHelpers            = require('./../helpers/api.helpers');
+const _                     = require('underscore');
+const path                  = require('path');
+const sequelize             = require('sequelize');
+const crypto2               = require('crypto2');
+const config                = require('../config/config');
+const fs                    = require('fs');
+const jwt                   = require('jwt-simple');
+const Mail                  = require('../helpers/mail');
+const SMSHelpers            = require('../helpers/sms');
 
 function fetchSingle(req, res) {
     Model.findOne({
-        where:{id:req.params.id}
+        where  :{id:req.params.id},
+        include:[
+            {
+                model     :ApplicantTechnologies,
+                attributes:['id', 'level'],
+                include   :[
+                    {
+                        model     :Technologies,
+                        attributes:['id', 'name']
+                    }
+                ]
+            },
+            {
+                model     :ApplicantLanguages,
+                attributes:['id', 'level'],
+                include   :[
+                    {
+                        model     :Languages,
+                        attributes:['id', 'name']
+                    }
+                ]
+            },
+            {
+                model     :ApplicantCities,
+                attributes:['id'],
+                include   :[
+                    {
+                        model     :Cities,
+                        attributes:['id', 'city']
+                    }
+                ]
+            }
+        ]
     }).then((_data) => {
         ApiHelpers.success(res, _data);
     }).catch(_err => {

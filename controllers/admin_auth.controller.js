@@ -41,14 +41,6 @@ module.exports = {
                 email_token:token,
                 token      :token
             }, {where:{email:req.body.email}}).then((_emp_updated) => {
-                //let mailOptions = {
-                //    from   :'connect@trebound.com',
-                //    to     :req.body.email,
-                //    subject:'Verify Your Email Address',
-                //    body   :'Hi, ' + req.body.name + ' Click here to activate your account : http://' +
-                //        'localhost:3035' + '/admin/email/verify/' + token
-                //};
-                //Mail.sendMail(req, mailOptions);
 
                 let verify_url = 'admin.pixljobs.com' + '/admin/email/verify/' + token;
                 Mail.sendEmailVerifyMail(req, req.body.email, verify_url);
